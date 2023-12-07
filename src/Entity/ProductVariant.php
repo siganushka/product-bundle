@@ -109,11 +109,24 @@ class ProductVariant implements ResourceInterface
      */
     public function setNameIfNotSet(): void
     {
-        if (null === $this->name && $this->product && $this->product->getName()) {
-            $this->name = $this->product->getName();
-            if ($texts = $this->getOptionValuesText()) {
-                $this->name .= sprintf('（%s）', $texts);
-            }
+        if ($this->name) {
+            return;
         }
+
+        if (!$this->product) {
+            return;
+        }
+
+        $variantName = $this->product->getName();
+        if (!$variantName) {
+            return;
+        }
+
+        $optionValueTexts = $this->optionValues->map(fn (ProductOptionValue $optionValue) => $optionValue->getText());
+        if ($optionValueTexts) {
+            $variantName .= sprintf('（%s）', implode('/', $optionValueTexts->toArray()));
+        }
+
+        $this->name = $variantName;
     }
 }

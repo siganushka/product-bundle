@@ -12,12 +12,12 @@ class ProductFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $product = new Product();
-        $product->setName('iPhone 15');
+        $product1 = new Product();
+        $product1->setName('iPhone 15');
 
-        $manager->persist($product);
+        $manager->persist($product1);
         $manager->flush();
 
-        $this->addReference('product', $product);
+        $this->addReference('product-1', $product1);
     }
 }
