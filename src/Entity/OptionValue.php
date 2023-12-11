@@ -11,8 +11,6 @@ use Siganushka\ProductBundle\Repository\OptionValueRepository;
 
 /**
  * @ORM\Entity(repositoryClass=OptionValueRepository::class)
- * @ORM\HasLifecycleCallbacks()
- *
  * @ORM\Table(uniqueConstraints={
  *  @ORM\UniqueConstraint(columns={"code"})
  * })
@@ -44,7 +42,7 @@ class OptionValue implements ResourceInterface
 
     public function __construct(string $code = null, string $text = null, string $img = null)
     {
-        $this->code = $code;
+        $this->code = $code ?? uniqid();
         $this->text = $text;
         $this->img = $img;
     }
@@ -95,14 +93,6 @@ class OptionValue implements ResourceInterface
         $this->img = $img;
 
         return $this;
-    }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function setCodeIfNotSet(): void
-    {
-        $this->code = uniqid();
     }
 
     public function __toString(): string

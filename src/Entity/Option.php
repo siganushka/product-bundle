@@ -7,7 +7,6 @@ namespace Siganushka\ProductBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Faker\Guesser\Name;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\ProductBundle\Repository\OptionRepository;
@@ -59,11 +58,6 @@ class Option implements ResourceInterface
     public function getValues(): Collection
     {
         return $this->values;
-    }
-
-    public function getValuesAsString(): string
-    {
-        return implode('/', $this->values->map(fn (OptionValue $optionValue) => (string) $optionValue)->toArray());
     }
 
     public function addValue(OptionValue $value): self
@@ -123,7 +117,7 @@ class Option implements ResourceInterface
         return sprintf(
             '%s (%s)',
             $this->name,
-            implode('/', array_map(fn (OptionValue $value) => (string) $value, $this->values->toArray())),
+            implode('/', $this->values->map(fn (OptionValue $value) => (string) $value)->toArray()),
         );
     }
 }

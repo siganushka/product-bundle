@@ -21,7 +21,7 @@ class Product implements ResourceInterface
     use ResourceTrait;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=255)
      */
     private ?string $name = null;
 
@@ -59,6 +59,21 @@ class Product implements ResourceInterface
     public function getOptions(): Collection
     {
         return $this->options;
+    }
+
+    /**
+     * Generate cartesian product for options.
+     */
+    public function getOptionsMapping(): array
+    {
+        $values = $this->options->map(fn (Option $option) => $option->getValues());
+
+        $optionsMapping = [];
+        foreach (cartesian_product($values->toArray()) as $opitonValues) {
+            $optionsMapping[] = new ArrayCollection($opitonValues);
+        }
+
+        return $optionsMapping;
     }
 
     public function addOption(Option $option): self
@@ -104,20 +119,5 @@ class Product implements ResourceInterface
         }
 
         return $this;
-    }
-
-    public function getVariantsChoices(): array
-    {
-        $values = $this->options->map(fn (Option $option) => $option->getValues());
-
-        $optionsChoices = [];
-        foreach (cartesian_product($values->toArray()) as $opitonValues) {
-            $codes = array_map(fn (OptionValue $optionValue) => $optionValue->getCode(), $opitonValues);
-            $key = implode('_', $codes);
-
-            $optionsChoices[$key] = $opitonValues;
-        }
-
-        return $optionsChoices;
     }
 }

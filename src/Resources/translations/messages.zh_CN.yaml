@@ -2,7 +2,7 @@ _choice_empty: 请选择
 
 product.name: 名称
 product.options: 选项
-product.variant.name: 库存名称
-product.variant.price: 单价
-product.variant.option_values: 规格
 
+product.variant.name: 库存名称
+product.variant.option_values: 规格
+product.variant.price: 单价

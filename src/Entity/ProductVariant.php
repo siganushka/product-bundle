@@ -105,6 +105,13 @@ class ProductVariant implements ResourceInterface
         return $this->optionValues;
     }
 
+    public function setOptionValues(Collection $optionValues): self
+    {
+        $this->optionValues = $optionValues;
+
+        return $this;
+    }
+
     public function addOptionValue(OptionValue $optionValue): self
     {
         if (!$this->optionValues->contains($optionValue)) {
@@ -131,20 +138,13 @@ class ProductVariant implements ResourceInterface
             return;
         }
 
-        if (!$this->product) {
+        $this->name = $this->product ? $this->product->getName() : null;
+        if (null === $this->name) {
             return;
         }
 
-        $variantName = $this->product->getName();
-        if (!$variantName) {
-            return;
+        if (!$this->optionValues->isEmpty()) {
+            $this->name .= sprintf('（%s）', implode('/', $this->optionValues->map(fn (OptionValue $optionValue) => (string) $optionValue)->toArray()));
         }
-
-        $optionValueTexts = $this->optionValues->map(fn (OptionValue $optionValue) => $optionValue->getText());
-        if (!$optionValueTexts->isEmpty()) {
-            $variantName .= sprintf('（%s）', implode('/', $optionValueTexts->toArray()));
-        }
-
-        $this->name = $variantName;
     }
 }
