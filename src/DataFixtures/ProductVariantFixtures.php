@@ -7,28 +7,28 @@ namespace Siganushka\ProductBundle\DataFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Siganushka\ProductBundle\Entity\ProductOption;
+use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductVariant;
-
-use function BenTools\CartesianProduct\cartesian_product;
 
 class ProductVariantFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $product1 = $this->getReference('product-1');
+        /** @var Product */
+        $product1 = $this->getReference('product-1', Product::class);
+        $choices = $product1->getVariantsChoices();
 
-        $options = $product1->getOptions();
-        $values = $options->map(fn (ProductOption $option) => $option->getValues());
-
-        foreach (cartesian_product($values->toArray()) as $index => $optionValues) {
+        foreach ($choices as $key => $optionValues) {
             $variant = new ProductVariant();
             $variant->setProduct($product1);
-            $variant->setOptionValues($optionValues);
+            $variant->setPrice(random_int(100, 999));
+            $variant->setInventory(100);
+
+            array_walk($optionValues, [$variant, 'addOptionValue']);
 
             $manager->persist($variant);
 
-            $this->addReference('product-variant-'.($index + 1), $variant);
+            $this->addReference('product-variant-'.$key, $variant);
         }
 
         $manager->flush();
@@ -37,7 +37,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
     public function getDependencies(): array
     {
         return [
-            ProductOptionFixtures::class,
+            ProductFixtures::class,
         ];
     }
 }

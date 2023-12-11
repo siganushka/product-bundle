@@ -21,18 +21,26 @@ class ProductVariant implements ResourceInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="variants")
-     * @ORM\JoinColumn(nullable=false)
      */
     private ?Product $product = null;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string")
      */
     private ?string $name = null;
 
     /**
-     * @ORM\ManyToMany(targetEntity=ProductOptionValue::class, inversedBy="productVariants")
-     * @ORM\JoinTable(name="product_variant_option_value")
+     * @ORM\Column(type="integer")
+     */
+    private ?int $price = null;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private ?int $inventory = null;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=OptionValue::class)
      */
     private Collection $optionValues;
 
@@ -65,29 +73,39 @@ class ProductVariant implements ResourceInterface
         return $this;
     }
 
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): self
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getInventory(): ?int
+    {
+        return $this->inventory;
+    }
+
+    public function setInventory(int $inventory): self
+    {
+        $this->inventory = $inventory;
+
+        return $this;
+    }
+
     /**
-     * @return Collection<int, ProductOptionValue>
+     * @return Collection<int, OptionValue>
      */
     public function getOptionValues(): Collection
     {
         return $this->optionValues;
     }
 
-    public function setOptionValues(array $optionValues): self
-    {
-        $this->optionValues = new ArrayCollection($optionValues);
-
-        return $this;
-    }
-
-    public function getOptionValuesText(): string
-    {
-        $texts = $this->optionValues->map(fn (ProductOptionValue $optionValue) => $optionValue->getText());
-
-        return implode('/', $texts->toArray());
-    }
-
-    public function addOptionValue(ProductOptionValue $optionValue): self
+    public function addOptionValue(OptionValue $optionValue): self
     {
         if (!$this->optionValues->contains($optionValue)) {
             $this->optionValues[] = $optionValue;
@@ -96,7 +114,7 @@ class ProductVariant implements ResourceInterface
         return $this;
     }
 
-    public function removeOptionValue(ProductOptionValue $optionValue): self
+    public function removeOptionValue(OptionValue $optionValue): self
     {
         $this->optionValues->removeElement($optionValue);
 
@@ -122,8 +140,8 @@ class ProductVariant implements ResourceInterface
             return;
         }
 
-        $optionValueTexts = $this->optionValues->map(fn (ProductOptionValue $optionValue) => $optionValue->getText());
-        if ($optionValueTexts) {
+        $optionValueTexts = $this->optionValues->map(fn (OptionValue $optionValue) => $optionValue->getText());
+        if (!$optionValueTexts->isEmpty()) {
             $variantName .= sprintf('（%s）', implode('/', $optionValueTexts->toArray()));
         }
 

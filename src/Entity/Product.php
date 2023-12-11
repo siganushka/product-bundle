@@ -11,6 +11,8 @@ use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
+use function BenTools\CartesianProduct\cartesian_product;
+
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  */
@@ -19,12 +21,12 @@ class Product implements ResourceInterface
     use ResourceTrait;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string")
      */
     private ?string $name = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=ProductOption::class, mappedBy="product")
+     * @ORM\ManyToMany(targetEntity=Option::class, inversedBy="products")
      */
     private Collection $options;
 
@@ -52,31 +54,25 @@ class Product implements ResourceInterface
     }
 
     /**
-     * @return Collection<int, ProductOption>
+     * @return Collection<int, Option>
      */
     public function getOptions(): Collection
     {
         return $this->options;
     }
 
-    public function addOption(ProductOption $option): self
+    public function addOption(Option $option): self
     {
         if (!$this->options->contains($option)) {
             $this->options[] = $option;
-            $option->setProduct($this);
         }
 
         return $this;
     }
 
-    public function removeOption(ProductOption $option): self
+    public function removeOption(Option $option): self
     {
-        if ($this->options->removeElement($option)) {
-            // set the owning side to null (unless already changed)
-            if ($option->getProduct() === $this) {
-                $option->setProduct(null);
-            }
-        }
+        $this->options->removeElement($option);
 
         return $this;
     }
@@ -102,12 +98,26 @@ class Product implements ResourceInterface
     public function removeVariant(ProductVariant $variant): self
     {
         if ($this->variants->removeElement($variant)) {
-            // set the owning side to null (unless already changed)
             if ($variant->getProduct() === $this) {
                 $variant->setProduct(null);
             }
         }
 
         return $this;
+    }
+
+    public function getVariantsChoices(): array
+    {
+        $values = $this->options->map(fn (Option $option) => $option->getValues());
+
+        $optionsChoices = [];
+        foreach (cartesian_product($values->toArray()) as $opitonValues) {
+            $codes = array_map(fn (OptionValue $optionValue) => $optionValue->getCode(), $opitonValues);
+            $key = implode('_', $codes);
+
+            $optionsChoices[$key] = $opitonValues;
+        }
+
+        return $optionsChoices;
     }
 }
