@@ -111,12 +111,12 @@ class Option implements ResourceInterface
     public function __toString(): string
     {
         if ($this->values->isEmpty()) {
-            return $this->name;
+            return (string) $this->name;
         }
 
         return sprintf(
             '%s (%s)',
-            $this->name,
+            (string) $this->name,
             implode('/', $this->values->map(fn (OptionValue $value) => (string) $value)->toArray()),
         );
     }

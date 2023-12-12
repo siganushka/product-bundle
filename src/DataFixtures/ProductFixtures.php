@@ -14,7 +14,9 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
+        /** @var Option */
         $option1 = $this->getReference('option-1', Option::class);
+        /** @var Option */
         $option2 = $this->getReference('option-2', Option::class);
 
         $product1 = new Product();

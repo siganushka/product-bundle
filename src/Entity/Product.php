@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
+use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
 use function BenTools\CartesianProduct\cartesian_product;
@@ -61,21 +62,6 @@ class Product implements ResourceInterface
         return $this->options;
     }
 
-    /**
-     * Generate cartesian product for options.
-     */
-    public function getOptionsMapping(): array
-    {
-        $values = $this->options->map(fn (Option $option) => $option->getValues());
-
-        $optionsMapping = [];
-        foreach (cartesian_product($values->toArray()) as $opitonValues) {
-            $optionsMapping[] = new ArrayCollection($opitonValues);
-        }
-
-        return $optionsMapping;
-    }
-
     public function addOption(Option $option): self
     {
         if (!$this->options->contains($option)) {
@@ -119,5 +105,20 @@ class Product implements ResourceInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return array<int, OptionValueCollection>
+     */
+    public function getVariantChoices(): array
+    {
+        $values = $this->options->map(fn (Option $option) => $option->getValues());
+
+        $variantChoices = [];
+        foreach (cartesian_product($values->toArray()) as $opitonValues) {
+            $variantChoices[] = new OptionValueCollection($opitonValues);
+        }
+
+        return $variantChoices;
     }
 }

@@ -16,12 +16,11 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
     {
         /** @var Product */
         $product1 = $this->getReference('product-1', Product::class);
-        $mapping = $product1->getOptionsMapping();
 
-        foreach ($mapping as $index => $optionValues) {
+        foreach ($product1->getVariantChoices() as $index => $optionValues) {
             $variant = new ProductVariant();
             $variant->setProduct($product1);
-            $variant->setPrice(100);
+            $variant->setPrice(999);
             $variant->setInventory(100);
             $variant->setOptionValues($optionValues);
 

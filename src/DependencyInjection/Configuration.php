@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\DependencyInjection;
 
+use Siganushka\ProductBundle\Entity\Option;
+use Siganushka\ProductBundle\Entity\OptionValue;
 use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Entity\ProductOption;
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -21,9 +21,9 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->getRootNode();
 
         $classMapping = [
+            'option_class' => Option::class,
+            'option_value_class' => OptionValue::class,
             'product_class' => Product::class,
-            'product_option_class' => ProductOption::class,
-            'product_option_value_class' => ProductOptionValue::class,
             'product_variant_class' => ProductVariant::class,
         ];
 

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
+use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 /**
@@ -46,7 +46,7 @@ class ProductVariant implements ResourceInterface
 
     public function __construct()
     {
-        $this->optionValues = new ArrayCollection();
+        $this->optionValues = new OptionValueCollection();
     }
 
     public function getProduct(): ?Product
@@ -98,14 +98,18 @@ class ProductVariant implements ResourceInterface
     }
 
     /**
-     * @return Collection<int, OptionValue>
+     * @return OptionValueCollection<int, OptionValue>
      */
-    public function getOptionValues(): Collection
+    public function getOptionValues(): OptionValueCollection
     {
-        return $this->optionValues;
+        if ($this->optionValues instanceof OptionValueCollection) {
+            return $this->optionValues;
+        }
+
+        return new OptionValueCollection($this->optionValues->toArray());
     }
 
-    public function setOptionValues(Collection $optionValues): self
+    public function setOptionValues(OptionValueCollection $optionValues): self
     {
         $this->optionValues = $optionValues;
 
@@ -144,7 +148,7 @@ class ProductVariant implements ResourceInterface
         }
 
         if (!$this->optionValues->isEmpty()) {
-            $this->name .= sprintf('（%s）', implode('/', $this->optionValues->map(fn (OptionValue $optionValue) => (string) $optionValue)->toArray()));
+            $this->name .= sprintf('（%s）', (string) $this->getOptionValues());
         }
     }
 }

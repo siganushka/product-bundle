@@ -97,6 +97,6 @@ class OptionValue implements ResourceInterface
 
     public function __toString(): string
     {
-        return $this->text;
+        return (string) $this->text;
     }
 }
