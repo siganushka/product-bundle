@@ -7,11 +7,10 @@ namespace Siganushka\ProductBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
-use FOS\RestBundle\View\View;
 use Knp\Component\Pager\PaginatorInterface;
 use Siganushka\GenericBundle\Exception\ResourceNotFoundException;
 use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Form\ProductType;
+use Siganushka\ProductBundle\Form\Type\ProductType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -124,7 +123,7 @@ class ProductController extends AbstractFOSRestController
         $context = new Context();
         $context->setAttribute('attributes', $attributes);
 
-        $view = View::create($data, $statusCode, $headers);
+        $view = $this->view($data, $statusCode, $headers);
         $view->setContext($context);
 
         return $this->handleView($view);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Siganushka\ProductBundle\Form;
+namespace Siganushka\ProductBundle\Form\Type;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

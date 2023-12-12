@@ -7,9 +7,8 @@ namespace Siganushka\ProductBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
-use FOS\RestBundle\View\View;
 use Siganushka\GenericBundle\Exception\ResourceNotFoundException;
-use Siganushka\ProductBundle\Form\ProductVariantType;
+use Siganushka\ProductBundle\Form\Type\ProductVariantType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -128,7 +127,7 @@ class ProductVariantController extends AbstractFOSRestController
         $context = new Context();
         $context->setAttribute('attributes', $attributes);
 
-        $view = View::create($data, $statusCode, $headers);
+        $view = $this->view($data, $statusCode, $headers);
         $view->setContext($context);
 
         return $this->handleView($view);
