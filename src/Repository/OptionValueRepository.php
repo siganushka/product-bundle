@@ -12,6 +12,7 @@ use Siganushka\ProductBundle\Entity\OptionValue;
 /**
  * @extends ServiceEntityRepository<OptionValue>
  *
+ * @method OptionValue      createNew(...$args)
  * @method OptionValue|null find($id, $lockMode = null, $lockVersion = null)
  * @method OptionValue|null findOneBy(array $criteria, array $orderBy = null)
  * @method OptionValue[]    findAll()
