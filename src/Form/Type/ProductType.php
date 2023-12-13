@@ -10,6 +10,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -26,20 +28,31 @@ class ProductType extends AbstractType
                     new Length(null, null, 128),
                 ],
             ])
-            ->add('options', EntityType::class, [
-                'label' => 'product.options',
-                'class' => Option::class,
-                'choice_label' => fn (Option $choice) => (string) $choice,
-                'multiple' => true,
-                'expanded' => true,
-            ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Product::class,
+        ]);
+    }
+
+    public function onPreSetData(FormEvent $event): void
+    {
+        $data = $event->getData();
+        $disabled = $data instanceof Product && $data->getId() ? true : false;
+
+        $form = $event->getForm();
+        $form->add('options', EntityType::class, [
+            'label' => 'product.options',
+            'class' => Option::class,
+            'choice_label' => fn (Option $choice) => (string) $choice,
+            'disabled' => $disabled,
+            'multiple' => true,
+            'expanded' => true,
         ]);
     }
 }
