@@ -9,15 +9,22 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
+use Siganushka\Contracts\Doctrine\SortableInterface;
+use Siganushka\Contracts\Doctrine\SortableTrait;
+use Siganushka\Contracts\Doctrine\TimestampableInterface;
+use Siganushka\Contracts\Doctrine\TimestampableTrait;
+use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Siganushka\ProductBundle\Repository\OptionRepository;
 
 /**
  * @ORM\Entity(repositoryClass=OptionRepository::class)
  * @ORM\Table(name="`option`")
  */
-class Option implements ResourceInterface
+class Option implements ResourceInterface, SortableInterface, TimestampableInterface
 {
     use ResourceTrait;
+    use SortableTrait;
+    use TimestampableTrait;
 
     /**
      * @ORM\Column(type="string")
@@ -36,7 +43,7 @@ class Option implements ResourceInterface
 
     public function __construct()
     {
-        $this->values = new ArrayCollection();
+        $this->values = new OptionValueCollection();
         $this->products = new ArrayCollection();
     }
 
@@ -53,11 +60,15 @@ class Option implements ResourceInterface
     }
 
     /**
-     * @return Collection<int, OptionValue>
+     * @return OptionValueCollection<int, OptionValue>
      */
-    public function getValues(): Collection
+    public function getValues(): OptionValueCollection
     {
-        return $this->values;
+        if ($this->values instanceof OptionValueCollection) {
+            return $this->values;
+        }
+
+        return new OptionValueCollection($this->values->toArray());
     }
 
     public function addValue(OptionValue $value): self
@@ -114,10 +125,6 @@ class Option implements ResourceInterface
             return (string) $this->name;
         }
 
-        return sprintf(
-            '%s (%s)',
-            (string) $this->name,
-            implode('/', $this->values->map(fn (OptionValue $value) => (string) $value)->toArray()),
-        );
+        return sprintf('%s (%s)', (string) $this->name, (string) $this->getValues());
     }
 }

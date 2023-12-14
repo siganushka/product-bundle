@@ -12,13 +12,43 @@ use Siganushka\ProductBundle\Entity\OptionValue;
  */
 class OptionValueCollection extends ArrayCollection
 {
-    public function getChoiceKey(): string
+    private string $label;
+
+    private string $value;
+
+    public function __construct(array $optionValues = [])
     {
-        return implode('_', array_map(fn (OptionValue $value) => $value->getCode(), $this->toArray()));
+        $label = $value = [];
+        foreach ($optionValues as $optionValue) {
+            if (!$optionValue instanceof OptionValue) {
+                throw new \UnexpectedValueException(sprintf('Expected argument of type "%s", "%s" given', OptionValue::class, get_debug_type($optionValue)));
+            }
+
+            $label[] = $optionValue->getText();
+            $value[] = $optionValue->getId();
+        }
+
+        // important!
+        // sort($value);
+
+        $this->label = implode('/', $label);
+        $this->value = implode('_', $value);
+
+        parent::__construct($optionValues);
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function getValue(): string
+    {
+        return $this->value;
     }
 
     public function __toString(): string
     {
-        return implode('/', array_map(fn (OptionValue $value) => $value->getText(), $this->toArray()));
+        return $this->label;
     }
 }

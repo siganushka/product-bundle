@@ -11,13 +11,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -26,14 +24,6 @@ class ProductVariantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'product.variant.name',
-                'priority' => 1,
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(null, null, 128),
-                ],
-            ])
             ->add('price', MoneyType::class, [
                 'label' => 'product.variant.price',
                 'scale' => 2,
@@ -83,23 +73,27 @@ class ProductVariantType extends AbstractType
         }
 
         $variants = $product->getVariants();
-        $variantKeys = $variants->map(fn (ProductVariant $variant) => $variant->getOptionValues()->getChoiceKey());
+        $usedChoices = $variants->map(fn (ProductVariant $variant) => $variant->getOptionValues()->getValue());
 
         $form = $event->getForm();
         $form->add('optionValues', ChoiceType::class, [
             'label' => 'product.variant.option_values',
-            'choices' => $product->getVariantChoices(),
-            'choice_value' => fn (OptionValueCollection $choice) => $choice->getChoiceKey(),
-            'choice_label' => function (OptionValueCollection $choice, int $key, string $value) use ($variantKeys) {
+            'choices' => $product->getOptionValueChoices(),
+            'choice_label' => function (OptionValueCollection $choice) use ($usedChoices) {
                 $label = (string) $choice;
 
-                return $variantKeys->contains($value) ? sprintf('%s (√)', $label) : $label;
+                return $usedChoices->contains($choice->getValue()) ? sprintf('%s (√)', $label) : $label;
             },
-            'choice_attr' => fn (OptionValueCollection $choice, int $key, string $value) => ['disabled' => $variantKeys->contains($value)],
+            'choice_value' => fn (OptionValueCollection $choice) => $choice->getValue(),
+            'choice_attr' => fn (OptionValueCollection $choice) => ['disabled' => $usedChoices->contains($choice->getValue())],
             'choice_translation_domain' => false,
+            'disabled' => $data->getId() ? true : false,
             'priority' => 1,
             'empty_data' => new OptionValueCollection(),
             'constraints' => new NotBlank(),
+            'setter' => function (ProductVariant &$variant, OptionValueCollection $value): void {
+                $variant->setOptionValues($value);
+            },
         ]);
     }
 }

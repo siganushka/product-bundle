@@ -15,15 +15,15 @@ class OptionFixtures extends Fixture
     {
         $option1 = new Option();
         $option1->setName('颜色');
-        $option1->addValue(new OptionValue('blue', '蓝色'));
-        $option1->addValue(new OptionValue('green', '绿色'));
-        $option1->addValue(new OptionValue('pick', '粉色'));
+        $option1->addValue(new OptionValue('蓝色'));
+        $option1->addValue(new OptionValue('绿色'));
+        $option1->addValue(new OptionValue('粉色'));
 
         $option2 = new Option();
         $option2->setName('存储');
-        $option2->addValue(new OptionValue('128gb', '128GB'));
-        $option2->addValue(new OptionValue('256gb', '256GB'));
-        $option2->addValue(new OptionValue('512gb', '512GB'));
+        $option2->addValue(new OptionValue('128GB'));
+        $option2->addValue(new OptionValue('256GB'));
+        $option2->addValue(new OptionValue('512GB'));
 
         $manager->persist($option1);
         $manager->persist($option2);

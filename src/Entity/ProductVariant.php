@@ -8,16 +8,21 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
+use Siganushka\Contracts\Doctrine\TimestampableInterface;
+use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 /**
  * @ORM\Entity(repositoryClass=ProductVariantRepository::class)
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\Table(uniqueConstraints={
+ *  @ORM\UniqueConstraint(columns={"product_id", "choice"})
+ * })
  */
-class ProductVariant implements ResourceInterface
+class ProductVariant implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
+    use TimestampableTrait;
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="variants")
@@ -27,7 +32,7 @@ class ProductVariant implements ResourceInterface
     /**
      * @ORM\Column(type="string")
      */
-    private ?string $name = null;
+    private ?string $choice = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -61,16 +66,14 @@ class ProductVariant implements ResourceInterface
         return $this;
     }
 
-    public function getName(): ?string
+    public function getChoice(): ?string
     {
-        return $this->name;
+        return $this->choice;
     }
 
-    public function setName(string $name): self
+    public function setChoice(string $choice): self
     {
-        $this->name = $name;
-
-        return $this;
+        throw new \BadMethodCallException('The choice cannot be modified anymore.');
     }
 
     public function getPrice(): ?int
@@ -111,6 +114,7 @@ class ProductVariant implements ResourceInterface
 
     public function setOptionValues(OptionValueCollection $optionValues): self
     {
+        $this->choice = $optionValues->getValue();
         $this->optionValues = $optionValues;
 
         return $this;
@@ -118,37 +122,11 @@ class ProductVariant implements ResourceInterface
 
     public function addOptionValue(OptionValue $optionValue): self
     {
-        if (!$this->optionValues->contains($optionValue)) {
-            $this->optionValues[] = $optionValue;
-        }
-
-        return $this;
+        throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
     }
 
     public function removeOptionValue(OptionValue $optionValue): self
     {
-        $this->optionValues->removeElement($optionValue);
-
-        return $this;
-    }
-
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
-    public function setNameIfNotSet(): void
-    {
-        if ($this->name) {
-            return;
-        }
-
-        $this->name = $this->product ? $this->product->getName() : null;
-        if (null === $this->name) {
-            return;
-        }
-
-        if (!$this->optionValues->isEmpty()) {
-            $this->name .= sprintf('（%s）', (string) $this->getOptionValues());
-        }
+        throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
     }
 }

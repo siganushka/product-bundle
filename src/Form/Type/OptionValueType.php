@@ -27,6 +27,7 @@ class OptionValueType extends AbstractType
             ])
             ->add('img', MediaUrlType::class, [
                 'label' => 'option.value.img',
+                'required' => false,
             ])
         ;
     }

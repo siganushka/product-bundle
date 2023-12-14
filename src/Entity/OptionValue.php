@@ -7,28 +7,26 @@ namespace Siganushka\ProductBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
+use Siganushka\Contracts\Doctrine\SortableInterface;
+use Siganushka\Contracts\Doctrine\SortableTrait;
+use Siganushka\Contracts\Doctrine\TimestampableInterface;
+use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\ProductBundle\Repository\OptionValueRepository;
 
 /**
  * @ORM\Entity(repositoryClass=OptionValueRepository::class)
- * @ORM\Table(uniqueConstraints={
- *  @ORM\UniqueConstraint(columns={"code"})
- * })
  */
-class OptionValue implements ResourceInterface
+class OptionValue implements ResourceInterface, SortableInterface, TimestampableInterface
 {
     use ResourceTrait;
+    use SortableTrait;
+    use TimestampableTrait;
 
     /**
      * @ORM\ManyToOne(targetEntity=Option::class, inversedBy="values")
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Option $option = null;
-
-    /**
-     * @ORM\Column(type="string", length=13, options={"fixed": true})
-     */
-    private ?string $code = null;
 
     /**
      * @ORM\Column(type="string")
@@ -40,9 +38,8 @@ class OptionValue implements ResourceInterface
      */
     private ?string $img = null;
 
-    public function __construct(string $code = null, string $text = null, string $img = null)
+    public function __construct(string $text = null, string $img = null)
     {
-        $this->code = $code ?? uniqid();
         $this->text = $text;
         $this->img = $img;
     }
@@ -55,18 +52,6 @@ class OptionValue implements ResourceInterface
     public function setOption(?Option $option): self
     {
         $this->option = $option;
-
-        return $this;
-    }
-
-    public function getCode(): ?string
-    {
-        return $this->code;
-    }
-
-    public function setCode(string $code): self
-    {
-        $this->code = $code;
 
         return $this;
     }

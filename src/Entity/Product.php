@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
+use BenTools\CartesianProduct\CartesianProduct;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
+use Siganushka\Contracts\Doctrine\TimestampableInterface;
+use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Siganushka\ProductBundle\Repository\ProductRepository;
-
-use function BenTools\CartesianProduct\cartesian_product;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  */
-class Product implements ResourceInterface
+class Product implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
+    use TimestampableTrait;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -110,15 +112,11 @@ class Product implements ResourceInterface
     /**
      * @return array<int, OptionValueCollection>
      */
-    public function getVariantChoices(): array
+    public function getOptionValueChoices(): array
     {
         $values = $this->options->map(fn (Option $option) => $option->getValues());
+        $cartesianProduct = new CartesianProduct($values->toArray());
 
-        $variantChoices = [];
-        foreach (cartesian_product($values->toArray()) as $opitonValues) {
-            $variantChoices[] = new OptionValueCollection($opitonValues);
-        }
-
-        return $variantChoices;
+        return array_map(fn (array $opitonValues) => new OptionValueCollection($opitonValues), $cartesianProduct->asArray());
     }
 }

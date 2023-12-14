@@ -118,7 +118,7 @@ class ProductController extends AbstractFOSRestController
             'id',
             'name',
             'variants' => ['id', 'name'],
-            'variantChoices' => ['id', 'code', 'text', 'img'],
+            'variantChoices' => ['id', 'text', 'img'],
         ];
 
         $context = new Context();
