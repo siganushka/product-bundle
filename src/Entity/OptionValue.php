@@ -62,16 +62,14 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
         return $this;
     }
 
-    public function getCode(): ?string
+    public function getCode(): string
     {
         return $this->code;
     }
 
     public function setCode(string $code): self
     {
-        $this->code = $code;
-
-        return $this;
+        throw new \BadMethodCallException('The code cannot be modified anymore.');
     }
 
     public function getText(): ?string

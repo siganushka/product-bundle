@@ -31,11 +31,15 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @ORM\ManyToMany(targetEntity=Option::class, inversedBy="products")
      * @ORM\OrderBy({"sorted": "DESC", "createdAt": "ASC", "id": "ASC"})
+     *
+     * @var Collection<int, Option>
      */
     private Collection $options;
 
     /**
      * @ORM\OneToMany(targetEntity=ProductVariant::class, mappedBy="product")
+     *
+     * @var Collection<int, ProductVariant>
      */
     private Collection $variants;
 

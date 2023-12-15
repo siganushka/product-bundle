@@ -6,31 +6,27 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Form\Type\ProductVariantChoiceType;
 use Siganushka\ProductBundle\Model\OptionValueCollection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ProductVariantType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('price', MoneyType::class, [
+            ->add('price', CentsMoneyType::class, [
                 'label' => 'product.variant.price',
-                'scale' => 2,
-                'divisor' => 100,
-                'currency' => 'CNY',
                 'constraints' => [
                     new NotBlank(),
                     new GreaterThanOrEqual(0),
@@ -54,7 +50,12 @@ class ProductVariantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ProductVariant::class,
-            'constraints' => new Callback([$this, 'validateChoice']),
+            'constraints' => new UniqueEntity([
+                'fields' => ['product', 'choice'],
+                'errorPath' => 'optionValues',
+                'message' => 'product.variant.option_values.unique',
+                'ignoreNull' => false,
+            ]),
         ]);
     }
 
@@ -90,27 +91,5 @@ class ProductVariantType extends AbstractType
                 $value && $variant->setOptionValues($value);
             },
         ]);
-    }
-
-    public function validateChoice(ProductVariant $data, ExecutionContextInterface $context): void
-    {
-        $product = $data->getProduct();
-        if (!$product instanceof Product) {
-            return;
-        }
-
-        $usedChoices = $product->getVariants()->map(fn (ProductVariant $variant) => $variant->getChoice());
-
-        // important!!!
-        if ($data->getId()) {
-            $usedChoices->removeElement($data->getChoice());
-        }
-
-        if ($usedChoices->contains($data->getChoice())) {
-            $context->buildViolation('该产品库存已存在！')
-                ->atPath('optionValues')
-                ->addViolation()
-            ;
-        }
     }
 }

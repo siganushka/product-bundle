@@ -13,7 +13,6 @@ use Siganushka\Contracts\Doctrine\SortableInterface;
 use Siganushka\Contracts\Doctrine\SortableTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
-use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Siganushka\ProductBundle\Repository\OptionRepository;
 
 /**
@@ -34,11 +33,15 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
     /**
      * @ORM\OneToMany(targetEntity=OptionValue::class, mappedBy="option", cascade={"all"})
      * @ORM\OrderBy({"sorted": "DESC", "createdAt": "ASC", "id": "ASC"})
+     *
+     * @var Collection<int, OptionValue>
      */
     private Collection $values;
 
     /**
      * @ORM\ManyToMany(targetEntity=Product::class, mappedBy="options")
+     *
+     * @var Collection<int, Product>
      */
     private Collection $products;
 
@@ -61,15 +64,11 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
     }
 
     /**
-     * @return OptionValueCollection<int, OptionValue>
+     * @return Collection<int, OptionValue>
      */
-    public function getValues(): OptionValueCollection
+    public function getValues(): Collection
     {
-        if ($this->values instanceof OptionValueCollection) {
-            return $this->values;
-        }
-
-        return new OptionValueCollection($this->values->toArray());
+        return $this->values;
     }
 
     public function addValue(OptionValue $value): self

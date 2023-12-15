@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Siganushka\ProductBundle\Entity\OptionValue;
 
 /**
- * @template-extends ArrayCollection<int, mixed>
+ * @template-extends ArrayCollection<int, OptionValue>
  */
 class OptionValueCollection extends ArrayCollection
 {
