@@ -46,7 +46,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     /**
      * @ORM\ManyToMany(targetEntity=OptionValue::class)
-     * @ORM\OrderBy({"sorted": "DESC", "createdAt": "ASC", "id": "ASC"})
+     * @ORM\OrderBy({"sort": "DESC", "createdAt": "ASC", "id": "ASC"})
      *
      * @var Collection<int, OptionValue>
      */

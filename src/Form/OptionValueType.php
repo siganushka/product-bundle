@@ -30,8 +30,8 @@ class OptionValueType extends AbstractType
                 'label' => 'option.value.img',
                 'required' => false,
             ])
-            ->add('sorted', IntegerType::class, [
-                'label' => 'generic.sorted',
+            ->add('sort', IntegerType::class, [
+                'label' => 'option.value.sort',
             ])
         ;
     }

@@ -32,7 +32,7 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
 
     /**
      * @ORM\OneToMany(targetEntity=OptionValue::class, mappedBy="option", cascade={"all"})
-     * @ORM\OrderBy({"sorted": "DESC", "createdAt": "ASC", "id": "ASC"})
+     * @ORM\OrderBy({"sort": "DESC", "createdAt": "ASC", "id": "ASC"})
      *
      * @var Collection<int, OptionValue>
      */
