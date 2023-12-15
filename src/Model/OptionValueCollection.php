@@ -46,4 +46,9 @@ class OptionValueCollection extends ArrayCollection
     {
         return $this->value;
     }
+
+    public function __toString(): string
+    {
+        return $this->label;
+    }
 }

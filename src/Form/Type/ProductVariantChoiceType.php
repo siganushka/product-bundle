@@ -20,7 +20,7 @@ class ProductVariantChoiceType extends AbstractType
         $resolver->setDefaults([
             'choice_translation_domain' => false,
             'choice_value' => fn (?OptionValueCollection $choice) => $choice ? $choice->getValue() : '',
-            'choice_label' => static fn (Options $options): ?\Closure => fn (OptionValueCollection $choice): string => sprintf('%s【%s】', (string) $options['product']->getName(), $choice->getLabel()),
+            'choice_label' => static fn (Options $options): ?\Closure => fn (OptionValueCollection $choice): string => sprintf('%s【%s】', (string) $options['product']->getName(), (string) $choice),
         ]);
 
         $resolver->setRequired('product');
