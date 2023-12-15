@@ -30,11 +30,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     private ?Product $product = null;
 
     /**
-     * @ORM\Column(type="string")
-     */
-    private ?string $choice = null;
-
-    /**
      * @ORM\Column(type="integer")
      */
     private ?int $price = null;
@@ -45,7 +40,13 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     private ?int $inventory = null;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $choice = null;
+
+    /**
      * @ORM\ManyToMany(targetEntity=OptionValue::class)
+     * @ORM\OrderBy({"sorted": "DESC", "createdAt": "ASC", "id": "ASC"})
      */
     private Collection $optionValues;
 
@@ -66,16 +67,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getChoice(): ?string
-    {
-        return $this->choice;
-    }
-
-    public function setChoice(string $choice): self
-    {
-        throw new \BadMethodCallException('The choice cannot be modified anymore.');
-    }
-
     public function getPrice(): ?int
     {
         return $this->price;
@@ -93,9 +84,21 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this->inventory;
     }
 
-    public function setInventory(int $inventory): self
+    public function setInventory(?int $inventory): self
     {
         $this->inventory = $inventory;
+
+        return $this;
+    }
+
+    public function getChoice(): ?string
+    {
+        return $this->choice;
+    }
+
+    public function setChoice(?string $choice): self
+    {
+        $this->choice = $choice;
 
         return $this;
     }

@@ -2,22 +2,24 @@
 
 declare(strict_types=1);
 
-namespace Siganushka\ProductBundle\Form\Type;
+namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Form\Type\ProductVariantChoiceType;
 use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ProductVariantType extends AbstractType
 {
@@ -28,7 +30,7 @@ class ProductVariantType extends AbstractType
                 'label' => 'product.variant.price',
                 'scale' => 2,
                 'divisor' => 100,
-                'currency' => false,
+                'currency' => 'CNY',
                 'constraints' => [
                     new NotBlank(),
                     new GreaterThanOrEqual(0),
@@ -52,6 +54,7 @@ class ProductVariantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ProductVariant::class,
+            'constraints' => new Callback([$this, 'validateChoice']),
         ]);
     }
 
@@ -67,33 +70,47 @@ class ProductVariantType extends AbstractType
             return;
         }
 
-        $options = $product->getOptions();
-        if ($options->isEmpty()) {
+        $usedChoices = $product->getVariants()->map(fn (ProductVariant $variant) => $variant->getChoice());
+
+        // important!!!
+        if ($data->getId()) {
+            $usedChoices->removeElement($data->getChoice());
+        }
+
+        $form = $event->getForm();
+        $form->add('optionValues', ProductVariantChoiceType::class, [
+            'label' => 'product.variant.option_values',
+            'choice_attr' => fn (OptionValueCollection $choice) => ['disabled' => $usedChoices->contains($choice->getValue())],
+            'placeholder' => '---请选择---',
+            'constraints' => $product->getOptions()->isEmpty() ? [] : new NotBlank(),
+            'disabled' => $data->getId() ? true : false,
+            'product' => $product,
+            'priority' => 1,
+            'setter' => function (ProductVariant &$variant, ?OptionValueCollection $value): void {
+                $value && $variant->setOptionValues($value);
+            },
+        ]);
+    }
+
+    public function validateChoice(ProductVariant $data, ExecutionContextInterface $context): void
+    {
+        $product = $data->getProduct();
+        if (!$product instanceof Product) {
             return;
         }
 
-        $variants = $product->getVariants();
-        $usedChoices = $variants->map(fn (ProductVariant $variant) => $variant->getOptionValues()->getValue());
+        $usedChoices = $product->getVariants()->map(fn (ProductVariant $variant) => $variant->getChoice());
 
-        $form = $event->getForm();
-        $form->add('optionValues', ChoiceType::class, [
-            'label' => 'product.variant.option_values',
-            'choices' => $product->getOptionValueChoices(),
-            'choice_label' => function (OptionValueCollection $choice) use ($usedChoices) {
-                $label = (string) $choice;
+        // important!!!
+        if ($data->getId()) {
+            $usedChoices->removeElement($data->getChoice());
+        }
 
-                return $usedChoices->contains($choice->getValue()) ? sprintf('%s (√)', $label) : $label;
-            },
-            'choice_value' => fn (OptionValueCollection $choice) => $choice->getValue(),
-            'choice_attr' => fn (OptionValueCollection $choice) => ['disabled' => $usedChoices->contains($choice->getValue())],
-            'choice_translation_domain' => false,
-            'disabled' => $data->getId() ? true : false,
-            'priority' => 1,
-            'empty_data' => new OptionValueCollection(),
-            'constraints' => new NotBlank(),
-            'setter' => function (ProductVariant &$variant, OptionValueCollection $value): void {
-                $variant->setOptionValues($value);
-            },
-        ]);
+        if ($usedChoices->contains($data->getChoice())) {
+            $context->buildViolation('该产品库存已存在！')
+                ->atPath('optionValues')
+                ->addViolation()
+            ;
+        }
     }
 }

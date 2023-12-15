@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Siganushka\ProductBundle\Form\Type;
+namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\MediaBundle\Form\Type\MediaUrlType;
 use Siganushka\ProductBundle\Entity\OptionValue;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -28,6 +29,9 @@ class OptionValueType extends AbstractType
             ->add('img', MediaUrlType::class, [
                 'label' => 'option.value.img',
                 'required' => false,
+            ])
+            ->add('sorted', IntegerType::class, [
+                'label' => 'generic.sorted',
             ])
         ;
     }

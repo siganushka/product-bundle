@@ -30,6 +30,7 @@ class Product implements ResourceInterface, TimestampableInterface
 
     /**
      * @ORM\ManyToMany(targetEntity=Option::class, inversedBy="products")
+     * @ORM\OrderBy({"sorted": "DESC", "createdAt": "ASC", "id": "ASC"})
      */
     private Collection $options;
 

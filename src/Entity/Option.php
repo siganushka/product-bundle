@@ -33,6 +33,7 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
 
     /**
      * @ORM\OneToMany(targetEntity=OptionValue::class, mappedBy="option", cascade={"all"})
+     * @ORM\OrderBy({"sorted": "DESC", "createdAt": "ASC", "id": "ASC"})
      */
     private Collection $values;
 
@@ -43,7 +44,7 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
 
     public function __construct()
     {
-        $this->values = new OptionValueCollection();
+        $this->values = new ArrayCollection();
         $this->products = new ArrayCollection();
     }
 
@@ -125,6 +126,10 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
             return (string) $this->name;
         }
 
-        return sprintf('%s (%s)', (string) $this->name, (string) $this->getValues());
+        return sprintf(
+            '%s (%s)',
+            (string) $this->name,
+            implode('/', $this->values->map(fn (OptionValue $value) => (string) $value)->toArray()),
+        );
     }
 }

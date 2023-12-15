@@ -31,6 +31,11 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
     /**
      * @ORM\Column(type="string")
      */
+    private string $code;
+
+    /**
+     * @ORM\Column(type="string")
+     */
     private ?string $text = null;
 
     /**
@@ -38,8 +43,9 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
      */
     private ?string $img = null;
 
-    public function __construct(string $text = null, string $img = null)
+    public function __construct(string $code = null, string $text = null, string $img = null)
     {
+        $this->code = $code ?? uniqid();
         $this->text = $text;
         $this->img = $img;
     }
@@ -52,6 +58,18 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
     public function setOption(?Option $option): self
     {
         $this->option = $option;
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }

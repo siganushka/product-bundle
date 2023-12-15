@@ -25,14 +25,14 @@ class OptionValueCollection extends ArrayCollection
             }
 
             $label[] = $optionValue->getText();
-            $value[] = $optionValue->getId();
+            $value[] = $optionValue->getCode();
         }
 
-        // important!
-        // sort($value);
+        // important!!!
+        sort($value);
 
-        $this->label = implode('/', $label);
-        $this->value = implode('_', $value);
+        $this->label = implode('/', array_filter($label));
+        $this->value = implode('_', array_filter($value));
 
         parent::__construct($optionValues);
     }
@@ -45,10 +45,5 @@ class OptionValueCollection extends ArrayCollection
     public function getValue(): string
     {
         return $this->value;
-    }
-
-    public function __toString(): string
-    {
-        return $this->label;
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Siganushka\ProductBundle\Form\Type;
+namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Option;
 use Siganushka\ProductBundle\Entity\Product;
