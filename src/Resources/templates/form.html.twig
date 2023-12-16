@@ -1,0 +1,67 @@
+{% form_theme form with ['bootstrap_5_horizontal_layout.html.twig', 'form.html.twig'] %}
+
+{% block _option_values_widget %}
+  {% if form.vars.allow_add %}
+    <div class="mb-3">
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
+        onclick="addItem(this, '{{ form.vars.id }}')">添加</button>
+    </div>
+  {% endif %}
+
+  <div id="{{ form.vars.id }}" class="border-top border-bottom bg-light px-3">
+    {%- for item in form %}
+      {{ form_widget(item) }}
+    {% endfor -%}
+  </div>
+
+  <style>
+    #option_values:empty { display: none; }
+  </style>
+
+  <script>
+  function addItem(event, id) {
+    const collectionHolder = document.getElementById(id)
+
+    const item = document.createElement('dev')
+    item.innerHTML = event.dataset.prototype.replace(/__name__/g, collectionHolder.children.length ++)
+
+    console.log(item.firstChild)
+    collectionHolder.appendChild(item.firstChild)
+  }
+
+  function removeItem(event, id) {
+    if (confirm('确定删除码？')) {
+      const entry = document.getElementById(id)
+      entry && entry.remove()
+    }
+  }
+  </script>
+{% endblock %}
+
+{% block _option_values_entry_widget %}
+<div id="{{ form.vars.id }}" class="row my-3">
+  <div style="flex: 0 0 150px">
+    {{ form_widget(form.img) }}
+    {{ form_errors(form.img) }}
+  </div>
+  <div class="col">
+    {{ form_widget(form.text) }}
+    {{ form_errors(form.text) }}
+  </div>
+  <div class="col">
+    {{ form_widget(form.sort) }}
+    {{ form_errors(form.sort) }}
+  </div>
+  {% if form.parent.vars.allow_delete %}
+    <div style="flex: 0 0 80px">
+      <button
+        type="button"
+        class="btn btn-link text-danger px-0"
+        onclick="removeItem(this, '{{ form.vars.id }}')">删除</button>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

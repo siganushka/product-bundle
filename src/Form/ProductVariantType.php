@@ -78,12 +78,20 @@ class ProductVariantType extends AbstractType
             $usedChoices->removeElement($data->getChoice());
         }
 
+        $placeholder = 'product.variant.option_values.choice';
+        $constraints = new NotBlank();
+
+        if ($product->getOptions()->isEmpty()) {
+            $placeholder = 'product.variant.option_values.null';
+            $constraints = [];
+        }
+
         $form = $event->getForm();
         $form->add('optionValues', ProductVariantChoiceType::class, [
             'label' => 'product.variant.option_values',
             'choice_attr' => fn (OptionValueCollection $choice) => ['disabled' => $usedChoices->contains($choice->getValue())],
-            'placeholder' => '---请选择---',
-            'constraints' => $product->getOptions()->isEmpty() ? [] : new NotBlank(),
+            'placeholder' => $placeholder,
+            'constraints' => $constraints,
             'disabled' => $data->getId() ? true : false,
             'product' => $product,
             'priority' => 1,
