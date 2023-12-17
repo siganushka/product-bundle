@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\DependencyInjection;
 
-use Siganushka\ProductBundle\SiganushkaProductBundle;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -24,18 +23,13 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
 
     public function prepend(ContainerBuilder $container): void
     {
-        if ($container->hasExtension('siganushka_generic')) {
-            $configs = $container->getExtensionConfig($this->getAlias());
-
-            $configuration = new Configuration();
-            $config = $this->processConfiguration($configuration, $configs);
+        if (!$container->hasExtension('siganushka_generic')) {
+            return;
         }
 
-        if ($container->hasExtension('twig')) {
-            $refl = new \ReflectionClass(SiganushkaProductBundle::class);
-            $path = \dirname($refl->getFileName()).'/Resources/templates';
+        $configs = $container->getExtensionConfig($this->getAlias());
 
-            $container->prependExtensionConfig('twig', ['paths' => [$path]]);
-        }
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
     }
 }
