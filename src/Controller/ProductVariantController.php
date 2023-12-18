@@ -7,7 +7,6 @@ namespace Siganushka\ProductBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
-use Siganushka\GenericBundle\Exception\ResourceNotFoundException;
 use Siganushka\ProductBundle\Form\Type\ProductVariantType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
@@ -33,7 +32,7 @@ class ProductVariantController extends AbstractFOSRestController
     {
         $product = $this->productRepository->find($productId);
         if (!$product) {
-            throw new ResourceNotFoundException($productId);
+            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $productId));
         }
 
         return $this->viewResponse($product->getVariants());
@@ -46,7 +45,7 @@ class ProductVariantController extends AbstractFOSRestController
     {
         $product = $this->productRepository->find($productId);
         if (!$product) {
-            throw new ResourceNotFoundException($productId);
+            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $productId));
         }
 
         $entity = $this->variantRepository->createNew();
@@ -73,7 +72,7 @@ class ProductVariantController extends AbstractFOSRestController
     {
         $entity = $this->variantRepository->find($id);
         if (!$entity) {
-            throw new ResourceNotFoundException($id);
+            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
         }
 
         return $this->viewResponse($entity);
@@ -86,7 +85,7 @@ class ProductVariantController extends AbstractFOSRestController
     {
         $entity = $this->variantRepository->find($id);
         if (!$entity) {
-            throw new ResourceNotFoundException($id);
+            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
         }
 
         $form = $this->createForm(ProductVariantType::class, $entity);
@@ -108,7 +107,7 @@ class ProductVariantController extends AbstractFOSRestController
     {
         $entity = $this->variantRepository->find($id);
         if (!$entity) {
-            throw new ResourceNotFoundException($id);
+            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
         }
 
         $entityManager->remove($entity);

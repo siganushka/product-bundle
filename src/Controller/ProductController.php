@@ -8,9 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Knp\Component\Pager\PaginatorInterface;
-use Siganushka\GenericBundle\Exception\ResourceNotFoundException;
 use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Form\Type\ProductType;
+use Siganushka\ProductBundle\Form\ProductType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,7 +67,7 @@ class ProductController extends AbstractFOSRestController
     {
         $entity = $this->productRepository->find($id);
         if (!$entity) {
-            throw new ResourceNotFoundException($id);
+            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
         }
 
         return $this->viewResponse($entity);
@@ -81,7 +80,7 @@ class ProductController extends AbstractFOSRestController
     {
         $entity = $this->productRepository->find($id);
         if (!$entity) {
-            throw new ResourceNotFoundException($id);
+            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
         }
 
         $form = $this->createForm(ProductType::class, $entity);
@@ -103,7 +102,7 @@ class ProductController extends AbstractFOSRestController
     {
         $entity = $this->productRepository->find($id);
         if (!$entity) {
-            throw new ResourceNotFoundException($id);
+            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
         }
 
         $entityManager->remove($entity);
@@ -115,10 +114,15 @@ class ProductController extends AbstractFOSRestController
     protected function viewResponse($data = null, int $statusCode = null, array $headers = []): Response
     {
         $attributes = [
-            'id',
-            'name',
-            'variants' => ['id', 'name'],
-            'variantChoices' => ['id', 'text', 'img'],
+            'id', 'name', 'updatedAt', 'createdAt',
+            // 'options' => [
+            //     'id', 'name',
+            //     'values' => ['id', 'code', 'text', 'img', 'sort'],
+            // ],
+            'variants' => [
+                'id', 'choice', 'price', 'inventory', 'choiceName',
+            ],
+            'optionValueChoices' => ['id', 'code', 'text', 'img', 'sort'],
         ];
 
         $context = new Context();

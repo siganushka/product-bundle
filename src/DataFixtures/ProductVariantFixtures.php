@@ -16,17 +16,20 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
     {
         /** @var Product */
         $product1 = $this->getReference('product-1', Product::class);
+        /** @var Product */
+        $product2 = $this->getReference('product-2', Product::class);
 
-        foreach ($product1->getOptionValueChoices() as $index => $optionValues) {
-            $variant = new ProductVariant();
-            $variant->setProduct($product1);
-            $variant->setPrice(999);
-            $variant->setInventory(100);
-            $variant->setOptionValues($optionValues);
+        foreach ([$product1, $product2] as $index => $product) {
+            foreach ($product->getOptionValueChoices() as $index2 => $optionValues) {
+                $variant = new ProductVariant();
+                $variant->setProduct($product);
+                $variant->setPrice(999);
+                $variant->setInventory(100);
+                $variant->setOptionValues($optionValues);
 
-            $manager->persist($variant);
-
-            $this->addReference('product-variant-'.$index, $variant);
+                $manager->persist($variant);
+                $this->addReference(sprintf('product-%d-variant-%d', $index, $index2), $variant);
+            }
         }
 
         $manager->flush();

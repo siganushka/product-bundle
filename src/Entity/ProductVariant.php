@@ -74,6 +74,11 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this->choice;
     }
 
+    public function getChoiceName(): string
+    {
+        return (string) $this->getOptionValues();
+    }
+
     public function setChoice(?string $choice): self
     {
         throw new \BadMethodCallException('The choice cannot be modified anymore.');
