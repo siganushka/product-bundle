@@ -46,10 +46,7 @@ class OptionType extends AbstractType
                 'error_bubbling' => false,
                 'by_reference' => false,
                 'constraints' => [
-                    new Count([
-                        'min' => 2,
-                        'minMessage' => 'option.values.count.invalid',
-                    ]),
+                    new Count(['min' => 2, 'minMessage' => 'option.values.count.invalid']),
                 ],
             ])
         ;

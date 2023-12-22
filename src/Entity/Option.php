@@ -126,7 +126,7 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
         }
 
         return sprintf(
-            '%s (%s)',
+            '%s【%s】',
             (string) $this->name,
             implode('/', $this->values->map(fn (OptionValue $value) => (string) $value)->toArray()),
         );
