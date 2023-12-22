@@ -6,6 +6,7 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\MediaBundle\Form\Type\MediaUrlType;
 use Siganushka\ProductBundle\Entity\OptionValue;
+use Siganushka\ProductBundle\Media\OptionValueImg;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -28,6 +29,7 @@ class OptionValueType extends AbstractType
             ])
             ->add('img', MediaUrlType::class, [
                 'label' => 'option.value.img',
+                'channel' => OptionValueImg::class,
             ])
             ->add('sort', IntegerType::class, [
                 'label' => 'option.value.sort',

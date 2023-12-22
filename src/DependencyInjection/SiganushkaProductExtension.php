@@ -19,6 +19,8 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
+        // ...
     }
 
     public function prepend(ContainerBuilder $container): void

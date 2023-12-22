@@ -74,7 +74,7 @@ class ProductVariantType extends AbstractType
             $usedChoices->removeElement($data->getChoice());
         }
 
-        $placeholder = 'product.variant.option_values.choice';
+        $placeholder = 'generic.choice';
         $constraints = new NotBlank();
 
         if ($product->getOptions()->isEmpty()) {

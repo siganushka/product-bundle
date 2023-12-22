@@ -5,7 +5,7 @@
         type="button"
         class="btn btn-primary"
         data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
-        onclick="addItem(this, '{{ form.vars.id }}')">添加</button>
+        onclick="addCollectionItem(this, '{{ form.vars.id }}')">添加</button>
     </div>
   {% endif %}
 
@@ -14,29 +14,6 @@
       {{ form_widget(item) }}
     {% endfor -%}
   </div>
-
-  <style>
-    #option_values:empty { display: none; }
-  </style>
-
-  <script>
-  function addItem(event, id) {
-    const collectionHolder = document.getElementById(id)
-
-    const item = document.createElement('dev')
-    item.innerHTML = event.dataset.prototype.replace(/__name__/g, collectionHolder.children.length ++)
-
-    console.log(item.firstChild)
-    collectionHolder.appendChild(item.firstChild)
-  }
-
-  function removeItem(event, id) {
-    if (confirm('确定删除码？')) {
-      const entry = document.getElementById(id)
-      entry && entry.remove()
-    }
-  }
-  </script>
 {% endblock %}
 
 {% block _option_values_entry_widget %}
@@ -58,7 +35,7 @@
       <button
         type="button"
         class="btn btn-link text-danger px-0"
-        onclick="removeItem(this, '{{ form.vars.id }}')">删除</button>
+        onclick="removeCollectionItem(this, '{{ form.vars.id }}')">删除</button>
     </div>
   {% endif %}
 </div>

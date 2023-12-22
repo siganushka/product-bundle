@@ -5,10 +5,10 @@ option.value.img: 图片
 option.value.sort: 排序
 
 product.name: 产品名称
+product.img: 产品图片
 product.options: 关联选项
 product.variant.name: 库存名称
 product.variant.option_values: 规格
-product.variant.option_values.choice: --- 请选择 ---
-product.variant.option_values.null: --- 无规格 ---
+product.variant.option_values.null: 无规格
 product.variant.price: 单价
 product.variant.inventory: 库存

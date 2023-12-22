@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
+use Siganushka\MediaBundle\Form\Type\MediaUrlType;
 use Siganushka\ProductBundle\Entity\Option;
 use Siganushka\ProductBundle\Entity\Product;
+use Siganushka\ProductBundle\Media\ProductImg;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -28,6 +30,13 @@ class ProductType extends AbstractType
                     new Length(null, null, 128),
                 ],
             ])
+            ->add('img', MediaUrlType::class, [
+                'label' => 'product.img',
+                'channel' => ProductImg::class,
+                'constraints' => new NotBlank(),
+                'width' => '320px',
+                'height' => '320px',
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
@@ -49,7 +58,7 @@ class ProductType extends AbstractType
         $form->add('options', EntityType::class, [
             'label' => 'product.options',
             'class' => Option::class,
-            'choice_label' => fn (Option $choice) => (string) $choice,
+            'choice_label' => fn (Option $choice): string => (string) $choice,
             'disabled' => $disabled,
             'multiple' => true,
             'expanded' => true,
