@@ -29,6 +29,11 @@ class Product implements ResourceInterface, TimestampableInterface
     private ?string $name = null;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    private ?string $img = null;
+
+    /**
      * @ORM\ManyToMany(targetEntity=Option::class, inversedBy="products")
      * @ORM\OrderBy({"sort": "DESC", "createdAt": "ASC", "id": "ASC"})
      *
@@ -57,6 +62,18 @@ class Product implements ResourceInterface, TimestampableInterface
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getImg(): ?string
+    {
+        return $this->img;
+    }
+
+    public function setImg(string $img): self
+    {
+        $this->img = $img;
 
         return $this;
     }

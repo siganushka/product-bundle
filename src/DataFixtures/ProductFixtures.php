@@ -23,11 +23,13 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
 
         $product1 = new Product();
         $product1->setName('iPhone 15');
+        $product1->setImg('https://placehold.jp/500x500.png');
         $product1->addOption($option1);
         $product1->addOption($option2);
 
         $product2 = new Product();
-        $product2->setName('正宗陕西油泼面（速食）');
+        $product2->setName('正宗陕西油泼面');
+        $product2->setImg('https://placehold.jp/500x500.png');
         $product2->addOption($option3);
 
         $manager->persist($product1);
