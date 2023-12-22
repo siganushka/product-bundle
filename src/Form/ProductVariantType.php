@@ -27,11 +27,7 @@ class ProductVariantType extends AbstractType
         $builder
             ->add('price', CentsMoneyType::class, [
                 'label' => 'product.variant.price',
-                'constraints' => [
-                    new NotBlank(),
-                    new GreaterThanOrEqual(0),
-                    new LessThanOrEqual(2147483600),
-                ],
+                'constraints' => new NotBlank(),
             ])
             ->add('inventory', IntegerType::class, [
                 'label' => 'product.variant.inventory',
