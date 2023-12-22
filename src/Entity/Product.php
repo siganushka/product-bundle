@@ -42,7 +42,8 @@ class Product implements ResourceInterface, TimestampableInterface
     private Collection $options;
 
     /**
-     * @ORM\OneToMany(targetEntity=ProductVariant::class, mappedBy="product")
+     * @ORM\OneToMany(targetEntity=ProductVariant::class, mappedBy="product", orphanRemoval=true)
+     * @ORM\OrderBy({"createdAt": "ASC", "id": "ASC"})
      *
      * @var Collection<int, ProductVariant>
      */
