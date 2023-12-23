@@ -11,6 +11,7 @@ use Siganushka\Contracts\Doctrine\SortableInterface;
 use Siganushka\Contracts\Doctrine\SortableTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
+use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Repository\OptionValueRepository;
 
 /**
@@ -39,11 +40,11 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
     private ?string $text = null;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\ManyToOne(targetEntity=Media::class)
      */
-    private ?string $img = null;
+    private ?Media $img = null;
 
-    public function __construct(string $code = null, string $text = null, string $img = null)
+    public function __construct(string $code = null, string $text = null, Media $img = null)
     {
         $this->code = $code ?? uniqid();
         $this->text = $text;
@@ -84,12 +85,12 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
         return $this;
     }
 
-    public function getImg(): ?string
+    public function getImg(): ?Media
     {
         return $this->img;
     }
 
-    public function setImg(?string $img): self
+    public function setImg(?Media $img): self
     {
         $this->img = $img;
 

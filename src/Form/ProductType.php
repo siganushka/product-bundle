@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
-use Siganushka\MediaBundle\Form\Type\MediaUrlType;
+use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\Option;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Media\ProductImg;
@@ -30,7 +30,7 @@ class ProductType extends AbstractType
                     new Length(null, null, 128),
                 ],
             ])
-            ->add('img', MediaUrlType::class, [
+            ->add('img', MediaType::class, [
                 'label' => 'product.img',
                 'channel' => ProductImg::class,
                 'constraints' => new NotBlank(),

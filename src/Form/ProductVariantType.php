@@ -11,7 +11,6 @@ use Siganushka\ProductBundle\Form\Type\ProductVariantChoiceType;
 use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -29,7 +28,7 @@ class ProductVariantType extends AbstractType
                 'label' => 'product.variant.price',
                 'constraints' => new NotBlank(),
             ])
-            ->add('inventory', IntegerType::class, [
+            ->add('inventory', null, [
                 'label' => 'product.variant.inventory',
                 'constraints' => [
                     new NotBlank(),

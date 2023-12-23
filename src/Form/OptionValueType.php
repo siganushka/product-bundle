@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
-use Siganushka\MediaBundle\Form\Type\MediaUrlType;
+use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\OptionValue;
 use Siganushka\ProductBundle\Media\OptionValueImg;
 use Symfony\Component\Form\AbstractType;
@@ -27,7 +27,7 @@ class OptionValueType extends AbstractType
                     new Length(null, null, 128),
                 ],
             ])
-            ->add('img', MediaUrlType::class, [
+            ->add('img', MediaType::class, [
                 'label' => 'option.value.img',
                 'channel' => OptionValueImg::class,
             ])

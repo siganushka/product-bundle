@@ -12,6 +12,7 @@ use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
+use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
@@ -29,9 +30,10 @@ class Product implements ResourceInterface, TimestampableInterface
     private ?string $name = null;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\ManyToOne(targetEntity=Media::class)
+     * @ORM\JoinColumn(nullable=false)
      */
-    private ?string $img = null;
+    private ?Media $img = null;
 
     /**
      * @ORM\ManyToMany(targetEntity=Option::class, inversedBy="products")
@@ -67,12 +69,12 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getImg(): ?string
+    public function getImg(): ?Media
     {
         return $this->img;
     }
 
-    public function setImg(string $img): self
+    public function setImg(Media $img): self
     {
         $this->img = $img;
 
