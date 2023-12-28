@@ -15,9 +15,6 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 /**
  * @ORM\Entity(repositoryClass=ProductVariantRepository::class)
- * @ORM\Table(uniqueConstraints={
- *  @ORM\UniqueConstraint(columns={"product_id", "choice"})
- * })
  */
 class ProductVariant implements ResourceInterface, TimestampableInterface
 {
@@ -28,11 +25,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="variants")
      */
     private ?Product $product = null;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private ?string $choice = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -67,21 +59,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         $this->product = $product;
 
         return $this;
-    }
-
-    public function getChoice(): ?string
-    {
-        return $this->choice;
-    }
-
-    public function getChoiceName(): string
-    {
-        return (string) $this->getOptionValues();
-    }
-
-    public function setChoice(?string $choice): self
-    {
-        throw new \BadMethodCallException('The choice cannot be modified anymore.');
     }
 
     public function getPrice(): ?int
@@ -119,7 +96,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     public function setOptionValues(OptionValueCollection $optionValues): self
     {
-        $this->choice = $optionValues->getValue();
         $this->optionValues = $optionValues;
 
         return $this;
@@ -133,5 +109,15 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     public function removeOptionValue(OptionValue $optionValue): self
     {
         throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
+    }
+
+    public function getChoice(): string
+    {
+        return $this->getOptionValues()->getValue();
+    }
+
+    public function getChoiceName(): string
+    {
+        return $this->getOptionValues()->getLabel();
     }
 }

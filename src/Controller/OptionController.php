@@ -8,28 +8,27 @@ use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Knp\Component\Pager\PaginatorInterface;
-use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Form\ProductType;
-use Siganushka\ProductBundle\Repository\ProductRepository;
+use Siganushka\ProductBundle\Form\OptionType;
+use Siganushka\ProductBundle\Repository\OptionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProductController extends AbstractFOSRestController
+class OptionController extends AbstractFOSRestController
 {
-    private ProductRepository $productRepository;
+    private OptionRepository $optionRepository;
 
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(OptionRepository $optionRepository)
     {
-        $this->productRepository = $productRepository;
+        $this->optionRepository = $optionRepository;
     }
 
     /**
-     * @Route("/products", methods={"GET"})
+     * @Route("/options", methods={"GET"})
      */
     public function getCollection(Request $request, PaginatorInterface $paginator): Response
     {
-        $queryBuilder = $this->productRepository->createQueryBuilder('p');
+        $queryBuilder = $this->optionRepository->createQueryBuilder('o');
 
         $page = $request->query->getInt('page', 1);
         $size = $request->query->getInt('size', 10);
@@ -40,14 +39,14 @@ class ProductController extends AbstractFOSRestController
     }
 
     /**
-     * @Route("/products", methods={"POST"})
+     * @Route("/options", methods={"POST"})
      */
     public function postCollection(Request $request, EntityManagerInterface $entityManager): Response
     {
-        /** @var Product */
-        $entity = $this->productRepository->createNew();
+        /** @var Option */
+        $entity = $this->optionRepository->createNew();
 
-        $form = $this->createForm(ProductType::class, $entity);
+        $form = $this->createForm(OptionType::class, $entity);
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
@@ -61,11 +60,11 @@ class ProductController extends AbstractFOSRestController
     }
 
     /**
-     * @Route("/products/{id<\d+>}", methods={"GET"})
+     * @Route("/options/{id<\d+>}", methods={"GET"})
      */
     public function getItem(int $id): Response
     {
-        $entity = $this->productRepository->find($id);
+        $entity = $this->optionRepository->find($id);
         if (!$entity) {
             throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
         }
@@ -74,16 +73,16 @@ class ProductController extends AbstractFOSRestController
     }
 
     /**
-     * @Route("/products/{id<\d+>}", methods={"PUT", "PATCH"})
+     * @Route("/options/{id<\d+>}", methods={"PUT", "PATCH"})
      */
     public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
-        $entity = $this->productRepository->find($id);
+        $entity = $this->optionRepository->find($id);
         if (!$entity) {
             throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
         }
 
-        $form = $this->createForm(ProductType::class, $entity);
+        $form = $this->createForm(OptionType::class, $entity);
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
@@ -96,11 +95,11 @@ class ProductController extends AbstractFOSRestController
     }
 
     /**
-     * @Route("/products/{id<\d+>}", methods={"DELETE"})
+     * @Route("/options/{id<\d+>}", methods={"DELETE"})
      */
     public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
     {
-        $entity = $this->productRepository->find($id);
+        $entity = $this->optionRepository->find($id);
         if (!$entity) {
             throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
         }
@@ -114,9 +113,15 @@ class ProductController extends AbstractFOSRestController
     protected function viewResponse($data = null, int $statusCode = null, array $headers = []): Response
     {
         $attributes = [
-            'id', 'name', 'updatedAt', 'createdAt',
-            'variants' => [
-                'id', 'price', 'inventory', 'choice', 'choiceName', 'updatedAt', 'createdAt',
+            'id', 'name', 'sort', 'updatedAt', 'createdAt',
+            'values' => [
+                'id',
+                'code',
+                'text',
+                'sort',
+                'updatedAt',
+                'createdAt',
+                'img' => ['hash', 'url'],
             ],
         ];
 

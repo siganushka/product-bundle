@@ -9,15 +9,16 @@ use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Form\Type\ProductVariantChoiceType;
 use Siganushka\ProductBundle\Model\OptionValueCollection;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ProductVariantType extends AbstractType
 {
@@ -44,12 +45,7 @@ class ProductVariantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ProductVariant::class,
-            'constraints' => new UniqueEntity([
-                'fields' => ['product', 'choice'],
-                'errorPath' => 'optionValues',
-                'message' => 'product.variant.option_values.unique',
-                'ignoreNull' => false,
-            ]),
+            'constraints' => new Callback([$this, 'validate']),
         ]);
     }
 
@@ -93,5 +89,26 @@ class ProductVariantType extends AbstractType
                 $value && $variant->setOptionValues($value);
             },
         ]);
+    }
+
+    public function validate(?ProductVariant $variant, ExecutionContextInterface $context): void
+    {
+        if (null === $variant || null === $product = $variant->getProduct()) {
+            return;
+        }
+
+        $usedChoices = $product->getVariants()->map(fn (ProductVariant $variant) => $variant->getChoice());
+
+        // important!!!
+        if ($variant->getId()) {
+            $usedChoices->removeElement($variant->getChoice());
+        }
+
+        if ($usedChoices->contains($variant->getChoice())) {
+            $context->buildViolation('product.variant.option_values.unique')
+                ->atPath('optionValues')
+                ->addViolation()
+            ;
+        }
     }
 }

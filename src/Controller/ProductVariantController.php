@@ -7,7 +7,7 @@ namespace Siganushka\ProductBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
-use Siganushka\ProductBundle\Form\Type\ProductVariantType;
+use Siganushka\ProductBundle\Form\ProductVariantType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,7 +53,6 @@ class ProductVariantController extends AbstractFOSRestController
 
         $form = $this->createForm(ProductVariantType::class, $entity);
         $form->submit($request->request->all());
-        // dd($form['optionValues']->createView());
 
         if (!$form->isValid()) {
             return $this->viewResponse($form);
@@ -119,8 +118,7 @@ class ProductVariantController extends AbstractFOSRestController
     protected function viewResponse($data = null, int $statusCode = null, array $headers = []): Response
     {
         $attributes = [
-            'id',
-            'name',
+            'id', 'price', 'inventory', 'choice', 'choiceName', 'updatedAt', 'createdAt',
         ];
 
         $context = new Context();
