@@ -13,7 +13,6 @@ class ProductImg extends AbstractChannel
     protected function loadConstraints(GenericMetadata $metadata): void
     {
         $constraint = new Image();
-        $constraint->maxSize = '2M';
         $constraint->mimeTypes = ['image/png', 'image/jpeg'];
 
         $metadata->addConstraint($constraint);

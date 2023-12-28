@@ -34,6 +34,7 @@ class ProductType extends AbstractType
                 'label' => 'product.img',
                 'channel' => ProductImg::class,
                 'constraints' => new NotBlank(),
+                'accept' => 'image/*',
                 'width' => '320px',
                 'height' => '320px',
             ])

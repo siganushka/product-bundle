@@ -52,7 +52,7 @@ class MediaFixtures extends Fixture
                 $pathinfo = pathinfo($file);
 
                 $fs = new Filesystem();
-                $fs->copy($file, $target = sprintf('%s/%s-tmp.%s', $pathinfo['dirname'], $pathinfo['filename'], $pathinfo['extension']));
+                $fs->copy($file, $target = sprintf('%s/%s-tmp.%s', $pathinfo['dirname'], $pathinfo['filename'], $pathinfo['extension'] ?? 'jpg'));
 
                 $event = new MediaSaveEvent($channel, new File($target));
                 $this->eventDispatcher->dispatch($event);

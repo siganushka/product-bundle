@@ -5,7 +5,7 @@
         type="button"
         class="btn btn-primary"
         data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
-        onclick="addCollectionItem(this, '{{ form.vars.id }}')">添加</button>
+        onclick="addCollectionItem(event, '{{ form.vars.id }}')">添加</button>
     </div>
   {% endif %}
 
@@ -18,7 +18,7 @@
 
 {% block _option_values_entry_widget %}
 <div id="{{ form.vars.id }}" class="row my-3">
-  <div style="flex: 0 0 60px">
+  <div style="flex: 0 0 80px">
     {{ form_widget(form.img) }}
     {{ form_errors(form.img) }}
   </div>
@@ -35,7 +35,7 @@
       <button
         type="button"
         class="btn btn-link link-danger px-0"
-        onclick="removeCollectionItem(this, '{{ form.vars.id }}')">删除</button>
+        onclick="removeCollectionItem('{{ form.vars.id }}')">删除</button>
     </div>
   {% endif %}
 </div>

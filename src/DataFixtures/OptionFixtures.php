@@ -7,6 +7,7 @@ namespace Siganushka\ProductBundle\DataFixtures;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Entity\Option;
 use Siganushka\ProductBundle\Entity\OptionValue;
 
@@ -28,11 +29,11 @@ class OptionFixtures extends Fixture implements DependentFixtureInterface
 
         $option2 = new Option();
         $option2->setName('辣度');
-        $option2->addValue(new OptionValue(null, '不辣', $this->getReference('media-0')));
-        $option2->addValue(new OptionValue(null, '微辣', $this->getReference('media-1')));
-        $option2->addValue(new OptionValue(null, '中辣', $this->getReference('media-2')));
-        $option2->addValue(new OptionValue(null, '特辣', $this->getReference('media-3')));
-        $option2->addValue(new OptionValue(null, '变态辣', $this->getReference('media-4')));
+        $option2->addValue(new OptionValue(null, '不辣', $this->getReference('media-0', Media::class)));
+        $option2->addValue(new OptionValue(null, '微辣', $this->getReference('media-1', Media::class)));
+        $option2->addValue(new OptionValue(null, '中辣', $this->getReference('media-2', Media::class)));
+        $option2->addValue(new OptionValue(null, '特辣', $this->getReference('media-3', Media::class)));
+        $option2->addValue(new OptionValue(null, '变态辣', $this->getReference('media-4', Media::class)));
 
         $manager->persist($option0);
         $manager->persist($option1);

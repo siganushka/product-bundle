@@ -30,6 +30,7 @@ class OptionValueType extends AbstractType
             ->add('img', MediaType::class, [
                 'label' => 'option.value.img',
                 'channel' => OptionValueImg::class,
+                'accept' => 'image/*',
                 'width' => '38px',
                 'height' => '38px',
             ])
