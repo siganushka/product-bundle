@@ -34,7 +34,6 @@ class ProductType extends AbstractType
                 'label' => 'product.img',
                 'channel' => ProductImg::class,
                 'constraints' => new NotBlank(),
-                'style' => 'display: inline-block; min-width: 150px; min-height: 150px;',
                 'accept' => 'image/*',
             ])
         ;

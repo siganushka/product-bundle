@@ -30,9 +30,8 @@ class OptionValueType extends AbstractType
             ->add('img', MediaType::class, [
                 'label' => 'option.value.img',
                 'channel' => OptionValueImg::class,
+                'style' => 'width: 38px; height: 38px',
                 'accept' => 'image/*',
-                'width' => '38px',
-                'height' => '38px',
             ])
             ->add('sort', IntegerType::class, [
                 'label' => 'option.value.sort',
