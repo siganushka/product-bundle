@@ -31,7 +31,6 @@ class ProductVariantType extends AbstractType
             ->add('inventory', null, [
                 'label' => 'product.variant.inventory',
                 'constraints' => [
-                    new NotBlank(),
                     new GreaterThanOrEqual(0),
                     new LessThanOrEqual(2147483647),
                 ],
