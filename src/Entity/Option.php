@@ -19,7 +19,7 @@ use Siganushka\ProductBundle\Repository\OptionRepository;
  * @ORM\Entity(repositoryClass=OptionRepository::class)
  * @ORM\Table(name="`option`")
  */
-class Option implements ResourceInterface, SortableInterface, TimestampableInterface
+class Option implements ResourceInterface, SortableInterface, TimestampableInterface, \Stringable
 {
     use ResourceTrait;
     use SortableTrait;

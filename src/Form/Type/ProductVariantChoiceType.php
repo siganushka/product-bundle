@@ -15,16 +15,21 @@ class ProductVariantChoiceType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setNormalizer('choices', fn (Options $options): array => $options['product']->getOptionValueChoices());
+        $resolver->setNormalizer('choices', function (Options $options): array {
+            /** @var Product|null */
+            $product = $options['product'];
+
+            return $product ? $product->getVariantChoices() : [];
+        });
 
         $resolver->setDefaults([
+            'product' => null,
             'choice_translation_domain' => false,
             'choice_value' => 'value',
-            'choice_label' => fn (Options $options): \Closure => fn (OptionValueCollection $choice): string => sprintf('%s【%s】', $options['product']->getName(), (string) $choice),
+            'choice_label' => fn (OptionValueCollection $choice): string => (string) $choice,
         ]);
 
-        $resolver->setRequired('product');
-        $resolver->setAllowedTypes('product', Product::class);
+        $resolver->setAllowedTypes('product', ['null', Product::class]);
     }
 
     public function getParent(): string

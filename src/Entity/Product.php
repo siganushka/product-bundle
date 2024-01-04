@@ -137,7 +137,7 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @return array<int, OptionValueCollection>
      */
-    public function getOptionValueChoices(): array
+    public function getVariantChoices(): array
     {
         $values = $this->options->map(fn (Option $option) => $option->getValues());
         $cartesianProduct = new CartesianProduct($values->toArray());

@@ -10,9 +10,11 @@ use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Form\Type\ProductVariantChoiceType;
 use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\Util\FormUtil;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
@@ -29,7 +31,7 @@ class ProductVariantType extends AbstractType
                 'label' => 'product.variant.price',
                 'constraints' => new NotBlank(),
             ])
-            ->add('inventory', null, [
+            ->add('inventory', IntegerType::class, [
                 'label' => 'product.variant.inventory',
                 'constraints' => [
                     new GreaterThanOrEqual(0),
@@ -51,21 +53,14 @@ class ProductVariantType extends AbstractType
 
     public function onPreSetData(FormEvent $event): void
     {
-        $data = $event->getData();
-        if (!$data instanceof ProductVariant) {
+        $variant = $event->getData();
+        if (!$variant instanceof ProductVariant) {
             return;
         }
 
-        $product = $data->getProduct();
+        $product = $variant->getProduct();
         if (!$product instanceof Product) {
             return;
-        }
-
-        $usedChoices = $product->getVariants()->map(fn (ProductVariant $variant) => $variant->getChoice());
-
-        // important!!!
-        if ($data->getId()) {
-            $usedChoices->removeElement($data->getChoice());
         }
 
         $placeholder = 'generic.choice';
@@ -79,10 +74,10 @@ class ProductVariantType extends AbstractType
         $form = $event->getForm();
         $form->add('optionValues', ProductVariantChoiceType::class, [
             'label' => 'product.variant.option_values',
-            'choice_attr' => fn (OptionValueCollection $choice) => ['disabled' => $usedChoices->contains($choice->getValue())],
+            'choice_attr' => fn (OptionValueCollection $choice) => ['disabled' => $this->checkChoiceIsUsed($variant, $choice)],
             'placeholder' => $placeholder,
             'constraints' => $constraints,
-            'disabled' => $data->getId() ? true : false,
+            'disabled' => $variant->getId() ? true : false,
             'product' => $product,
             'priority' => 1,
             'setter' => function (ProductVariant &$variant, ?OptionValueCollection $value): void {
@@ -93,22 +88,39 @@ class ProductVariantType extends AbstractType
 
     public function validate(?ProductVariant $variant, ExecutionContextInterface $context): void
     {
-        if (null === $variant || null === $product = $variant->getProduct()) {
+        if (null === $variant) {
             return;
         }
 
-        $usedChoices = $product->getVariants()->map(fn (ProductVariant $variant) => $variant->getChoice());
-
-        // important!!!
-        if ($variant->getId()) {
-            $usedChoices->removeElement($variant->getChoice());
-        }
-
-        if ($usedChoices->contains($variant->getChoice())) {
+        if ($this->checkChoiceIsUsed($variant, $variant->getOptionValues())) {
             $context->buildViolation('product.variant.option_values.unique')
                 ->atPath('optionValues')
                 ->addViolation()
             ;
         }
+    }
+
+    public function checkChoiceIsUsed(ProductVariant $variant, OptionValueCollection $optionValues): bool
+    {
+        if ($variant->getChoice() === $optionValues->getValue()) {
+            return false;
+        }
+
+        $product = $variant->getProduct();
+        if (!$product instanceof Product) {
+            return false;
+        }
+
+        $choices = $product->getVariants()
+            ->map(fn (ProductVariant $item) => $item->getChoice())
+            ->filter(fn (string $choiceAsString) => !FormUtil::isEmpty($choiceAsString))
+        ;
+
+        // important!!!
+        // if ($variant->getId()) {
+        //     $choices->removeElement($variant->getChoice());
+        // }
+
+        return $choices->contains($optionValues->getValue());
     }
 }

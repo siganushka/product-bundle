@@ -40,3 +40,57 @@
   {% endif %}
 </div>
 {% endblock %}
+
+{# {% block _product_variant_collection_variants_row %}
+  {{ block('_product_variant_collection_variants_widget') }}
+{% endblock %} #}
+
+{% block _product_variant_collection_variants_widget %}
+  {% if form.vars.allow_add %}
+    <div class="mb-3">
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
+        onclick="addCollectionItem(event, '{{ form.vars.id }}')">添加</button>
+    </div>
+  {% endif %}
+
+  <div id="{{ form.vars.id }}" class="border-top border-bottom bg-light px-3">
+    <div id="{{ form.vars.id }}" class="row my-3">
+      <div class="col">规格</div>
+      <div class="col">价格</div>
+      <div class="col">库存</div>
+    </div>
+    {%- for item in form %}
+      {{ form_widget(item) }}
+    {% endfor -%}
+  </div>
+{% endblock %}
+
+{% block _product_variant_collection_variants_entry_widget %}
+<div id="{{ form.vars.id }}" class="row my-3">
+  {% if form.optionValues is defined %}
+  <div class="col">
+    {{ form_widget(form.optionValues) }}
+    {{ form_errors(form.optionValues) }}
+  </div>
+  {% endif %}
+  <div class="col">
+    {{ form_widget(form.price) }}
+    {{ form_errors(form.price) }}
+  </div>
+  <div class="col">
+    {{ form_widget(form.inventory) }}
+    {{ form_errors(form.inventory) }}
+  </div>
+  {% if form.parent.vars.allow_delete %}
+    <div style="flex: 0 0 60px">
+      <button
+        type="button"
+        class="btn btn-link link-danger px-0"
+        onclick="removeCollectionItem('{{ form.vars.id }}')">删除</button>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
