@@ -15,6 +15,7 @@ use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Siganushka\ProductBundle\Repository\ProductRepository;
+use Symfony\Component\Form\Util\FormUtil;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -44,7 +45,7 @@ class Product implements ResourceInterface, TimestampableInterface
     private Collection $options;
 
     /**
-     * @ORM\OneToMany(targetEntity=ProductVariant::class, mappedBy="product", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=ProductVariant::class, mappedBy="product", cascade={"all"}, orphanRemoval=true)
      * @ORM\OrderBy({"createdAt": "ASC", "id": "ASC"})
      *
      * @var Collection<int, ProductVariant>
@@ -143,5 +144,15 @@ class Product implements ResourceInterface, TimestampableInterface
         $cartesianProduct = new CartesianProduct($values->toArray());
 
         return array_map(fn (array $opitonValues) => new OptionValueCollection($opitonValues), $cartesianProduct->asArray());
+    }
+
+    public function hasVariantChoice(OptionValueCollection $choice): bool
+    {
+        $choices = $this->variants
+            ->map(fn (ProductVariant $variant) => $variant->getChoice())
+            ->filter(fn (string $choiceAsString) => !FormUtil::isEmpty($choiceAsString))
+        ;
+
+        return $choices->contains($choice->getValue());
     }
 }

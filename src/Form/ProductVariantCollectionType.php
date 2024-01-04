@@ -17,7 +17,7 @@ class ProductVariantCollectionType extends AbstractType
     {
         $builder
             ->add('variants', CollectionType::class, [
-                'label' => false,
+                'label' => 'product.variants',
                 'entry_type' => ProductVariantType::class,
                 'entry_options' => ['label' => false],
                 'prototype_data' => (new ProductVariant())->setProduct($options['data'] ?? null),
