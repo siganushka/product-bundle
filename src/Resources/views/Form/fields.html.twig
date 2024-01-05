@@ -1,12 +1,12 @@
 {% block _option_values_widget %}
   {% if form.vars.allow_add %}
-    <div class="mb-3">
-      <button
-        type="button"
-        class="btn btn-primary"
-        data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
-        onclick="addCollectionItem(event, '{{ form.vars.id }}')">添加</button>
-    </div>
+  <div class="mb-3">
+    <button
+      type="button"
+      class="btn btn-primary"
+      data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
+      onclick="addCollectionItem(event, '{{ form.vars.id }}')">添加</button>
+  </div>
   {% endif %}
 
   <div id="{{ form.vars.id }}" class="border-top border-bottom bg-light px-3">
@@ -41,35 +41,33 @@
 </div>
 {% endblock %}
 
-{# {% block _product_variant_collection_variants_row %}
-  {{ block('_product_variant_collection_variants_widget') }}
-{% endblock %} #}
-
 {% block _product_variant_collection_variants_widget %}
-  {% if form.vars.allow_add %}
-    <div class="mb-3">
-      <button
-        type="button"
-        class="btn btn-primary"
-        data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
-        onclick="addCollectionItem(event, '{{ form.vars.id }}')">添加</button>
-    </div>
-  {% endif %}
-
-  <div id="{{ form.vars.id }}" class="border-top border-bottom bg-light px-3">
-    <div id="{{ form.vars.id }}" class="row my-3">
-      <div class="col">规格</div>
+<div id="{{ form.vars.id }}" class="border-top border-bottom bg-light px-3">
+  {%- for item in form %}
+    {% if loop.index0 == 0 %}
+    <div class="row my-3">
+      <div style="flex: 0 0 60px">&nbsp;</div>
+      {% if item.optionValues is defined %}
+        <div class="col">规格</div>
+      {% endif %}
       <div class="col">价格</div>
       <div class="col">库存</div>
     </div>
-    {%- for item in form %}
-      {{ form_widget(item) }}
-    {% endfor -%}
-  </div>
+    {% endif %}
+    {{ form_widget(item) }}
+  {% endfor -%}
+</div>
 {% endblock %}
 
 {% block _product_variant_collection_variants_entry_widget %}
 <div id="{{ form.vars.id }}" class="row my-3">
+  <div style="flex: 0 0 60px">
+    {% if value.id %}
+      <i class="bi bi-toggle-on fs-4 text-primary opacity-75"></i>
+    {% else %}
+      <i class="bi bi-toggle-off fs-4 text-secondary opacity-75"></i>
+    {% endif %}
+  </div>
   {% if form.optionValues is defined %}
   <div class="col">
     {{ form_widget(form.optionValues) }}
@@ -84,13 +82,5 @@
     {{ form_widget(form.inventory) }}
     {{ form_errors(form.inventory) }}
   </div>
-  {% if form.parent.vars.allow_delete %}
-    <div style="flex: 0 0 60px">
-      <button
-        type="button"
-        class="btn btn-link link-danger px-0"
-        onclick="removeCollectionItem('{{ form.vars.id }}')">删除</button>
-    </div>
-  {% endif %}
 </div>
 {% endblock %}

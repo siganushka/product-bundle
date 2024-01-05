@@ -15,7 +15,6 @@ use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Model\OptionValueCollection;
 use Siganushka\ProductBundle\Repository\ProductRepository;
-use Symfony\Component\Form\Util\FormUtil;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -148,10 +147,7 @@ class Product implements ResourceInterface, TimestampableInterface
 
     public function hasVariantChoice(OptionValueCollection $choice): bool
     {
-        $choices = $this->variants
-            ->map(fn (ProductVariant $variant) => $variant->getChoice())
-            ->filter(fn (string $choiceAsString) => !FormUtil::isEmpty($choiceAsString))
-        ;
+        $choices = $this->variants->map(fn (ProductVariant $variant) => $variant->getChoice());
 
         return $choices->contains($choice->getValue());
     }
