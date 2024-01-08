@@ -115,13 +115,12 @@ class OptionController extends AbstractFOSRestController
         $attributes = [
             'id', 'name', 'sort', 'updatedAt', 'createdAt',
             'values' => [
-                'id',
                 'code',
                 'text',
+                'img',
                 'sort',
                 'updatedAt',
                 'createdAt',
-                'img' => ['hash', 'url'],
             ],
         ];
 

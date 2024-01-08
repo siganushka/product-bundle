@@ -31,7 +31,6 @@ class OptionValueType extends AbstractType
                 'label' => 'option.value.img',
                 'channel' => OptionValueImg::class,
                 'style' => 'width: 38px; height: 38px',
-                'accept' => 'image/*',
             ])
             ->add('sort', IntegerType::class, [
                 'label' => 'option.value.sort',
