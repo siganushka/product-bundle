@@ -5,7 +5,7 @@
       type="button"
       class="btn btn-primary"
       data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
-      onclick="addCollectionItem(event, '{{ form.vars.id }}')">添加</button>
+      onclick="addCollectionItem(event, '{{ form.vars.id }}')">{{ 'generic.add'|trans }}</button>
   </div>
   {% endif %}
 
@@ -35,7 +35,7 @@
       <button
         type="button"
         class="btn btn-link link-danger px-0"
-        onclick="removeCollectionItem('{{ form.vars.id }}')">删除</button>
+        onclick="removeCollectionItem('{{ form.vars.id }}')">{{ 'generic.remove'|trans }}</button>
     </div>
   {% endif %}
 </div>
@@ -48,10 +48,10 @@
     <div class="row my-3">
       <div style="flex: 0 0 60px">&nbsp;</div>
       {% if item.optionValues is defined %}
-        <div class="col">规格</div>
+        <div class="col">{{ 'product.variant.option_values'|trans }}</div>
       {% endif %}
-      <div class="col">价格</div>
-      <div class="col">库存</div>
+      <div class="col">{{ 'product.variant.price'|trans }}</div>
+      <div class="col">{{ 'product.variant.inventory'|trans }}</div>
     </div>
     {% endif %}
     {{ form_widget(item) }}
