@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Twig;
 
-use Siganushka\GenericBundle\Utils\CurrencyUtils;
+use Siganushka\ProductBundle\Formatter\MoneyFormatterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 class MoneyExtension extends AbstractExtension
 {
-    private CurrencyUtils $currencyUtils;
+    private MoneyFormatterInterface $formatter;
 
-    public function __construct(CurrencyUtils $currencyUtils)
+    public function __construct(MoneyFormatterInterface $formatter)
     {
-        $this->currencyUtils = $currencyUtils;
+        $this->formatter = $formatter;
     }
 
     public function getFilters(): array
@@ -26,6 +26,6 @@ class MoneyExtension extends AbstractExtension
 
     public function moneyFilter(?int $value, array $context = []): string
     {
-        return $this->currencyUtils->format($value, $context);
+        return $this->formatter->format($value, $context);
     }
 }
