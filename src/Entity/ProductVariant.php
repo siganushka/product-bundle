@@ -23,6 +23,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="variants")
+     * @ORM\JoinColumn(nullable=false)
      */
     private ?Product $product = null;
 
