@@ -10,11 +10,14 @@ use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
-use Siganushka\ProductBundle\Model\OptionValueCollection;
+use Siganushka\ProductBundle\Model\VariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 /**
  * @ORM\Entity(repositoryClass=ProductVariantRepository::class)
+ * @ORM\Table(uniqueConstraints={
+ *  @ORM\UniqueConstraint(columns={"product_id", "choice_value"})
+ * })
  */
 class ProductVariant implements ResourceInterface, TimestampableInterface
 {
@@ -26,6 +29,11 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Product $product = null;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $choiceValue = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -43,11 +51,11 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      *
      * @var Collection<int, OptionValue>
      */
-    private Collection $optionValues;
+    private Collection $choice;
 
     public function __construct()
     {
-        $this->optionValues = new OptionValueCollection();
+        $this->choice = new VariantChoice();
     }
 
     public function getProduct(): ?Product
@@ -58,6 +66,18 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
+
+        return $this;
+    }
+
+    public function getChoiceValue(): ?string
+    {
+        return $this->choiceValue;
+    }
+
+    public function setChoiceValue(string $choiceValue): self
+    {
+        $this->choiceValue = $choiceValue;
 
         return $this;
     }
@@ -86,39 +106,20 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getOptionValues(): OptionValueCollection
+    public function getChoice(): VariantChoice
     {
-        if ($this->optionValues instanceof OptionValueCollection) {
-            return $this->optionValues;
+        if ($this->choice instanceof VariantChoice) {
+            return $this->choice;
         }
 
-        return new OptionValueCollection($this->optionValues->toArray());
+        return new VariantChoice($this->choice->toArray());
     }
 
-    public function setOptionValues(OptionValueCollection $optionValues): self
+    public function setChoice(VariantChoice $choice): self
     {
-        $this->optionValues = $optionValues;
+        $this->choice = $choice;
+        $this->choiceValue = $choice->getValue();
 
         return $this;
-    }
-
-    public function addOptionValue(OptionValue $optionValue): self
-    {
-        throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
-    }
-
-    public function removeOptionValue(OptionValue $optionValue): self
-    {
-        throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
-    }
-
-    public function getChoice(): string
-    {
-        return $this->getOptionValues()->getValue();
-    }
-
-    public function getChoiceName(): string
-    {
-        return $this->getOptionValues()->getLabel();
     }
 }

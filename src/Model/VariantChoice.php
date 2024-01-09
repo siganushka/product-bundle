@@ -10,11 +10,10 @@ use Siganushka\ProductBundle\Entity\OptionValue;
 /**
  * @template-extends ArrayCollection<int, OptionValue>
  */
-class OptionValueCollection extends ArrayCollection
+class VariantChoice extends ArrayCollection
 {
-    private string $label;
-
-    private string $value;
+    private ?string $label;
+    private ?string $value;
 
     public function __construct(array $optionValues = [])
     {
@@ -31,24 +30,24 @@ class OptionValueCollection extends ArrayCollection
         // important!!!
         sort($value);
 
-        $this->label = implode('/', array_filter($label));
-        $this->value = implode('_', array_filter($value));
+        $this->label = \count($label) ? implode('/', $label) : null;
+        $this->value = \count($value) ? implode('_', $value) : null;
 
         parent::__construct($optionValues);
     }
 
-    public function getLabel(): string
+    public function getLabel(): ?string
     {
         return $this->label;
     }
 
-    public function getValue(): string
+    public function getValue(): ?string
     {
         return $this->value;
     }
 
-    public function __toString(): string
+    public function equals(self $target): bool
     {
-        return $this->label;
+        return $this->value === $target->getValue();
     }
 }

@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Model\OptionValueCollection;
+use Siganushka\ProductBundle\Model\VariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -27,16 +26,12 @@ class ProductVariantCollectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'product.name',
-                'disabled' => true,
-            ])
             ->add('variants', CollectionType::class, [
                 'label' => 'product.variants',
                 'entry_type' => ProductVariantType::class,
                 'entry_options' => ['label' => false],
-                'allow_add' => true,
-                'allow_delete' => true,
+                // 'allow_add' => true,
+                // 'allow_delete' => true,
                 'error_bubbling' => false,
                 'by_reference' => false,
             ])
@@ -61,16 +56,12 @@ class ProductVariantCollectionType extends AbstractType
 
         $choices = $product->getVariantChoices();
         if (0 === \count($choices)) {
-            $choices[] = new OptionValueCollection();
+            $choices[] = new VariantChoice();
         }
 
-        foreach ($choices as $optionValues) {
-            if ($product->hasVariantChoice($optionValues)) {
-                continue;
-            }
-
+        foreach ($choices as $choice) {
             $variant = $this->variantRepository->createNew();
-            $variant->setOptionValues($optionValues);
+            $variant->setChoice($choice);
             $product->addVariant($variant);
         }
 

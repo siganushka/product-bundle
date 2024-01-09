@@ -13,7 +13,7 @@ use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
-use Siganushka\ProductBundle\Model\OptionValueCollection;
+use Siganushka\ProductBundle\Model\VariantChoice;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
 /**
@@ -25,7 +25,7 @@ class Product implements ResourceInterface, TimestampableInterface
     use TimestampableTrait;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string")
      */
     private ?string $name = null;
 
@@ -113,9 +113,16 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this->variants;
     }
 
+    public function hasVariant(ProductVariant $variant): bool
+    {
+        $choices = $this->variants->map(fn (ProductVariant $item) => $item->getChoice()->getValue());
+
+        return $choices->contains($variant->getChoice()->getValue());
+    }
+
     public function addVariant(ProductVariant $variant): self
     {
-        if (!$this->variants->contains($variant)) {
+        if (!$this->hasVariant($variant)) {
             $this->variants[] = $variant;
             $variant->setProduct($this);
         }
@@ -135,20 +142,13 @@ class Product implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * @return array<int, OptionValueCollection>
+     * @return array<int, VariantChoice>
      */
     public function getVariantChoices(): array
     {
         $values = $this->options->map(fn (Option $option) => $option->getValues());
         $cartesianProduct = new CartesianProduct($values->toArray());
 
-        return array_map(fn (array $opitonValues) => new OptionValueCollection($opitonValues), $cartesianProduct->asArray());
-    }
-
-    public function hasVariantChoice(OptionValueCollection $choice): bool
-    {
-        $choices = $this->variants->map(fn (ProductVariant $variant) => $variant->getChoice());
-
-        return $choices->contains($choice->getValue());
+        return array_map(fn (array $opitonValues) => new VariantChoice($opitonValues), $cartesianProduct->asArray());
     }
 }

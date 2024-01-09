@@ -1,2 +1,2 @@
 option.values.count.invalid: 选项值至少应该包含 {{ limit }} 个。
-product.variant.option_values.unique: 该产品规格已存在。
+product.variant.choice.unique: 该产品规格已存在。
