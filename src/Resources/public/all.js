@@ -3,7 +3,7 @@ const addCollectionItem = function (event, target) {
   const item = document.createElement('dev')
   item.innerHTML = event.currentTarget.dataset.prototype.replace(/__name__/g, collectionHolder.children.length ++)
 
-  collectionHolder.appendChild(item.firstChild)
+  collectionHolder.appendChild(item.firstElementChild)
 }
 
 const removeCollectionItem = function (target) {
