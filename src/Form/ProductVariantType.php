@@ -51,7 +51,6 @@ class ProductVariantType extends AbstractType
                 'message' => 'product.variant.choice.unique',
                 'ignoreNull' => false,
             ]),
-            'using_collection' => false,
         ]);
     }
 
