@@ -7,10 +7,10 @@ namespace Siganushka\ProductBundle\Form;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
-use Siganushka\ProductBundle\Form\Type\ProductVariantChoiceType;
 use Siganushka\ProductBundle\Model\VariantChoice;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -66,28 +66,31 @@ class ProductVariantType extends AbstractType
             return;
         }
 
-        $options = $product->getOptions();
-        if ($options->isEmpty()) {
+        $choices = $product->getVariantChoices();
+        if (0 === \count($choices)) {
             return;
         }
 
         $form = $event->getForm();
-        $form->add('choice', ProductVariantChoiceType::class, [
+        $form->add('choice', ChoiceType::class, [
             'label' => 'product.variant.choice',
+            'choices' => $choices,
+            'choice_translation_domain' => false,
+            'choice_value' => 'value',
+            'choice_label' => 'label',
             'choice_attr' => function (VariantChoice $choice) use ($product, $variant): array {
                 if ($choice->equals($variant->getChoice())) {
                     return ['disabled' => false];
                 }
 
-                $variants = $product->getVariants();
-                $choices = $variants->map(fn (ProductVariant $item) => $item->getChoice()->getValue());
+                $v = new ProductVariant();
+                $v->setChoice($choice);
 
-                return ['disabled' => $choices->contains($choice->getValue())];
+                return ['disabled' => $product->hasVariant($v)];
             },
+            'disabled' => $variant->getId() ? true : false,
             'placeholder' => 'generic.choice',
             'constraints' => new NotBlank(),
-            'disabled' => $variant->getId() ? true : false,
-            'product' => $product,
             'priority' => 1,
             'setter' => function (ProductVariant &$variant, ?VariantChoice $choice): void {
                 $choice && $variant->setChoice($choice);
