@@ -1,9 +1,11 @@
 const addCollectionItem = function (event, target) {
   const collectionHolder = document.getElementById(target)
-  const item = document.createElement('dev')
-  item.innerHTML = event.currentTarget.dataset.prototype.replace(/__name__/g, collectionHolder.children.length ++)
+  const collectionItem = collectionHolder.querySelectorAll('.collection-item')
 
-  collectionHolder.appendChild(item.firstElementChild)
+  const newItem = document.createElement('dev')
+  newItem.innerHTML = event.currentTarget.dataset.prototype.replace(/__name__/g, collectionItem.length ++)
+
+  collectionHolder.appendChild(newItem.firstElementChild)
 }
 
 const removeCollectionItem = function (target) {

@@ -1,23 +1,23 @@
 {% block _option_values_widget %}
   {% if form.vars.allow_add %}
-  <div class="mb-3">
-    <button
-      type="button"
-      class="btn btn-primary"
-      data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
-      onclick="addCollectionItem(event, '{{ form.vars.id }}')">{{ 'generic.add'|trans }}</button>
-  </div>
+    <div class="mb-3">
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
+        onclick="addCollectionItem(event, '{{ form.vars.id }}')">{{ 'generic.add'|trans }}</button>
+    </div>
   {% endif %}
 
   <div id="{{ form.vars.id }}" class="border-top border-bottom bg-light px-3">
-    {%- for item in form %}
+    {% for item in form %}
       {{ form_widget(item) }}
-    {% endfor -%}
+    {% endfor %}
   </div>
 {% endblock %}
 
 {% block _option_values_entry_widget %}
-<div id="{{ form.vars.id }}" class="row my-3">
+<div id="{{ form.vars.id }}" class="row my-3 collection-item">
   <div style="flex: 0 0 60px">
     {{ form_widget(form.img) }}
     {{ form_errors(form.img) }}
@@ -42,52 +42,57 @@
 {% endblock %}
 
 {% block _product_variant_collection_variants_widget %}
-{% if form.vars.allow_add %}
-  <div class="mb-3">
-    <button
-      type="button"
-      class="btn btn-primary"
-      data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
-      onclick="addCollectionItem(event, '{{ form.vars.id }}')">{{ 'generic.add'|trans }}</button>
-  </div>
-{% endif %}
-<div id="{{ form.vars.id }}" class="border-top border-bottom bg-light px-3">
-  {%- for item in form %}
-    {% if loop.index0 == 0 %}
-    <div class="row my-3">
-      <div style="flex: 0 0 60px">&nbsp;</div>
-      {% if item.choice is defined %}
-        <div class="col">{{ 'product.variant.choice'|trans }}</div>
-      {% endif %}
-      <div class="col">{{ 'product.variant.price'|trans }}</div>
-      <div class="col">{{ 'product.variant.inventory'|trans }}</div>
+  {% if form.vars.allow_add %}
+    <div class="mb-3">
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
+        onclick="addCollectionItem(event, '{{ form.vars.id }}')">{{ 'generic.add'|trans }}</button>
     </div>
-    {% endif %}
-    {{ form_widget(item) }}
-  {% endfor -%}
-</div>
+  {% endif %}
+
+  <div id="{{ form.vars.id }}" class="border-top border-bottom bg-light px-3">
+    {% for item in form %}
+      {% if loop.index0 == 0 %}
+      <div class="row my-3">
+        <div style="flex: 0 0 60px">&nbsp;</div>
+        {% for child in item %}
+          <div class="col">{{ child.vars.label|trans }}</div>
+        {% endfor %}
+        {% if form.vars.allow_delete %}
+          <div style="flex: 0 0 60px">&nbsp;</div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {{ form_widget(item) }}
+    {% endfor %}
+  </div>
 {% endblock %}
 
 {% block _product_variant_collection_variants_entry_widget %}
-<div id="{{ form.vars.id }}" class="row my-3">
-  <div style="flex: 0 0 60px">
-    {% if value and value.id %}
-      <i class="bi bi-check fs-4 text-success"></i>
+  <div id="{{ form.vars.id }}" class="row my-3 collection-item">
+    <div style="flex: 0 0 60px">
+      {% if value and value.id %}
+        <i class="bi bi-check fs-4 text-primary"></i>
+      {% else %}
+        <i class="bi bi-check fs-4 text-secondary"></i>
+      {% endif %}
+    </div>
+    {% for child in form %}
+    <div class="col">
+      {{ form_widget(child) }}
+      {{ form_errors(child) }}
+    </div>
+    {% endfor %}
+    {% if form.parent.vars.allow_delete %}
+      <div style="flex: 0 0 60px">
+        <button
+          type="button"
+          class="btn btn-link link-danger px-0"
+          onclick="removeCollectionItem('{{ form.vars.id }}')">{{ 'generic.remove'|trans }}</button>
+      </div>
     {% endif %}
   </div>
-  {% for child in form %}
-  <div class="col">
-    {{ form_widget(child) }}
-    {{ form_errors(child) }}
-  </div>
-  {% endfor %}
-  {% if form.parent.vars.allow_delete %}
-    <div style="flex: 0 0 60px">
-      <button
-        type="button"
-        class="btn btn-link link-danger px-0"
-        onclick="removeCollectionItem('{{ form.vars.id }}')">{{ 'generic.remove'|trans }}</button>
-    </div>
-  {% endif %}
-</div>
 {% endblock %}
