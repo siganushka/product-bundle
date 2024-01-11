@@ -57,7 +57,7 @@ class ProductVariantController extends AbstractFOSRestController
         if (!$form->isValid()) {
             return $this->viewResponse($form);
         }
-
+        dd($entity);
         $entityManager->persist($entity);
         $entityManager->flush();
 
