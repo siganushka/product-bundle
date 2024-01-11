@@ -17,7 +17,7 @@ class CentsMoneyType extends AbstractType
     {
         $resolver->setNormalizer('constraints', function (Options $options, $constraints): array {
             $constraints = \is_object($constraints) ? [$constraints] : (array) $constraints;
-            $constraints[] = new GreaterThanOrEqual(0);
+            $constraints[] = new GreaterThanOrEqual($options['negative'] ? -2147483600 : 0);
             $constraints[] = new LessThanOrEqual(2147483600);
 
             return $constraints;
@@ -27,6 +27,7 @@ class CentsMoneyType extends AbstractType
             'scale' => 2,
             'divisor' => 100,
             'currency' => 'CNY',
+            'negative' => false,
         ]);
     }
 

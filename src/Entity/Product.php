@@ -122,7 +122,7 @@ class Product implements ResourceInterface, TimestampableInterface
 
     public function addVariant(ProductVariant $variant): self
     {
-        if (!$this->hasVariant($variant)) {
+        if (!$this->variants->contains($variant)) {
             $this->variants[] = $variant;
             $variant->setProduct($this);
         }

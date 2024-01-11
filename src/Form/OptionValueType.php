@@ -12,7 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OptionValueType extends AbstractType
@@ -22,10 +21,7 @@ class OptionValueType extends AbstractType
         $builder
             ->add('text', TextType::class, [
                 'label' => 'option.value.text',
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(null, null, 128),
-                ],
+                'constraints' => new NotBlank(),
             ])
             ->add('img', MediaType::class, [
                 'label' => 'option.value.img',

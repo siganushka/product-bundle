@@ -15,7 +15,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProductType extends AbstractType
@@ -25,10 +24,7 @@ class ProductType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'product.name',
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(null, null, 128),
-                ],
+                'constraints' => new NotBlank(),
             ])
             ->add('img', MediaType::class, [
                 'label' => 'product.img',
