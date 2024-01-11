@@ -57,7 +57,7 @@ class ProductVariantController extends AbstractFOSRestController
         if (!$form->isValid()) {
             return $this->viewResponse($form);
         }
-        dd($entity);
+
         $entityManager->persist($entity);
         $entityManager->flush();
 
@@ -118,7 +118,7 @@ class ProductVariantController extends AbstractFOSRestController
     protected function viewResponse($data = null, int $statusCode = null, array $headers = []): Response
     {
         $attributes = [
-            'id', 'price', 'inventory', 'choice', 'choiceName', 'updatedAt', 'createdAt',
+            'id', 'price', 'inventory', 'choiceValue', 'updatedAt', 'createdAt',
         ];
 
         $context = new Context();

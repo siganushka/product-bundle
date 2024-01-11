@@ -40,8 +40,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      */
     private ?int $price = null;
 
-    private ?bool $inventoryTracking = null;
-
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
@@ -92,22 +90,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     public function setPrice(int $price): self
     {
         $this->price = $price;
-
-        return $this;
-    }
-
-    public function isInventoryTracking(): bool
-    {
-        if (null === $this->inventoryTracking) {
-            return null !== $this->inventory;
-        }
-
-        return (bool) $this->inventoryTracking;
-    }
-
-    public function setInventoryTracking(?bool $inventoryTracking): self
-    {
-        $this->inventoryTracking = $inventoryTracking;
 
         return $this;
     }

@@ -6,17 +6,18 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductVariant;
-use Siganushka\ProductBundle\Form\EventListener\AddInventoryFieldListener;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Model\VariantChoice;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProductVariantType extends AbstractType
@@ -28,12 +29,14 @@ class ProductVariantType extends AbstractType
                 'label' => 'product.variant.price',
                 'constraints' => new NotBlank(),
             ])
-            ->add('inventoryTracking', CheckboxType::class, [
-                'label' => 'product.variant.inventory_tracking',
+            ->add('inventory', IntegerType::class, [
+                'label' => 'product.variant.inventory',
+                'constraints' => [
+                    new GreaterThanOrEqual(0),
+                    new LessThanOrEqual(2147483647),
+                ],
             ])
         ;
-
-        $builder->get('inventoryTracking')->addEventSubscriber(new AddInventoryFieldListener());
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
     }
@@ -48,7 +51,6 @@ class ProductVariantType extends AbstractType
                 'message' => 'product.variant.choice.unique',
                 'ignoreNull' => false,
             ]),
-            'allow_extra_fields' => true,
         ]);
     }
 
