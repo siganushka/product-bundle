@@ -17,9 +17,11 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ProductVariantType extends AbstractType
 {
@@ -40,11 +42,15 @@ class ProductVariantType extends AbstractType
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
-            /** @var ProductVariant|null */
-            $variant = $event->getData();
-            $product = ($variant && $p = $variant->getProduct()) ? $p : $options['product'];
+            $form = $event->getForm();
+            $data = $event->getData();
 
-            $this->formModifier($event->getForm(), $product, $variant);
+            $product = $options['product'];
+            if ($data instanceof ProductVariant) {
+                $product = $data->getProduct();
+            }
+
+            $this->formModifier($form, $product, $data);
         });
     }
 
@@ -52,12 +58,26 @@ class ProductVariantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ProductVariant::class,
-            'constraints' => new UniqueEntity([
-                'fields' => ['product', 'choiceValue'],
-                'errorPath' => 'choice',
-                'message' => 'product.variant.choice.unique',
-                'ignoreNull' => false,
-            ]),
+            'constraints' => [
+                new UniqueEntity([
+                    'fields' => ['product', 'choiceValue'],
+                    'errorPath' => 'choice',
+                    'message' => 'product.variant.choice.unique',
+                    'ignoreNull' => false,
+                ]),
+                new Callback(function (ProductVariant $variant, ExecutionContextInterface $context): void {
+                    $filtered = $variant->getProduct()
+                        ->getVariants()
+                        ->filter(fn (ProductVariant $item) => $item == $variant)
+                    ;
+
+                    if ($filtered->count() > 1) {
+                        $context->buildViolation('product.variant.choice.used')
+                            ->atPath('choice')
+                            ->addViolation();
+                    }
+                }),
+            ],
             'product' => null,
         ]);
 
@@ -66,7 +86,7 @@ class ProductVariantType extends AbstractType
 
     public function formModifier(FormInterface $form, ?Product $product, ?ProductVariant $variant): void
     {
-        if (!$product instanceof Product) {
+        if (!$product) {
             return;
         }
 
@@ -91,7 +111,7 @@ class ProductVariantType extends AbstractType
 
             //     return ['disabled' => $product->hasVariant($v)];
             // },
-            // 'disabled' => $variant && $variant->getId() ? true : false,
+            'disabled' => $variant && $variant->getId() ? true : false,
             'placeholder' => 'generic.choice',
             'constraints' => new NotBlank(),
             'priority' => 1,

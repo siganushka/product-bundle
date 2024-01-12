@@ -1,4 +1,4 @@
-{% block _option_values_widget %}
+{% block siganushka_option_value_collection_widget %}
   {% if form.vars.allow_add %}
     <div class="mb-3">
       <button
@@ -16,32 +16,32 @@
   </div>
 {% endblock %}
 
-{% block _option_values_entry_widget %}
-<div id="{{ form.vars.id }}" class="row my-3 collection-item">
-  <div style="flex: 0 0 60px">
-    {{ form_widget(form.img) }}
-    {{ form_errors(form.img) }}
-  </div>
-  <div class="col">
-    {{ form_widget(form.text) }}
-    {{ form_errors(form.text) }}
-  </div>
-  <div class="col">
-    {{ form_widget(form.sort) }}
-    {{ form_errors(form.sort) }}
-  </div>
-  {% if form.parent.vars.allow_delete %}
+{% block siganushka_option_value_collection_entry_widget %}
+  <div id="{{ form.vars.id }}" class="row my-3 collection-item">
     <div style="flex: 0 0 60px">
-      <button
-        type="button"
-        class="btn btn-link link-danger px-0"
-        onclick="removeCollectionItem('{{ form.vars.id }}')">{{ 'generic.remove'|trans }}</button>
+      {{ form_widget(form.img) }}
+      {{ form_errors(form.img) }}
     </div>
-  {% endif %}
-</div>
+    <div class="col">
+      {{ form_widget(form.text) }}
+      {{ form_errors(form.text) }}
+    </div>
+    <div class="col">
+      {{ form_widget(form.sort) }}
+      {{ form_errors(form.sort) }}
+    </div>
+    {% if form.parent.vars.allow_delete %}
+      <div style="flex: 0 0 60px">
+        <button
+          type="button"
+          class="btn btn-link link-danger px-0"
+          onclick="removeCollectionItem('{{ form.vars.id }}')">{{ 'generic.remove'|trans }}</button>
+      </div>
+    {% endif %}
+  </div>
 {% endblock %}
 
-{% block _product_variant_collection_variants_widget %}
+{% block siganushka_product_variant_collection_widget %}
   {% if form.vars.allow_add %}
     <div class="mb-3">
       <button
@@ -71,7 +71,7 @@
   </div>
 {% endblock %}
 
-{% block _product_variant_collection_variants_entry_widget %}
+{% block siganushka_product_variant_collection_entry_widget %}
   <div id="{{ form.vars.id }}" class="row my-3 collection-item">
     <div style="flex: 0 0 60px">
       {% if value and value.id %}
