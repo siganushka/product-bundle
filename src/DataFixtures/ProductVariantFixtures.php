@@ -27,6 +27,7 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
                 $variant->setInventory(100);
                 $variant->setChoice($choice);
                 $manager->persist($variant);
+                $variant->setEnabled(true);
 
                 $this->addReference(sprintf('product-%d-variant-%d', $index, $index2), $variant);
             }

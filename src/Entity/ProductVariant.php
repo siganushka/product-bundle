@@ -6,6 +6,8 @@ namespace Siganushka\ProductBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Siganushka\Contracts\Doctrine\EnableInterface;
+use Siganushka\Contracts\Doctrine\EnableTrait;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
@@ -19,8 +21,9 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
  *  @ORM\UniqueConstraint(columns={"product_id", "choice_value"})
  * })
  */
-class ProductVariant implements ResourceInterface, TimestampableInterface
+class ProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface
 {
+    use EnableTrait;
     use ResourceTrait;
     use TimestampableTrait;
 
