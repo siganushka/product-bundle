@@ -9,6 +9,7 @@ use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Model\VariantChoice;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,6 +28,10 @@ class ProductVariantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('enabled', CheckboxType::class, [
+                'label' => false,
+                'priority' => 2,
+            ])
             ->add('price', CentsMoneyType::class, [
                 'label' => 'product.variant.price',
                 'constraints' => new NotBlank(),
@@ -38,6 +43,7 @@ class ProductVariantType extends AbstractType
                     new LessThanOrEqual(2147483647),
                 ],
             ])
+
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
