@@ -12,14 +12,11 @@ use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
-use Siganushka\ProductBundle\Model\VariantChoice;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 /**
  * @ORM\Entity(repositoryClass=ProductVariantRepository::class)
- * @ORM\Table(uniqueConstraints={
- *  @ORM\UniqueConstraint(columns={"product_id", "choice_value"})
- * })
  */
 class ProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface
 {
@@ -32,11 +29,6 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Product $product = null;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private ?string $choiceValue = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -58,7 +50,7 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
 
     public function __construct()
     {
-        $this->choice = new VariantChoice();
+        $this->choice = new ProductVariantChoice();
     }
 
     public function getProduct(): ?Product
@@ -69,18 +61,6 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
-
-        return $this;
-    }
-
-    public function getChoiceValue(): ?string
-    {
-        return $this->choiceValue;
-    }
-
-    public function setChoiceValue(string $choiceValue): self
-    {
-        $this->choiceValue = $choiceValue;
 
         return $this;
     }
@@ -109,19 +89,18 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return $this;
     }
 
-    public function getChoice(): VariantChoice
+    public function getChoice(): ProductVariantChoice
     {
-        if ($this->choice instanceof VariantChoice) {
+        if ($this->choice instanceof ProductVariantChoice) {
             return $this->choice;
         }
 
-        return new VariantChoice($this->choice->toArray());
+        return new ProductVariantChoice($this->choice->toArray());
     }
 
-    public function setChoice(VariantChoice $choice): self
+    public function setChoice(?ProductVariantChoice $choice): self
     {
-        $this->choice = $choice;
-        $this->choiceValue = $choice->getValue();
+        $this->choice = $choice ?? new ProductVariantChoice();
 
         return $this;
     }

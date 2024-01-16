@@ -36,6 +36,7 @@ class ProductVariantBatchType extends AbstractType
 
         $prototypeData = new ProductVariant();
         $prototypeData->setProduct($product);
+        $prototypeData->setEnabled(true);
 
         $form = $event->getForm();
         $form->add('variants', ProductVariantCollectionType::class, [

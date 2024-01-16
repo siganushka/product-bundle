@@ -10,7 +10,7 @@ use Siganushka\ProductBundle\Entity\OptionValue;
 /**
  * @template-extends ArrayCollection<int, OptionValue>
  */
-class VariantChoice extends ArrayCollection
+class ProductVariantChoice extends ArrayCollection
 {
     private ?string $label;
     private ?string $value;

@@ -13,7 +13,7 @@ use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
-use Siganushka\ProductBundle\Model\VariantChoice;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
 /**
@@ -113,13 +113,6 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this->variants;
     }
 
-    public function hasVariant(ProductVariant $variant): bool
-    {
-        $choices = $this->variants->map(fn (ProductVariant $item) => $item->getChoice()->getValue());
-
-        return $choices->contains($variant->getChoice()->getValue());
-    }
-
     public function addVariant(ProductVariant $variant): self
     {
         if (!$this->variants->contains($variant)) {
@@ -142,13 +135,13 @@ class Product implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * @return array<int, VariantChoice>
+     * @return array<int, ProductVariantChoice>
      */
     public function getVariantChoices(): array
     {
         $values = $this->options->map(fn (Option $option) => $option->getValues());
         $cartesianProduct = new CartesianProduct($values->toArray());
 
-        return array_map(fn (array $opitonValues) => new VariantChoice($opitonValues), $cartesianProduct->asArray());
+        return array_map(fn (array $opitonValues) => new ProductVariantChoice($opitonValues), $cartesianProduct->asArray());
     }
 }

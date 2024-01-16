@@ -6,8 +6,7 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
-use Siganushka\ProductBundle\Model\VariantChoice;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -28,10 +27,6 @@ class ProductVariantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('enabled', CheckboxType::class, [
-                'label' => false,
-                'priority' => 2,
-            ])
             ->add('price', CentsMoneyType::class, [
                 'label' => 'product.variant.price',
                 'constraints' => new NotBlank(),
@@ -43,7 +38,9 @@ class ProductVariantType extends AbstractType
                     new LessThanOrEqual(2147483647),
                 ],
             ])
-
+            ->add('enabled', CheckboxType::class, [
+                'label' => 'generic.enabled',
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
@@ -67,35 +64,24 @@ class ProductVariantType extends AbstractType
         $resolver->setDefaults([
             'data_class' => ProductVariant::class,
             'constraints' => [
-                new UniqueEntity([
-                    'fields' => ['product', 'choiceValue'],
-                    'errorPath' => 'choice',
-                    'message' => 'product.variant.choice.unique',
-                    'ignoreNull' => false,
-                ]),
                 new Callback(function (ProductVariant $variant, ExecutionContextInterface $context): void {
                     $product = $variant->getProduct();
                     if (!$product) {
                         return;
                     }
 
-                    $filtered = $product->getVariants()->filter(fn (ProductVariant $item) => !$item->getId());
+                    $filtered = $product->getVariants();
 
                     if (!$product->getOptions()->isEmpty()) {
                         $filtered = $filtered->filter(fn (ProductVariant $item) => $item->getChoice()->getValue());
                     }
 
-                    $filtered
-                        ->filter(fn (ProductVariant $item) => $item->getChoice()->getValue())
-                        ->filter(fn (ProductVariant $item) => $item->getChoice()->equals($variant->getChoice()))
-                    ;
+                    $filtered = $filtered->filter(fn (ProductVariant $item) => $item->getChoice()->equals($variant->getChoice()));
 
                     if ($filtered->count() > 1) {
                         $context->buildViolation('product.variant.choice.used')
                             ->atPath('choice')
                             ->addViolation();
-
-                        return;
                     }
                 }),
             ],
@@ -123,7 +109,7 @@ class ProductVariantType extends AbstractType
             'choice_translation_domain' => false,
             'choice_value' => 'value',
             'choice_label' => 'label',
-            'choice_attr' => function (VariantChoice $choice) use ($usedChoices, $variant): array {
+            'choice_attr' => function (ProductVariantChoice $choice) use ($usedChoices, $variant): array {
                 if ($choice->equals($variant->getChoice())) {
                     return ['disabled' => false];
                 }
@@ -134,9 +120,6 @@ class ProductVariantType extends AbstractType
             'placeholder' => 'generic.choice',
             'constraints' => new NotBlank(),
             'priority' => 1,
-            'setter' => function (ProductVariant &$variant, ?VariantChoice $choice): void {
-                $choice && $variant->setChoice($choice);
-            },
         ]);
     }
 }
