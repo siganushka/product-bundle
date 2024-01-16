@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
-use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Model\VariantChoice;
@@ -41,16 +40,19 @@ class ProductVariantType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options): void {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $form = $event->getForm();
             $data = $event->getData();
 
-            $product = $options['product'];
-            if ($data instanceof ProductVariant) {
-                $product = $data->getProduct();
+            $emptyData = $form->getConfig()->getEmptyData();
+            if ($emptyData instanceof \Closure) {
+                $emptyData = $emptyData($form);
             }
 
-            $this->formModifier($form, $product, $data);
+            $variant = $data ?? $emptyData;
+            if ($variant instanceof ProductVariant) {
+                $this->formModifier($form, $variant);
+            }
         });
     }
 
@@ -66,26 +68,37 @@ class ProductVariantType extends AbstractType
                     'ignoreNull' => false,
                 ]),
                 new Callback(function (ProductVariant $variant, ExecutionContextInterface $context): void {
-                    $filtered = $variant->getProduct()
-                        ->getVariants()
-                        ->filter(fn (ProductVariant $item) => $item == $variant)
+                    $product = $variant->getProduct();
+                    if (!$product) {
+                        return;
+                    }
+
+                    $filtered = $product->getVariants()->filter(fn (ProductVariant $item) => !$item->getId());
+
+                    if (!$product->getOptions()->isEmpty()) {
+                        $filtered = $filtered->filter(fn (ProductVariant $item) => $item->getChoice()->getValue());
+                    }
+
+                    $filtered
+                        ->filter(fn (ProductVariant $item) => $item->getChoice()->getValue())
+                        ->filter(fn (ProductVariant $item) => $item->getChoice()->equals($variant->getChoice()))
                     ;
 
                     if ($filtered->count() > 1) {
                         $context->buildViolation('product.variant.choice.used')
                             ->atPath('choice')
                             ->addViolation();
+
+                        return;
                     }
                 }),
             ],
-            'product' => null,
         ]);
-
-        $resolver->setAllowedTypes('product', ['null', Product::class]);
     }
 
-    public function formModifier(FormInterface $form, ?Product $product, ?ProductVariant $variant): void
+    public function formModifier(FormInterface $form, ProductVariant $variant): void
     {
+        $product = $variant->getProduct();
         if (!$product) {
             return;
         }
@@ -95,22 +108,22 @@ class ProductVariantType extends AbstractType
             return;
         }
 
+        $variants = $product->getVariants();
+        $usedChoices = $variants->map(fn (ProductVariant $item) => $item->getChoice()->getValue());
+
         $form->add('choice', ChoiceType::class, [
             'label' => 'product.variant.choice',
             'choices' => $choices,
             'choice_translation_domain' => false,
             'choice_value' => 'value',
             'choice_label' => 'label',
-            // 'choice_attr' => function (VariantChoice $choice) use ($product, $variant): array {
-            //     if ($variant && $choice->equals($variant->getChoice())) {
-            //         return ['disabled' => false];
-            //     }
+            'choice_attr' => function (VariantChoice $choice) use ($usedChoices, $variant): array {
+                if ($choice->equals($variant->getChoice())) {
+                    return ['disabled' => false];
+                }
 
-            //     $v = new ProductVariant();
-            //     $v->setChoice($choice);
-
-            //     return ['disabled' => $product->hasVariant($v)];
-            // },
+                return ['disabled' => $usedChoices->contains($choice->getValue())];
+            },
             'disabled' => $variant && $variant->getId() ? true : false,
             'placeholder' => 'generic.choice',
             'constraints' => new NotBlank(),

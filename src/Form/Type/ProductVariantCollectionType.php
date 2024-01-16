@@ -8,6 +8,7 @@ use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\ProductVariantType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,11 +18,8 @@ class ProductVariantCollectionType extends AbstractType
     {
         $resolver->setNormalizer('entry_options', function (Options $options, $entryOptions) {
             $entryOptions['block_prefix'] = sprintf('%s_entry', $options['block_prefix']);
-
-            $variant = $options['prototype_data'] ?? null;
-            if ($variant instanceof ProductVariant) {
-                $entryOptions['product'] = $variant->getProduct();
-            }
+            // [important] The empty_data option must be \Closure and clone to generate new data
+            $entryOptions['empty_data'] = fn (FormInterface $form) => $options['prototype_data'] ? clone $options['prototype_data'] : null;
 
             return $entryOptions;
         });
@@ -35,6 +33,8 @@ class ProductVariantCollectionType extends AbstractType
             'error_bubbling' => false,
             'by_reference' => false,
         ]);
+
+        $resolver->setAllowedTypes('prototype_data', ['null', ProductVariant::class]);
     }
 
     public function getParent()

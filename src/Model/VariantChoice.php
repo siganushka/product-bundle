@@ -27,7 +27,7 @@ class VariantChoice extends ArrayCollection
             $value[] = $optionValue->getCode();
         }
 
-        // important!!!
+        // [important] Generate identity from sorted value
         sort($value);
 
         $this->label = \count($label) ? implode('/', $label) : null;
