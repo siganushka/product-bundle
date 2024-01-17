@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Form\Type\ProductVariantCollectionType;
+use Siganushka\ProductBundle\Entity\ProductVariant;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProductVariantBatchType extends AbstractType
+class ProductVariantCollectionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -28,15 +29,24 @@ class ProductVariantBatchType extends AbstractType
 
     public function preSetData(FormEvent $event): void
     {
-        $product = $event->getData();
-        if (!$product instanceof Product) {
+        $data = $event->getData();
+        if (!$data instanceof Product) {
             return;
         }
 
+        $prototypeData = new ProductVariant();
+        $prototypeData->setProduct($data);
+
         $form = $event->getForm();
-        $form->add('variants', ProductVariantCollectionType::class, [
+        $form->add('variants', CollectionType::class, [
             'label' => 'product.variants',
-            'product' => $product,
+            'entry_type' => ProductVariantType::class,
+            'entry_options' => ['label' => false],
+            'prototype_data' => $prototypeData,
+            'allow_add' => true,
+            'allow_delete' => true,
+            'error_bubbling' => false,
+            'by_reference' => false,
         ]);
     }
 }

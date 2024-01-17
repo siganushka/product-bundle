@@ -29,6 +29,8 @@ class CentsMoneyType extends AbstractType
             'currency' => 'CNY',
             'negative' => false,
         ]);
+
+        $resolver->setAllowedTypes('negative', 'bool');
     }
 
     public function getParent(): string
