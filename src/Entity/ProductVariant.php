@@ -6,8 +6,6 @@ namespace Siganushka\ProductBundle\Entity;
 
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Siganushka\Contracts\Doctrine\EnableInterface;
-use Siganushka\Contracts\Doctrine\EnableTrait;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
@@ -18,9 +16,8 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 /**
  * @ORM\Entity(repositoryClass=ProductVariantRepository::class)
  */
-class ProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface
+class ProductVariant implements ResourceInterface, TimestampableInterface
 {
-    use EnableTrait;
     use ResourceTrait;
     use TimestampableTrait;
 

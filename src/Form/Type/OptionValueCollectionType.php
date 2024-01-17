@@ -17,7 +17,7 @@ class OptionValueCollectionType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setNormalizer('entry_options', function (Options $options, $entryOptions) {
+        $resolver->setNormalizer('entry_options', function (Options $options, array $entryOptions) {
             $entryOptions['block_prefix'] = sprintf('%s_entry', $options['block_prefix']);
 
             return $entryOptions;
@@ -38,6 +38,8 @@ class OptionValueCollectionType extends AbstractType
             'by_reference' => false,
             'constraints' => new Count(['min' => 2, 'minMessage' => 'option.values.count.invalid']),
         ]);
+
+        $resolver->setAllowedTypes('prototype_data', ['null', OptionValue::class]);
     }
 
     public function getParent()

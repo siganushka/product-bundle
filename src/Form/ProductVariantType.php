@@ -8,7 +8,6 @@ use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,21 +37,17 @@ class ProductVariantType extends AbstractType
                     new LessThanOrEqual(2147483647),
                 ],
             ])
-            ->add('enabled', CheckboxType::class, [
-                'label' => 'generic.enabled',
-            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
             $form = $event->getForm();
             $data = $event->getData();
 
-            $emptyData = $form->getConfig()->getEmptyData();
-            if ($emptyData instanceof \Closure) {
-                $emptyData = $emptyData($form);
-            }
+            // Using prototype_data for embed collection
+            $parent = $form->getParent();
+            $prototypeData = $parent ? $parent->getConfig()->getOption('prototype_data') : null;
 
-            $variant = $data ?? $emptyData;
+            $variant = $data ?? $prototypeData;
             if ($variant instanceof ProductVariant) {
                 $this->formModifier($form, $variant);
             }
@@ -116,7 +111,7 @@ class ProductVariantType extends AbstractType
 
                 return ['disabled' => $usedChoices->contains($choice->getValue())];
             },
-            'disabled' => $variant && $variant->getId() ? true : false,
+            'disabled' => $variant->getId() ? true : false,
             'placeholder' => 'generic.choice',
             'constraints' => new NotBlank(),
             'priority' => 1,

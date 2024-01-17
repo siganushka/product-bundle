@@ -1,98 +1,39 @@
-{% block siganushka_option_value_collection_widget %}
-  {% if form.vars.allow_add %}
+{%- block collection_widget -%}
+  {% if allow_add %}
     <div class="mb-3">
       <button
         type="button"
         class="btn btn-primary"
-        data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
-        onclick="addCollectionItem(event, '{{ form.vars.id }}')">{{ 'generic.add'|trans }}</button>
+        data-prototype="{{ form_widget(prototype)|e('html_attr') }}"
+        onclick="addCollectionItem(event, '{{ id }}')">{{ 'generic.add'|trans }}</button>
     </div>
   {% endif %}
 
-  <div id="{{ form.vars.id }}" class="border-top border-bottom bg-light px-3">
-    {% for item in form %}
-      {{ form_widget(item) }}
-    {% endfor %}
-  </div>
-{% endblock %}
+  <table class="table border-top">
+    <tbody id="{{ id }}">
+      {%- for item in form -%}
+        {{ form_widget(item) }}
+      {%- endfor -%}
+    </tbody>
+  </table>
+{%- endblock -%}
 
-{% block siganushka_option_value_collection_entry_widget %}
-  <div id="{{ form.vars.id }}" class="row my-3 collection-item">
-    <div style="flex: 0 0 60px">
-      {{ form_widget(form.img) }}
-      {{ form_errors(form.img) }}
-    </div>
-    <div class="col">
-      {{ form_widget(form.text) }}
-      {{ form_errors(form.text) }}
-    </div>
-    <div class="col">
-      {{ form_widget(form.sort) }}
-      {{ form_errors(form.sort) }}
-    </div>
-    {% if form.parent.vars.allow_delete %}
-      <div style="flex: 0 0 60px">
+{%- block collection_entry_widget -%}
+  <tr id="{{ id }}" class="collection-item">
+    {%- for item in form -%}
+      <td>
+        {{ form_widget(item) }}
+        {{ form_errors(item) }}
+      </td>
+    {%- endfor -%}
+
+    {% if form.parent.vars.allow_add %}
+      <td style="min-width: 60px">
         <button
           type="button"
           class="btn btn-link link-danger px-0"
-          onclick="removeCollectionItem('{{ form.vars.id }}')">{{ 'generic.remove'|trans }}</button>
-      </div>
+          onclick="removeCollectionItem('{{ id }}')">{{ 'generic.remove'|trans }}</button>
+      </td>
     {% endif %}
-  </div>
-{% endblock %}
-
-{% block siganushka_product_variant_collection_widget %}
-  {% if form.vars.allow_add %}
-    <div class="mb-3">
-      <button
-        type="button"
-        class="btn btn-primary"
-        data-prototype="{{ form_widget(form.vars.prototype)|e('html_attr') }}"
-        onclick="addCollectionItem(event, '{{ form.vars.id }}')">{{ 'generic.add'|trans }}</button>
-    </div>
-  {% endif %}
-
-  <div id="{{ form.vars.id }}" class="border-top border-bottom bg-light px-3">
-    {% for item in form %}
-      {% if loop.index0 == 0 %}
-      <div class="row my-3">
-        <div style="flex: 0 0 60px">&nbsp;</div>
-        {% for child in item %}
-          <div class="col">{{ child.vars.label|trans }}</div>
-        {% endfor %}
-        {% if form.vars.allow_delete %}
-          <div style="flex: 0 0 60px">&nbsp;</div>
-        {% endif %}
-      </div>
-      {% endif %}
-
-      {{ form_widget(item) }}
-    {% endfor %}
-  </div>
-{% endblock %}
-
-{% block siganushka_product_variant_collection_entry_widget %}
-  <div id="{{ form.vars.id }}" class="row my-3 collection-item">
-    <div style="flex: 0 0 60px">
-      {% if value and value.id %}
-        <i class="bi bi-check fs-4 text-primary"></i>
-      {% else %}
-        <i class="bi bi-check fs-4 text-secondary"></i>
-      {% endif %}
-    </div>
-    {% for child in form %}
-    <div class="col">
-      {{ form_widget(child) }}
-      {{ form_errors(child) }}
-    </div>
-    {% endfor %}
-    {% if form.parent.vars.allow_delete %}
-      <div style="flex: 0 0 60px">
-        <button
-          type="button"
-          class="btn btn-link link-danger px-0"
-          onclick="removeCollectionItem('{{ form.vars.id }}')">{{ 'generic.remove'|trans }}</button>
-      </div>
-    {% endif %}
-  </div>
-{% endblock %}
+  </tr>
+{%- endblock -%}

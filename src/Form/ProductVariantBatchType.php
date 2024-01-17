@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\ProductVariantCollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -34,14 +33,10 @@ class ProductVariantBatchType extends AbstractType
             return;
         }
 
-        $prototypeData = new ProductVariant();
-        $prototypeData->setProduct($product);
-        $prototypeData->setEnabled(true);
-
         $form = $event->getForm();
         $form->add('variants', ProductVariantCollectionType::class, [
             'label' => 'product.variants',
-            'prototype_data' => $prototypeData,
+            'product' => $product,
         ]);
     }
 }

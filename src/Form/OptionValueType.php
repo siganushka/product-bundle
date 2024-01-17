@@ -19,14 +19,14 @@ class OptionValueType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('text', TextType::class, [
-                'label' => 'option.value.text',
-                'constraints' => new NotBlank(),
-            ])
             ->add('img', MediaType::class, [
                 'label' => 'option.value.img',
                 'channel' => OptionValueImg::class,
                 'style' => 'width: 38px; height: 38px',
+            ])
+            ->add('text', TextType::class, [
+                'label' => 'option.value.text',
+                'constraints' => new NotBlank(),
             ])
             ->add('sort', IntegerType::class, [
                 'label' => 'option.value.sort',
