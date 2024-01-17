@@ -45,6 +45,8 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      */
     private Collection $choice;
 
+    private ?bool $checked = null;
+
     public function __construct()
     {
         $this->choice = new ProductVariantChoice();
@@ -98,6 +100,18 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     public function setChoice(?ProductVariantChoice $choice): self
     {
         $this->choice = $choice ?? new ProductVariantChoice();
+
+        return $this;
+    }
+
+    public function isChecked(): bool
+    {
+        return (bool) $this->checked;
+    }
+
+    public function setChecked(?bool $checked): self
+    {
+        $this->checked = $checked;
 
         return $this;
     }

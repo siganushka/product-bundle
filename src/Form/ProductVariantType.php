@@ -6,8 +6,8 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
-use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -37,6 +37,10 @@ class ProductVariantType extends AbstractType
                     new LessThanOrEqual(2147483647),
                 ],
             ])
+            ->add('checked', CheckboxType::class, [
+                'label' => false,
+                'priority' => 1,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
@@ -58,28 +62,29 @@ class ProductVariantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ProductVariant::class,
-            'constraints' => [
-                new Callback(function (ProductVariant $variant, ExecutionContextInterface $context): void {
-                    $product = $variant->getProduct();
-                    if (!$product) {
-                        return;
-                    }
+            // 'constraints' => [
+            //     new Callback(function (ProductVariant $variant, ExecutionContextInterface $context): void {
+            //         $product = $variant->getProduct();
+            //         if (!$product) {
+            //             return;
+            //         }
 
-                    $filtered = $product->getVariants();
+            //         $filtered = $product->getVariants();
 
-                    if (!$product->getOptions()->isEmpty()) {
-                        $filtered = $filtered->filter(fn (ProductVariant $item) => $item->getChoice()->getValue());
-                    }
+            //         if (!$product->getOptions()->isEmpty()) {
+            //             $filtered = $filtered->filter(fn (ProductVariant $item) => $item->getChoice()->getValue());
+            //         }
 
-                    $filtered = $filtered->filter(fn (ProductVariant $item) => $item->getChoice()->equals($variant->getChoice()));
+            //         $filtered = $filtered->filter(fn (ProductVariant $item) => $item->getChoice()->equals($variant->getChoice()));
 
-                    if ($filtered->count() > 1) {
-                        $context->buildViolation('product.variant.choice.used')
-                            ->atPath('choice')
-                            ->addViolation();
-                    }
-                }),
-            ],
+            //         if ($filtered->count() > 1) {
+            //             $context->buildViolation('product.variant.choice.used')
+            //                 ->atPath('choice')
+            //                 ->addViolation();
+            //         }
+            //     }),
+            // ],
+            'validation_groups' => fn (FormInterface $form) => $form['checked']->getData() ? 'Default' : null,
         ]);
     }
 
@@ -95,23 +100,13 @@ class ProductVariantType extends AbstractType
             return;
         }
 
-        $variants = $product->getVariants();
-        $usedChoices = $variants->map(fn (ProductVariant $item) => $item->getChoice()->getValue());
-
         $form->add('choice', ChoiceType::class, [
             'label' => 'product.variant.choice',
             'choices' => $choices,
             'choice_translation_domain' => false,
             'choice_value' => 'value',
             'choice_label' => 'label',
-            'choice_attr' => function (ProductVariantChoice $choice) use ($usedChoices, $variant): array {
-                if ($choice->equals($variant->getChoice())) {
-                    return ['disabled' => false];
-                }
-
-                return ['disabled' => $usedChoices->contains($choice->getValue())];
-            },
-            'disabled' => $variant->getId() ? true : false,
+            'disabled' => true,
             'placeholder' => 'generic.choice',
             'constraints' => new NotBlank(),
             'priority' => 1,

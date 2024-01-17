@@ -17,7 +17,18 @@ class ProductVariantCollectionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'preSetData']);
+        $builder->add('variants', CollectionType::class, [
+            'label' => 'product.variants',
+            'entry_type' => ProductVariantType::class,
+            'entry_options' => ['label' => false],
+            // 'allow_add' => false,
+            // 'allow_delete' => false,
+            // 'error_bubbling' => false,
+            // 'by_reference' => false,
+        ]);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -27,26 +38,37 @@ class ProductVariantCollectionType extends AbstractType
         ]);
     }
 
-    public function preSetData(FormEvent $event): void
+    public function onPreSetData(FormEvent $event): void
     {
-        $data = $event->getData();
-        if (!$data instanceof Product) {
+        $product = $event->getData();
+        if (!$product instanceof Product) {
             return;
         }
 
-        $prototypeData = new ProductVariant();
-        $prototypeData->setProduct($data);
+        foreach ($product->generateVariantChoices() as $variant) {
+            $filtered = $product->getVariants()->filter(fn (ProductVariant $item) => $item->getChoice()->equals($variant->getChoice()));
 
-        $form = $event->getForm();
-        $form->add('variants', CollectionType::class, [
-            'label' => 'product.variants',
-            'entry_type' => ProductVariantType::class,
-            'entry_options' => ['label' => false],
-            'prototype_data' => $prototypeData,
-            'allow_add' => true,
-            'allow_delete' => true,
-            'error_bubbling' => false,
-            'by_reference' => false,
-        ]);
+            if ($filtered->first()) {
+                /** @var ProductVariant */
+                $variant = $filtered->first();
+                $variant->setChecked(true);
+            }
+
+            $product->addVariant($variant);
+        }
+    }
+
+    public function onPostSubmit(FormEvent $event): void
+    {
+        $product = $event->getData();
+        if (!$product instanceof Product) {
+            return;
+        }
+
+        foreach ($product->getVariants() as $variant) {
+            if (!$variant->isChecked()) {
+                $product->removeVariant($variant);
+            }
+        }
     }
 }
