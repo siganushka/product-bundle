@@ -8,24 +8,21 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Entity\ProductVariant;
 
 class ProductVariantFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        /** @var Product */
-        $product0 = $this->getReference('product-0', Product::class);
-        /** @var Product */
-        $product1 = $this->getReference('product-1', Product::class);
+        $products = [
+            $this->getReference('product-0', Product::class),
+            $this->getReference('product-1', Product::class),
+        ];
 
-        foreach ([$product0, $product1] as $index => $product) {
-            foreach ($product->getVariantChoices() as $index2 => $choice) {
-                $variant = new ProductVariant();
-                $variant->setProduct($product);
+        /** @var Product $product */
+        foreach ($products as $index => $product) {
+            foreach ($product->generateVariantChoices() as $index2 => $variant) {
                 $variant->setPrice(random_int(100, 999));
                 $variant->setInventory(100);
-                $variant->setChoice($choice);
                 $manager->persist($variant);
 
                 $this->addReference(sprintf('product-%d-variant-%d', $index, $index2), $variant);

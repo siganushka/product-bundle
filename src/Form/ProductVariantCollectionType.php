@@ -20,7 +20,7 @@ class ProductVariantCollectionType extends AbstractType
         $builder->add('variants', CollectionType::class, [
             'label' => 'product.variants',
             'entry_type' => ProductVariantType::class,
-            'entry_options' => ['label' => false],
+            'entry_options' => ['label' => false, 'using_collection' => true],
             // 'allow_add' => false,
             // 'allow_delete' => false,
             // 'error_bubbling' => false,

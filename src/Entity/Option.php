@@ -40,6 +40,7 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
 
     /**
      * @ORM\ManyToMany(targetEntity=Product::class, mappedBy="options")
+     * @ORM\OrderBy({"createdAt": "DESC", "id": "DESC"})
      *
      * @var Collection<int, Product>
      */

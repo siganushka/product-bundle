@@ -45,7 +45,7 @@ class Product implements ResourceInterface, TimestampableInterface
 
     /**
      * @ORM\OneToMany(targetEntity=ProductVariant::class, mappedBy="product", cascade={"all"}, orphanRemoval=true)
-     * @ORM\OrderBy({"createdAt": "DESC", "id": "DESC"})
+     * @ORM\OrderBy({"createdAt": "ASC", "id": "ASC"})
      *
      * @var Collection<int, ProductVariant>
      */
@@ -113,13 +113,6 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this->variants;
     }
 
-    public function resetVariants(): self
-    {
-        $this->variants = new ArrayCollection();
-
-        return $this;
-    }
-
     public function addVariant(ProductVariant $variant): self
     {
         if (!$this->variants->contains($variant)) {
@@ -128,13 +121,6 @@ class Product implements ResourceInterface, TimestampableInterface
         }
 
         return $this;
-    }
-
-    public function hasVariant(ProductVariant $variant): bool
-    {
-        $filtered = $this->variants->filter(fn (ProductVariant $item) => $item->getChoice()->equals($variant->getChoice()));
-
-        return !$filtered->isEmpty();
     }
 
     public function removeVariant(ProductVariant $variant): self
@@ -149,32 +135,22 @@ class Product implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * @return array<int, ProductVariantChoice>
-     */
-    public function getVariantChoices(): array
-    {
-        $values = $this->options->map(fn (Option $option) => $option->getValues());
-        $cartesianProduct = new CartesianProduct($values->toArray());
-
-        return array_map(fn (array $opitonValues) => new ProductVariantChoice($opitonValues), $cartesianProduct->asArray());
-    }
-
-    /**
      * @return array<int, ProductVariant>
      */
     public function generateVariantChoices(): array
     {
-        $variantTemplate = new ProductVariant();
+        $template = new ProductVariant();
+        $template->setProduct($this);
 
         if (!$this->isOptionally()) {
-            return [$variantTemplate];
+            return [$template];
         }
 
         $values = $this->options->map(fn (Option $option) => $option->getValues());
         $cartesianProduct = new CartesianProduct($values->toArray());
 
-        return array_map(function (array $opitonValues) use ($variantTemplate): ProductVariant {
-            $variant = clone $variantTemplate;
+        return array_map(function (array $opitonValues) use ($template): ProductVariant {
+            $variant = clone $template;
             $variant->setChoice(new ProductVariantChoice($opitonValues));
 
             return $variant;
@@ -186,6 +162,6 @@ class Product implements ResourceInterface, TimestampableInterface
      */
     public function isOptionally(): bool
     {
-        return !$this->options->isEmpty();
+        return $this->options->count() > 0;
     }
 }
