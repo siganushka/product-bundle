@@ -115,6 +115,9 @@ class ProductVariantType extends AbstractType
             'placeholder' => 'generic.choice',
             'constraints' => new NotBlank(),
             'priority' => 1,
+            'setter' => function (ProductVariant &$variant, ?ProductVariantChoice $choice): void {
+                $choice && $variant->setChoice($choice);
+            },
         ]);
     }
 }
