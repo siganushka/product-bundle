@@ -105,6 +105,26 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
+    public function getDefaultVariant(): ?ProductVariant
+    {
+        $variant = $this->variants->first();
+        if ($variant instanceof ProductVariant) {
+            return $variant;
+        }
+
+        $variant = new ProductVariant();
+        $variant->setProduct($this);
+
+        return $variant;
+    }
+
+    public function setDefaultVariant(ProductVariant $variant): self
+    {
+        $this->variants = new ArrayCollection([$variant]);
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, ProductVariant>
      */

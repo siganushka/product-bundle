@@ -7,11 +7,9 @@ namespace Siganushka\ProductBundle\Form;
 use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\Option;
 use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Media\ProductImg;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -48,39 +46,16 @@ class ProductType extends AbstractType
     public function onPreSetData(FormEvent $event): void
     {
         $data = $event->getData();
-        if (!$data instanceof Product) {
-            return;
-        }
-
-        // Check entity is new
-        $isNew = null === $data->getId();
+        $disabled = $data instanceof Product && null !== $data->getId() ? true : false;
 
         $form = $event->getForm();
         $form->add('options', EntityType::class, [
             'label' => 'product.options',
             'class' => Option::class,
             'choice_label' => fn (Option $choice): string => (string) $choice,
-            'disabled' => !$isNew,
+            'disabled' => $disabled,
             'multiple' => true,
             'expanded' => true,
-        ]);
-
-        if ($isNew) {
-            return;
-        }
-
-        $prototypeData = new ProductVariant();
-        $prototypeData->setProduct($data);
-
-        $form->add('variants', CollectionType::class, [
-            'label' => 'product.variants',
-            'entry_type' => ProductVariantType::class,
-            'entry_options' => ['label' => false],
-            'prototype_data' => $prototypeData,
-            'allow_add' => true,
-            'allow_delete' => true,
-            'error_bubbling' => false,
-            'by_reference' => false,
         ]);
     }
 }

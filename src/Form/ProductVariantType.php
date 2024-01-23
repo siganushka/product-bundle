@@ -65,16 +65,16 @@ class ProductVariantType extends AbstractType
                         return;
                     }
 
-                    $filtered = $product->getVariants();
+                    $variants = $product->getVariants();
 
-                    if (!$product->getOptions()->isEmpty()) {
-                        $filtered = $filtered->filter(fn (ProductVariant $item) => $item->getChoice()->getValue());
+                    // Remove non-optionally variants if choice empty
+                    if ($product->isOptionally()) {
+                        $variants = $variants->filter(fn (ProductVariant $item) => $item->getChoice()->getValue());
                     }
 
-                    $filtered = $filtered->filter(fn (ProductVariant $item) => $item->getChoice()->equals($variant->getChoice()));
-
+                    $filtered = $variants->filter(fn (ProductVariant $item) => $item->getChoice()->equals($variant->getChoice()));
                     if ($filtered->count() > 1) {
-                        $context->buildViolation('product.variant.choice.used')
+                        $context->buildViolation('product.variant.choice.unique')
                             ->atPath('choice')
                             ->addViolation();
                     }
