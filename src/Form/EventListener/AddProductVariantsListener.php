@@ -25,9 +25,6 @@ class AddProductVariantsListener implements EventSubscriberInterface
             return;
         }
 
-        $choices = $data->getVariantChoices();
-        $choicesCount = \count($choices);
-
         $prototypeData = new ProductVariant();
         $prototypeData->setProduct($data);
 
