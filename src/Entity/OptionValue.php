@@ -16,6 +16,9 @@ use Siganushka\ProductBundle\Repository\OptionValueRepository;
 
 /**
  * @ORM\Entity(repositoryClass=OptionValueRepository::class)
+ * @ORM\Table(uniqueConstraints={
+ *  @ORM\UniqueConstraint(columns={"code"})
+ * })
  */
 class OptionValue implements ResourceInterface, SortableInterface, TimestampableInterface, \Stringable
 {
