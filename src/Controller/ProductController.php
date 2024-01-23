@@ -114,7 +114,8 @@ class ProductController extends AbstractFOSRestController
     protected function viewResponse($data = null, int $statusCode = null, array $headers = []): Response
     {
         $attributes = [
-            'id', 'name', 'img', 'updatedAt', 'createdAt',
+            'id', 'name', 'img', 'optionally', 'updatedAt', 'createdAt',
+            'variantChoices',
         ];
 
         $context = new Context();

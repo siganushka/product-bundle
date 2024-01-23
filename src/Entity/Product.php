@@ -135,6 +135,14 @@ class Product implements ResourceInterface, TimestampableInterface
     }
 
     /**
+     * Returns the product is optionally.
+     */
+    public function isOptionally(): bool
+    {
+        return $this->options->count() > 0;
+    }
+
+    /**
      * @return array<int, ProductVariantChoice>
      */
     public function getVariantChoices(): array
@@ -143,13 +151,5 @@ class Product implements ResourceInterface, TimestampableInterface
         $cartesianProduct = new CartesianProduct($values->toArray());
 
         return array_map(fn (array $opitonValues) => new ProductVariantChoice($opitonValues), $cartesianProduct->asArray());
-    }
-
-    /**
-     * Returns the product is optionally.
-     */
-    public function isOptionally(): bool
-    {
-        return $this->options->count() > 0;
     }
 }

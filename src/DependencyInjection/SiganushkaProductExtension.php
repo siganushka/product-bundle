@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\DependencyInjection;
 
+use Siganushka\ProductBundle\Serializer\Normalizer\ProductVariantChoiceNormalizer;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -20,7 +21,8 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        // ...
+        $productVariantChoiceNormalizerDef = $container->findDefinition(ProductVariantChoiceNormalizer::class);
+        $productVariantChoiceNormalizerDef->addTag('serializer.normalizer');
     }
 
     public function prepend(ContainerBuilder $container): void
