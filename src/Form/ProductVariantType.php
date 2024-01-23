@@ -7,6 +7,7 @@ namespace Siganushka\ProductBundle\Form;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -58,28 +59,12 @@ class ProductVariantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ProductVariant::class,
-            'constraints' => [
-                new Callback(function (ProductVariant $variant, ExecutionContextInterface $context): void {
-                    $product = $variant->getProduct();
-                    if (!$product) {
-                        return;
-                    }
-
-                    $variants = $product->getVariants();
-
-                    // Remove non-optionally variants if choice empty
-                    if ($product->isOptionally()) {
-                        $variants = $variants->filter(fn (ProductVariant $item) => $item->getChoice()->getValue());
-                    }
-
-                    $filtered = $variants->filter(fn (ProductVariant $item) => $item->getChoice()->equals($variant->getChoice()));
-                    if ($filtered->count() > 1) {
-                        $context->buildViolation('product.variant.choice.unique')
-                            ->atPath('choice')
-                            ->addViolation();
-                    }
-                }),
-            ],
+            'constraints' => new UniqueEntity([
+                'fields' => ['product', 'choice1', 'choice2', 'choice3'],
+                'errorPath' => 'choice',
+                'message' => 'product.variant.choice.unique',
+                'ignoreNull' => false,
+            ]),
         ]);
     }
 
@@ -113,7 +98,25 @@ class ProductVariantType extends AbstractType
             },
             'disabled' => null !== $variant->getId(),
             'placeholder' => 'generic.choice',
-            'constraints' => new NotBlank(),
+            'constraints' => [
+                new NotBlank(),
+                // Validate unique for embed collection
+                new Callback(function (?ProductVariantChoice $choice, ExecutionContextInterface $context) use ($product): void {
+                    if (null === $choice) {
+                        return;
+                    }
+
+                    $newVariants = $product->getVariants()
+                        ->filter(fn (ProductVariant $item) => null === $item->getId() && $choice->equals($item->getChoice()))
+                    ;
+
+                    if ($newVariants->count() > 1) {
+                        $context->buildViolation('product.variant.choice.repeat')
+                            ->atPath('choice')
+                            ->addViolation();
+                    }
+                }),
+            ],
             'priority' => 1,
             'setter' => function (ProductVariant &$variant, ?ProductVariantChoice $choice): void {
                 $choice && $variant->setChoice($choice);

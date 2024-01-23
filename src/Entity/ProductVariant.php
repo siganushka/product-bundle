@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
@@ -15,6 +14,9 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 /**
  * @ORM\Entity(repositoryClass=ProductVariantRepository::class)
+ * @ORM\Table(uniqueConstraints={
+ *  @ORM\UniqueConstraint(columns={"product_id", "choice1_id", "choice2_id", "choice3_id"})
+ * })
  */
 class ProductVariant implements ResourceInterface, TimestampableInterface
 {
@@ -28,6 +30,21 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     private ?Product $product = null;
 
     /**
+     * @ORM\ManyToOne(targetEntity=OptionValue::class)
+     */
+    private ?OptionValue $choice1 = null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=OptionValue::class)
+     */
+    private ?OptionValue $choice2 = null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=OptionValue::class)
+     */
+    private ?OptionValue $choice3 = null;
+
+    /**
      * @ORM\Column(type="integer")
      */
     private ?int $price = null;
@@ -36,19 +53,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      * @ORM\Column(type="integer", nullable=true)
      */
     private ?int $inventory = null;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=OptionValue::class)
-     * @ORM\OrderBy({"sort": "DESC", "createdAt": "ASC", "id": "ASC"})
-     *
-     * @var Collection<int, OptionValue>
-     */
-    private Collection $choice;
-
-    public function __construct()
-    {
-        $this->choice = new ProductVariantChoice();
-    }
 
     public function getProduct(): ?Product
     {
@@ -88,16 +92,12 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     public function getChoice(): ProductVariantChoice
     {
-        if ($this->choice instanceof ProductVariantChoice) {
-            return $this->choice;
-        }
-
-        return new ProductVariantChoice($this->choice->toArray());
+        return new ProductVariantChoice(array_filter([$this->choice1, $this->choice2, $this->choice3]));
     }
 
     public function setChoice(ProductVariantChoice $choice): self
     {
-        $this->choice = $choice;
+        [$this->choice1, $this->choice2, $this->choice3] = $choice;
 
         return $this;
     }
