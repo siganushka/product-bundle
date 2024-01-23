@@ -36,7 +36,7 @@ class OptionType extends AbstractType
                 'allow_delete' => true,
                 'error_bubbling' => false,
                 'by_reference' => false,
-                'constraints' => new Count(['min' => 2, 'minMessage' => 'option.values.count.invalid']),
+                'constraints' => new Count(['min' => 2, 'minMessage' => 'option.values.min_count.invalid']),
             ])
         ;
     }

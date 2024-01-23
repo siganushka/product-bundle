@@ -115,9 +115,6 @@ class ProductController extends AbstractFOSRestController
     {
         $attributes = [
             'id', 'name', 'img', 'updatedAt', 'createdAt',
-            'variants' => [
-                'id', 'price', 'inventory', 'choice', 'choiceName', 'updatedAt', 'createdAt',
-            ],
         ];
 
         $context = new Context();

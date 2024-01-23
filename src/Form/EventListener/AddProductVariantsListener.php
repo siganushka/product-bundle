@@ -2,37 +2,31 @@
 
 declare(strict_types=1);
 
-namespace Siganushka\ProductBundle\Form;
+namespace Siganushka\ProductBundle\Form\EventListener;
 
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductVariant;
-use Symfony\Component\Form\AbstractType;
+use Siganushka\ProductBundle\Form\ProductVariantType;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProductVariantCollectionType extends AbstractType
+class AddProductVariantsListener implements EventSubscriberInterface
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
-    {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'preSetData']);
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => Product::class,
-        ]);
-    }
-
-    public function preSetData(FormEvent $event): void
+    public function onPreSetData(FormEvent $event): void
     {
         $data = $event->getData();
         if (!$data instanceof Product) {
             return;
         }
+
+        if (null === $data->getId()) {
+            return;
+        }
+
+        $choices = $data->getVariantChoices();
+        $choicesCount = \count($choices);
 
         $prototypeData = new ProductVariant();
         $prototypeData->setProduct($data);
@@ -48,5 +42,12 @@ class ProductVariantCollectionType extends AbstractType
             'error_bubbling' => false,
             'by_reference' => false,
         ]);
+    }
+
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            FormEvents::PRE_SET_DATA => 'onPreSetData',
+        ];
     }
 }

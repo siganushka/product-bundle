@@ -62,7 +62,7 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -74,7 +74,7 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this->img;
     }
 
-    public function setImg(Media $img): self
+    public function setImg(?Media $img): self
     {
         $this->img = $img;
 
@@ -143,5 +143,13 @@ class Product implements ResourceInterface, TimestampableInterface
         $cartesianProduct = new CartesianProduct($values->toArray());
 
         return array_map(fn (array $opitonValues) => new ProductVariantChoice($opitonValues), $cartesianProduct->asArray());
+    }
+
+    /**
+     * Returns the product is optionally.
+     */
+    public function isOptionally(): bool
+    {
+        return $this->options->count() > 0;
     }
 }
