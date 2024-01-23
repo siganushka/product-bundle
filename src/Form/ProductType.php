@@ -52,17 +52,20 @@ class ProductType extends AbstractType
             return;
         }
 
+        // Check entity is new
+        $isNew = null === $data->getId();
+
         $form = $event->getForm();
         $form->add('options', EntityType::class, [
             'label' => 'product.options',
             'class' => Option::class,
             'choice_label' => fn (Option $choice): string => (string) $choice,
-            'disabled' => $data->getId() ? true : false,
+            'disabled' => !$isNew,
             'multiple' => true,
             'expanded' => true,
         ]);
 
-        if (null === $data->getId()) {
+        if ($isNew) {
             return;
         }
 

@@ -111,7 +111,7 @@ class ProductVariantType extends AbstractType
 
                 return ['disabled' => $usedChoices->contains($choice->getValue())];
             },
-            'disabled' => $variant->getId() ? true : false,
+            'disabled' => null !== $variant->getId(),
             'placeholder' => 'generic.choice',
             'constraints' => new NotBlank(),
             'priority' => 1,
