@@ -71,12 +71,7 @@ class ProductVariantType extends AbstractType
     public function formModifier(FormInterface $form, ProductVariant $variant): void
     {
         $product = $variant->getProduct();
-        if (!$product) {
-            return;
-        }
-
-        $choices = $product->getVariantChoices();
-        if (0 === \count($choices)) {
+        if (null === $product || !$product->isOptionally()) {
             return;
         }
 
@@ -85,7 +80,7 @@ class ProductVariantType extends AbstractType
 
         $form->add('choice', ChoiceType::class, [
             'label' => 'product.variant.choice',
-            'choices' => $choices,
+            'choices' => $product->getVariantChoices(),
             'choice_translation_domain' => false,
             'choice_value' => 'value',
             'choice_label' => 'label',
@@ -101,15 +96,12 @@ class ProductVariantType extends AbstractType
             'constraints' => [
                 new NotBlank(),
                 // Validate unique for embed collection
-                new Callback(function (?ProductVariantChoice $choice, ExecutionContextInterface $context) use ($product): void {
+                new Callback(function (?ProductVariantChoice $choice, ExecutionContextInterface $context) use ($variants): void {
                     if (null === $choice) {
                         return;
                     }
 
-                    $newVariants = $product->getVariants()
-                        ->filter(fn (ProductVariant $item) => null === $item->getId() && $choice->equals($item->getChoice()))
-                    ;
-
+                    $newVariants = $variants->filter(fn (ProductVariant $item) => null === $item->getId() && $choice->equals($item->getChoice()));
                     if ($newVariants->count() > 1) {
                         $context->buildViolation('product.variant.choice.repeat')
                             ->atPath('choice')

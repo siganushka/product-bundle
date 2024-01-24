@@ -92,7 +92,10 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     public function getChoice(): ProductVariantChoice
     {
-        return new ProductVariantChoice(array_filter([$this->choice1, $this->choice2, $this->choice3]));
+        $choices = [$this->choice1, $this->choice2, $this->choice3];
+        $choices = array_filter($choices, fn (?OptionValue $choice) => $choice instanceof OptionValue);
+
+        return new ProductVariantChoice($choices);
     }
 
     public function setChoice(ProductVariantChoice $choice): self
