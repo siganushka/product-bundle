@@ -19,13 +19,13 @@ class ProductVariantCollectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+            $form = $event->getForm();
             $data = $event->getData();
-            if (!$data instanceof Product) {
-                return;
+            if ($data instanceof Product && $data->isOptionally()) {
+                $this->addVariantCollectionField($form, $data);
+            } else {
+                $this->addVariantField($form);
             }
-
-            $method = $data->isOptionally() ? 'addVariantsField' : 'addDefaultVariantField';
-            \call_user_func([$this, $method], $event->getForm(), $data);
         });
     }
 
@@ -36,14 +36,14 @@ class ProductVariantCollectionType extends AbstractType
         ]);
     }
 
-    public function addDefaultVariantField(FormInterface $form): void
+    public function addVariantField(FormInterface $form): void
     {
         $form->add('defaultVariant', ProductVariantType::class, [
             'label' => 'product.variants',
         ]);
     }
 
-    public function addVariantsField(FormInterface $form, Product $product): void
+    public function addVariantCollectionField(FormInterface $form, Product $product): void
     {
         $prototypeData = new ProductVariant();
         $prototypeData->setProduct($product);
