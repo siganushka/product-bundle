@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
@@ -47,11 +49,19 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
      */
     private ?Media $img = null;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=ProductVariant::class, mappedBy="choice")
+     *
+     * @var Collection<int, ProductVariant>
+     */
+    private $variants;
+
     public function __construct(string $code = null, string $text = null, Media $img = null)
     {
         $this->code = $code ?? uniqid();
         $this->text = $text;
         $this->img = $img;
+        $this->variants = new ArrayCollection();
     }
 
     public function getOption(): ?Option
@@ -96,6 +106,33 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
     public function setImg(?Media $img): self
     {
         $this->img = $img;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductVariant>
+     */
+    public function getVariants(): Collection
+    {
+        return $this->variants;
+    }
+
+    public function addVariant(ProductVariant $variant): self
+    {
+        if (!$this->variants->contains($variant)) {
+            $this->variants[] = $variant;
+            $variant->addChoice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVariant(ProductVariant $variant): self
+    {
+        if ($this->variants->removeElement($variant)) {
+            $variant->removeChoice($this);
+        }
 
         return $this;
     }

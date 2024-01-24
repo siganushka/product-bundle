@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
@@ -15,7 +16,7 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 /**
  * @ORM\Entity(repositoryClass=ProductVariantRepository::class)
  * @ORM\Table(uniqueConstraints={
- *  @ORM\UniqueConstraint(columns={"product_id", "choice1_id", "choice2_id", "choice3_id"})
+ *  @ORM\UniqueConstraint(columns={"product_id", "choice_value"})
  * })
  */
 class ProductVariant implements ResourceInterface, TimestampableInterface
@@ -30,19 +31,9 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     private ?Product $product = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=OptionValue::class)
+     * @ORM\Column(type="string", nullable=true)
      */
-    private ?OptionValue $choice1 = null;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=OptionValue::class)
-     */
-    private ?OptionValue $choice2 = null;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=OptionValue::class)
-     */
-    private ?OptionValue $choice3 = null;
+    private ?string $choiceValue = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -54,6 +45,19 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      */
     private ?int $inventory = null;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=OptionValue::class, inversedBy="variants")
+     * @ORM\OrderBy({"sort": "DESC", "createdAt": "ASC", "id": "ASC"})
+     *
+     * @var Collection<int, OptionValue>
+     */
+    private Collection $choice;
+
+    public function __construct()
+    {
+        $this->choice = new ProductVariantChoice();
+    }
+
     public function getProduct(): ?Product
     {
         return $this->product;
@@ -64,6 +68,16 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         $this->product = $product;
 
         return $this;
+    }
+
+    public function getChoiceValue(): ?string
+    {
+        return $this->choiceValue;
+    }
+
+    public function setChoiceValue(string $choiceValue): self
+    {
+        throw new \BadMethodCallException('The choiceValue cannot be modified anymore.');
     }
 
     public function getPrice(): ?int
@@ -92,16 +106,28 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     public function getChoice(): ProductVariantChoice
     {
-        $choices = [$this->choice1, $this->choice2, $this->choice3];
-        $choices = array_filter($choices, fn (?OptionValue $choice) => $choice instanceof OptionValue);
+        if ($this->choice instanceof ProductVariantChoice) {
+            return $this->choice;
+        }
 
-        return new ProductVariantChoice($choices);
+        return new ProductVariantChoice($this->choice->toArray());
     }
 
     public function setChoice(ProductVariantChoice $choice): self
     {
-        [$this->choice1, $this->choice2, $this->choice3] = $choice;
+        $this->choice = $choice;
+        $this->choiceValue = $choice->getValue();
 
         return $this;
+    }
+
+    public function addChoice(OptionValue $choice): self
+    {
+        throw new \BadMethodCallException('The choice cannot be modified anymore.');
+    }
+
+    public function removeChoice(OptionValue $choice): self
+    {
+        throw new \BadMethodCallException('The choice cannot be modified anymore.');
     }
 }
