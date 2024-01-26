@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
@@ -55,7 +56,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     public function __construct()
     {
-        $this->choice = new ProductVariantChoice();
+        $this->choice = new ArrayCollection();
     }
 
     public function getProduct(): ?Product
