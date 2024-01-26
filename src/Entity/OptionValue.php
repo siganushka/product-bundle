@@ -20,7 +20,7 @@ use Siganushka\ProductBundle\Repository\OptionValueRepository;
 /**
  * @ORM\Entity(repositoryClass=OptionValueRepository::class)
  * @ORM\Table(uniqueConstraints={
- *  @ORM\UniqueConstraint(columns={"code"})
+ *  @ORM\UniqueConstraint(columns={"option_id", "code"})
  * })
  * @ORM\HasLifecycleCallbacks()
  */
