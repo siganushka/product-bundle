@@ -14,6 +14,7 @@ use Siganushka\Contracts\Doctrine\SortableTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
+use Siganushka\ProductBundle\Exception\ResourceDisallowRemoveException;
 use Siganushka\ProductBundle\Repository\OptionValueRepository;
 
 /**
@@ -21,6 +22,7 @@ use Siganushka\ProductBundle\Repository\OptionValueRepository;
  * @ORM\Table(uniqueConstraints={
  *  @ORM\UniqueConstraint(columns={"code"})
  * })
+ * @ORM\HasLifecycleCallbacks()
  */
 class OptionValue implements ResourceInterface, SortableInterface, TimestampableInterface, \Stringable
 {
@@ -140,5 +142,15 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
     public function __toString(): string
     {
         return (string) $this->text;
+    }
+
+    /**
+     * @ORM\PreRemove
+     */
+    public function assertAllowedRemove(): void
+    {
+        if (!$this->variants->isEmpty()) {
+            throw new ResourceDisallowRemoveException($this, 'variants');
+        }
     }
 }

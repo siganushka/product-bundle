@@ -13,11 +13,13 @@ use Siganushka\Contracts\Doctrine\SortableInterface;
 use Siganushka\Contracts\Doctrine\SortableTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
+use Siganushka\ProductBundle\Exception\ResourceDisallowRemoveException;
 use Siganushka\ProductBundle\Repository\OptionRepository;
 
 /**
  * @ORM\Entity(repositoryClass=OptionRepository::class)
  * @ORM\Table(name="`option`")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Option implements ResourceInterface, SortableInterface, TimestampableInterface, \Stringable
 {
@@ -130,5 +132,15 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
             (string) $this->name,
             implode('/', $this->values->map(fn (OptionValue $value) => (string) $value)->toArray()),
         );
+    }
+
+    /**
+     * @ORM\PreRemove
+     */
+    public function assertAllowedRemove(): void
+    {
+        if (!$this->products->isEmpty()) {
+            throw new ResourceDisallowRemoveException($this, 'products');
+        }
     }
 }
