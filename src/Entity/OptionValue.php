@@ -37,7 +37,7 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
     private ?Option $option = null;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=7, options={"fixed": true})
      */
     private string $code;
 
@@ -64,7 +64,7 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
             throw new \InvalidArgumentException(sprintf('The code with value "%s" contains illegal character(s).', $code));
         }
 
-        $this->code = $code ?? uniqid();
+        $this->code = $code ?? mb_substr(md5(uniqid()), 0, 7);
         $this->text = $text;
         $this->img = $img;
         $this->variants = new ArrayCollection();
