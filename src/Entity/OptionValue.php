@@ -60,6 +60,10 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
 
     public function __construct(string $code = null, string $text = null, Media $img = null)
     {
+        if (null !== $code && !preg_match('/^[a-zA-Z0-9_]+$/', $code)) {
+            throw new \InvalidArgumentException(sprintf('The code with value "%s" contains illegal character(s).', $code));
+        }
+
         $this->code = $code ?? uniqid();
         $this->text = $text;
         $this->img = $img;
