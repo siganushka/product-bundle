@@ -36,13 +36,6 @@ class ProductVariantCollectionType extends AbstractType
         ]);
     }
 
-    public function addVariantField(FormInterface $form): void
-    {
-        $form->add('defaultVariant', ProductVariantType::class, [
-            'label' => 'product.variants',
-        ]);
-    }
-
     public function addVariantCollectionField(FormInterface $form, Product $product): void
     {
         $prototypeData = new ProductVariant();
@@ -57,6 +50,13 @@ class ProductVariantCollectionType extends AbstractType
             'allow_delete' => true,
             'error_bubbling' => false,
             'by_reference' => false,
+        ]);
+    }
+
+    public function addVariantField(FormInterface $form): void
+    {
+        $form->add('defaultVariant', ProductVariantType::class, [
+            'label' => 'product.variants',
         ]);
     }
 }
