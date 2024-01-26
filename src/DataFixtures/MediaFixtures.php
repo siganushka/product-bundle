@@ -49,10 +49,10 @@ class MediaFixtures extends Fixture
         foreach ($mapping as $channelAlias => $files) {
             $channel = $this->transformer->reverseTransform($channelAlias);
             foreach ($files as $file) {
-                $pathinfo = pathinfo($file);
+                $target = sprintf('%s/%s', sys_get_temp_dir(), pathinfo($file, \PATHINFO_BASENAME));
 
                 $fs = new Filesystem();
-                $fs->copy($file, $target = sprintf('%s/%s-tmp.%s', $pathinfo['dirname'], $pathinfo['filename'], $pathinfo['extension'] ?? 'jpg'));
+                $fs->copy($file, $target);
 
                 $event = new MediaSaveEvent($channel, new File($target));
                 $this->eventDispatcher->dispatch($event);
