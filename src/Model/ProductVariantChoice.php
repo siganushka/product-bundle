@@ -31,7 +31,7 @@ class ProductVariantChoice extends ArrayCollection
         sort($value);
 
         $this->label = \count($label) ? implode('/', $label) : null;
-        $this->value = \count($value) ? implode('_', $value) : null;
+        $this->value = \count($value) ? implode('-', $value) : null;
 
         parent::__construct($optionValues);
     }

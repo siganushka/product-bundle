@@ -17,7 +17,7 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 /**
  * @ORM\Entity(repositoryClass=ProductVariantRepository::class)
  * @ORM\Table(uniqueConstraints={
- *  @ORM\UniqueConstraint(columns={"product_id", "choice_value"})
+ *  @ORM\UniqueConstraint(columns={"product_id", "code"})
  * })
  */
 class ProductVariant implements ResourceInterface, TimestampableInterface
@@ -34,7 +34,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    private ?string $choiceValue = null;
+    private ?string $code = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -71,14 +71,14 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getChoiceValue(): ?string
+    public function getCode(): ?string
     {
-        return $this->choiceValue;
+        return $this->code;
     }
 
-    public function setChoiceValue(string $choiceValue): self
+    public function setCode(string $code): self
     {
-        throw new \BadMethodCallException('The choiceValue cannot be modified anymore.');
+        throw new \BadMethodCallException('The code cannot be modified anymore.');
     }
 
     public function getPrice(): ?int
@@ -116,8 +116,8 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     public function setChoice(ProductVariantChoice $choice): self
     {
+        $this->code = $choice->getValue();
         $this->choice = $choice;
-        $this->choiceValue = $choice->getValue();
 
         return $this;
     }

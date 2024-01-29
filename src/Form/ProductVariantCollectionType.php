@@ -24,7 +24,7 @@ class ProductVariantCollectionType extends AbstractType
             if ($data instanceof Product && $data->isOptionally()) {
                 $this->addVariantCollectionField($form, $data);
             } else {
-                $this->addVariantField($form);
+                $this->addVariantField($form, $data);
             }
         });
     }
@@ -53,10 +53,15 @@ class ProductVariantCollectionType extends AbstractType
         ]);
     }
 
-    public function addVariantField(FormInterface $form): void
+    public function addVariantField(FormInterface $form, Product $product): void
     {
-        $form->add('defaultVariant', ProductVariantType::class, [
+        $emptyData = new ProductVariant();
+        $emptyData->setProduct($product);
+
+        $form->add('variant', ProductVariantType::class, [
             'label' => 'product.variants',
+            'property_path' => 'variants[0]',
+            'empty_data' => $emptyData,
         ]);
     }
 }

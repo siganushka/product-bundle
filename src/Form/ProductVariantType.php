@@ -60,7 +60,7 @@ class ProductVariantType extends AbstractType
         $resolver->setDefaults([
             'data_class' => ProductVariant::class,
             'constraints' => new UniqueEntity([
-                'fields' => ['product', 'choiceValue'],
+                'fields' => ['code'],
                 'errorPath' => 'choice',
                 'message' => 'product.variant.choice.unique',
                 'ignoreNull' => false,
@@ -76,7 +76,7 @@ class ProductVariantType extends AbstractType
         }
 
         $variants = $product->getVariants();
-        $usedChoices = $variants->map(fn (ProductVariant $item) => $item->getChoiceValue());
+        $usedChoices = $variants->map(fn (ProductVariant $item) => $item->getCode());
 
         $form->add('choice', ChoiceType::class, [
             'label' => 'product.variant.choice',
