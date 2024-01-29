@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form\Type;
 
 use Siganushka\ProductBundle\Entity\Product;
+use Siganushka\ProductBundle\Entity\ProductVariant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\OptionsResolver\Options;
@@ -20,7 +21,9 @@ class ProductVariantChoiceType extends AbstractType
             'placeholder' => 'generic.choice',
             'choice_label' => 'choice.label',
             'choice_value' => 'choice.value',
+            'choice_attr' => fn (ProductVariant $variant): array => ['disabled' => $variant->isOutOfStock()],
             'choice_translation_domain' => false,
+            'expanded' => false,
         ]);
 
         $resolver->setRequired('product');

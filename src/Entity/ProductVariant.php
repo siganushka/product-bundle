@@ -131,4 +131,12 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     {
         throw new \BadMethodCallException('The choice cannot be modified anymore.');
     }
+
+    /**
+     * Returns whether the variant is out of stock.
+     */
+    public function isOutOfStock(): bool
+    {
+        return null !== $this->inventory && $this->inventory <= 0;
+    }
 }
