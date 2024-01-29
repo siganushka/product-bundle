@@ -14,14 +14,13 @@ class ProductVariantChoiceType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setNormalizer('choices', fn (Options $options): array => $options['product']->getVariantChoices());
+        $resolver->setNormalizer('choices', fn (Options $options): iterable => $options['product']->getVariants());
 
         $resolver->setDefaults([
             'placeholder' => 'generic.choice',
-            'choice_label' => 'label',
-            'choice_value' => 'value',
+            'choice_label' => 'choice.label',
+            'choice_value' => 'choice.value',
             'choice_translation_domain' => false,
-            'expanded' => true,
         ]);
 
         $resolver->setRequired('product');
