@@ -60,7 +60,7 @@ class ProductVariantType extends AbstractType
         $resolver->setDefaults([
             'data_class' => ProductVariant::class,
             'constraints' => new UniqueEntity([
-                'fields' => ['code'],
+                'fields' => ['product', 'code'],
                 'errorPath' => 'choice',
                 'message' => 'product.variant.choice.unique',
                 'ignoreNull' => false,
