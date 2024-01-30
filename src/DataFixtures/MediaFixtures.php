@@ -42,6 +42,7 @@ class MediaFixtures extends Fixture
             ProductImg::class => [
                 $dir.'/Resources/data/product-1.jpg',
                 $dir.'/Resources/data/product-2.jpg',
+                $dir.'/Resources/data/product-3.jpg',
             ],
         ];
 
