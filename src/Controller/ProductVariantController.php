@@ -119,7 +119,7 @@ class ProductVariantController extends AbstractFOSRestController
     {
         $attributes = [
             'id', 'price', 'inventory', 'updatedAt', 'createdAt',
-            'choice',
+            'combinedOptionValues',
         ];
 
         $context = new Context();

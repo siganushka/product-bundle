@@ -52,11 +52,11 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
     private ?Media $img = null;
 
     /**
-     * @ORM\ManyToMany(targetEntity=ProductVariant::class, mappedBy="choice")
+     * @ORM\ManyToMany(targetEntity=ProductVariant::class, mappedBy="optionValues")
      *
      * @var Collection<int, ProductVariant>
      */
-    private $variants;
+    private Collection $variants;
 
     public function __construct(string $code = null, string $text = null, Media $img = null)
     {
@@ -126,21 +126,12 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
 
     public function addVariant(ProductVariant $variant): self
     {
-        if (!$this->variants->contains($variant)) {
-            $this->variants[] = $variant;
-            $variant->addChoice($this);
-        }
-
-        return $this;
+        throw new \BadMethodCallException('The variant cannot be modified anymore.');
     }
 
     public function removeVariant(ProductVariant $variant): self
     {
-        if ($this->variants->removeElement($variant)) {
-            $variant->removeChoice($this);
-        }
-
-        return $this;
+        throw new \BadMethodCallException('The variant cannot be modified anymore.');
     }
 
     public function __toString(): string

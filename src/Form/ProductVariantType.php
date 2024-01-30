@@ -6,10 +6,10 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
-use Siganushka\ProductBundle\Model\ProductVariantChoice;
+use Siganushka\ProductBundle\Form\Type\CombinedOptionValuesChoiceType;
+use Siganushka\ProductBundle\Model\CombinedOptionValues;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -61,8 +61,8 @@ class ProductVariantType extends AbstractType
             'data_class' => ProductVariant::class,
             'constraints' => new UniqueEntity([
                 'fields' => ['product', 'code'],
-                'errorPath' => 'choice',
-                'message' => 'product.variant.choice.unique',
+                'errorPath' => 'optionValues',
+                'message' => 'product.variant.option_values.unique',
                 'ignoreNull' => false,
             ]),
         ]);
@@ -78,40 +78,37 @@ class ProductVariantType extends AbstractType
         $variants = $product->getVariants();
         $usedChoices = $variants->map(fn (ProductVariant $item) => $item->getCode());
 
-        $form->add('choice', ChoiceType::class, [
-            'label' => 'product.variant.choice',
-            'choices' => $product->getVariantChoices(),
-            'choice_translation_domain' => false,
-            'choice_value' => 'value',
-            'choice_label' => 'label',
-            'choice_attr' => function (ProductVariantChoice $choice) use ($usedChoices, $variant): array {
-                if ($choice->equals($variant->getChoice())) {
+        $form->add('optionValues', CombinedOptionValuesChoiceType::class, [
+            'label' => 'product.variant.option_values',
+            'choice_attr' => function (CombinedOptionValues $optionValues) use ($usedChoices, $variant): array {
+                if ($optionValues->equalsTo($variant->getOptionValues())) {
                     return ['disabled' => false];
                 }
 
-                return ['disabled' => $usedChoices->contains($choice->getValue())];
+                return ['disabled' => $usedChoices->contains($optionValues->getValue())];
             },
             'disabled' => null !== $variant->getId(),
+            'product' => $product,
             'placeholder' => 'generic.choice',
             'constraints' => [
                 new NotBlank(),
                 // Validate unique for embed collection
-                new Callback(function (?ProductVariantChoice $choice, ExecutionContextInterface $context) use ($variants): void {
-                    if (null === $choice) {
+                new Callback(function (?CombinedOptionValues $optionValues, ExecutionContextInterface $context) use ($variants): void {
+                    if (null === $optionValues) {
                         return;
                     }
 
-                    $newVariants = $variants->filter(fn (ProductVariant $item) => null === $item->getId() && $choice->equals($item->getChoice()));
+                    $newVariants = $variants->filter(fn (ProductVariant $item) => null === $item->getId() && $optionValues->equalsTo($item->getOptionValues()));
                     if ($newVariants->count() > 1) {
-                        $context->buildViolation('product.variant.choice.repeat')
-                            ->atPath('choice')
+                        $context->buildViolation('product.variant.option_values.repeat')
+                            ->atPath('optionValues')
                             ->addViolation();
                     }
                 }),
             ],
             'priority' => 1,
-            'setter' => function (ProductVariant &$variant, ?ProductVariantChoice $choice): void {
-                $choice && $variant->setChoice($choice);
+            'setter' => function (ProductVariant &$variant, ?CombinedOptionValues $optionValues): void {
+                $optionValues && $variant->setOptionValues($optionValues);
             },
         ]);
     }

@@ -11,7 +11,7 @@ use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
-use Siganushka\ProductBundle\Model\ProductVariantChoice;
+use Siganushka\ProductBundle\Model\CombinedOptionValues;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 /**
@@ -52,11 +52,11 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      *
      * @var Collection<int, OptionValue>
      */
-    private Collection $choice;
+    private Collection $optionValues;
 
     public function __construct()
     {
-        $this->choice = new ArrayCollection();
+        $this->optionValues = new ArrayCollection();
     }
 
     public function getProduct(): ?Product
@@ -105,31 +105,31 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getChoice(): ProductVariantChoice
+    public function getOptionValues(): CombinedOptionValues
     {
-        if ($this->choice instanceof ProductVariantChoice) {
-            return $this->choice;
+        if ($this->optionValues instanceof CombinedOptionValues) {
+            return $this->optionValues;
         }
 
-        return new ProductVariantChoice($this->choice->toArray());
+        return new CombinedOptionValues($this->optionValues->toArray());
     }
 
-    public function setChoice(ProductVariantChoice $choice): self
+    public function setOptionValues(CombinedOptionValues $optionValues): self
     {
-        $this->code = $choice->getValue();
-        $this->choice = $choice;
+        $this->code = $optionValues->getValue();
+        $this->optionValues = $optionValues;
 
         return $this;
     }
 
-    public function addChoice(OptionValue $choice): self
+    public function addOptionValue(OptionValue $optionValue): self
     {
-        throw new \BadMethodCallException('The choice cannot be modified anymore.');
+        throw new \BadMethodCallException('The optionValue cannot be modified anymore.');
     }
 
-    public function removeChoice(OptionValue $choice): self
+    public function removeOptionValue(OptionValue $optionValue): self
     {
-        throw new \BadMethodCallException('The choice cannot be modified anymore.');
+        throw new \BadMethodCallException('The optionValue cannot be modified anymore.');
     }
 
     /**

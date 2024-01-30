@@ -10,7 +10,7 @@ use Siganushka\ProductBundle\Entity\OptionValue;
 /**
  * @template-extends ArrayCollection<int, OptionValue>
  */
-class ProductVariantChoice extends ArrayCollection
+class CombinedOptionValues extends ArrayCollection
 {
     private ?string $label;
     private ?string $value;
@@ -46,7 +46,7 @@ class ProductVariantChoice extends ArrayCollection
         return $this->value;
     }
 
-    public function equals(self $target): bool
+    public function equalsTo(self $target): bool
     {
         return $this->value === $target->getValue();
     }

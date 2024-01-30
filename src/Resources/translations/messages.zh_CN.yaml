@@ -8,6 +8,6 @@ product.name: 名称
 product.img: 图片
 product.options: 选项
 product.variants: 库存
-product.variant.choice: 库存规格
+product.variant.option_values: 库存规格
 product.variant.price: 销售单价
 product.variant.inventory: 库存数量
