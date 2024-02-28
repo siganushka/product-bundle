@@ -118,8 +118,8 @@ class ProductVariantController extends AbstractFOSRestController
     protected function viewResponse($data = null, int $statusCode = null, array $headers = []): Response
     {
         $attributes = [
-            'id', 'price', 'inventory', 'updatedAt', 'createdAt',
-            'combinedOptionValues',
+            'id', 'price', 'inventory', 'optionValues', 'updatedAt', 'createdAt',
+            'product' => ['name', 'img'],
         ];
 
         $context = new Context();
