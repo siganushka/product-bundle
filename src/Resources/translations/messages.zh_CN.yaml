@@ -2,7 +2,6 @@ option.name: 名称
 option.values: 选项
 option.value.text: 文字
 option.value.img: 图片
-option.value.sort: 排序
 
 product.name: 名称
 product.img: 图片

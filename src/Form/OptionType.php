@@ -31,7 +31,7 @@ class OptionType extends AbstractType
                 'label' => 'option.values',
                 'entry_type' => OptionValueType::class,
                 'entry_options' => ['label' => false],
-                'prototype_data' => $prototypeData,
+                // 'prototype_data' => $prototypeData,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'error_bubbling' => false,
