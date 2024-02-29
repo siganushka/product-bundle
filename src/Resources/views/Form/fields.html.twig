@@ -5,7 +5,9 @@
         type="button"
         class="btn btn-primary"
         data-prototype="{{ form_widget(prototype)|e('html_attr') }}"
-        onclick="addCollectionItem(event, '{{ id }}')">{{ 'generic.add'|trans }}</button>
+        onclick="addCollectionItem(event, '{{ id }}')"
+        {% if disabled %}disabled{% endif %}
+      >{{ 'generic.add'|trans }}</button>
     </div>
   {% endif %}
 
@@ -32,7 +34,9 @@
         <button
           type="button"
           class="btn btn-link link-danger px-0"
-          onclick="removeCollectionItem('{{ id }}')">{{ 'generic.remove'|trans }}</button>
+          onclick="removeCollectionItem('{{ id }}')"
+          {% if form.parent.vars.disabled %}disabled{% endif %}
+        >{{ 'generic.remove'|trans }}</button>
       </td>
     {% endif %}
   </tr>
