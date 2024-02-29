@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Unique;
 
 class ProductVariantCollectionType extends AbstractType
 {
@@ -50,6 +51,10 @@ class ProductVariantCollectionType extends AbstractType
             'allow_delete' => true,
             'error_bubbling' => false,
             'by_reference' => false,
+            'constraints' => new Unique([
+                'message' => 'product.variant.option_values.unique',
+                'normalizer' => fn (ProductVariant $variant) => $variant->getOptionValues()->getValue(),
+            ]),
         ]);
     }
 

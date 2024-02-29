@@ -1,3 +1,2 @@
 option.values.min_count.invalid: 选项值至少应该包含 {{ limit }} 个。
-product.variant.option_values.unique: 库存规格已存在。
-product.variant.option_values.repeat: 库存规格重复。
+product.variant.option_values.unique: 库存规格不能重复。

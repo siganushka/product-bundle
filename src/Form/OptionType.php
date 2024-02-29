@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
-use Siganushka\Contracts\Doctrine\SortableInterface;
 use Siganushka\ProductBundle\Entity\Option;
-use Siganushka\ProductBundle\Entity\OptionValue;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -19,9 +17,6 @@ class OptionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $prototypeData = new OptionValue();
-        $prototypeData->setSort(SortableInterface::DEFAULT_SORT);
-
         $builder
             ->add('name', TextType::class, [
                 'label' => 'option.name',
@@ -31,7 +26,6 @@ class OptionType extends AbstractType
                 'label' => 'option.values',
                 'entry_type' => OptionValueType::class,
                 'entry_options' => ['label' => false],
-                // 'prototype_data' => $prototypeData,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'error_bubbling' => false,

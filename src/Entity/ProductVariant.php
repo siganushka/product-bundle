@@ -71,11 +71,13 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         }
 
         $name = $this->product->getName();
-        if ($this->optionValues->isEmpty()) {
+        $optionValues = $this->getOptionValues();
+
+        if (null === $name || $optionValues->isEmpty()) {
             return $name;
         }
 
-        return sprintf('%s【%s】', $name, $this->getOptionValues()->getLabel());
+        return sprintf('%s【%s】', $name, $optionValues->getLabel());
     }
 
     public function setProduct(?Product $product): self

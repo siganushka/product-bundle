@@ -8,7 +8,6 @@ use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Form\Type\CombinedOptionValuesChoiceType;
 use Siganushka\ProductBundle\Model\CombinedOptionValues;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,11 +15,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
-use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class ProductVariantType extends AbstractType
 {
@@ -33,10 +29,7 @@ class ProductVariantType extends AbstractType
             ])
             ->add('inventory', IntegerType::class, [
                 'label' => 'product.variant.inventory',
-                'constraints' => [
-                    new GreaterThanOrEqual(0),
-                    new LessThanOrEqual(2147483647),
-                ],
+                'constraints' => new GreaterThanOrEqual(0),
             ])
         ;
 
@@ -59,12 +52,6 @@ class ProductVariantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ProductVariant::class,
-            'constraints' => new UniqueEntity([
-                'fields' => ['product', 'code'],
-                'errorPath' => 'optionValues',
-                'message' => 'product.variant.option_values.unique',
-                'ignoreNull' => false,
-            ]),
         ]);
     }
 
@@ -90,22 +77,7 @@ class ProductVariantType extends AbstractType
             'disabled' => null !== $variant->getId(),
             'product' => $product,
             'placeholder' => 'generic.choice',
-            'constraints' => [
-                new NotBlank(),
-                // Validate unique for embed collection
-                new Callback(function (?CombinedOptionValues $optionValues, ExecutionContextInterface $context) use ($variants): void {
-                    if (null === $optionValues) {
-                        return;
-                    }
-
-                    $newVariants = $variants->filter(fn (ProductVariant $item) => null === $item->getId() && $optionValues->equalsTo($item->getOptionValues()));
-                    if ($newVariants->count() > 1) {
-                        $context->buildViolation('product.variant.option_values.repeat')
-                            ->atPath('optionValues')
-                            ->addViolation();
-                    }
-                }),
-            ],
+            'constraints' => new NotBlank(),
             'priority' => 1,
             'setter' => function (ProductVariant &$variant, ?CombinedOptionValues $optionValues): void {
                 $optionValues && $variant->setOptionValues($optionValues);
