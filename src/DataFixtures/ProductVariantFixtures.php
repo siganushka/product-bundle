@@ -19,6 +19,9 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
             $this->getReference('product-0', Product::class),
             $this->getReference('product-1', Product::class),
             $this->getReference('product-2', Product::class),
+            $this->getReference('product-3', Product::class),
+            $this->getReference('product-4', Product::class),
+            $this->getReference('product-5', Product::class),
         ];
 
         foreach ($products as $index => $product) {

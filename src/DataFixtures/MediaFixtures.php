@@ -43,6 +43,9 @@ class MediaFixtures extends Fixture
                 $dir.'/Resources/data/product-1.jpg',
                 $dir.'/Resources/data/product-2.jpg',
                 $dir.'/Resources/data/product-3.jpg',
+                $dir.'/Resources/data/product-4.jpg',
+                $dir.'/Resources/data/product-5.jpg',
+                $dir.'/Resources/data/product-6.jpg',
             ],
         ];
 

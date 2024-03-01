@@ -64,22 +64,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this->product;
     }
 
-    public function getProductName(): ?string
-    {
-        if (null === $this->product) {
-            return null;
-        }
-
-        $name = $this->product->getName();
-        $optionValues = $this->getOptionValues();
-
-        if (null === $name || $optionValues->isEmpty()) {
-            return $name;
-        }
-
-        return sprintf('%s【%s】', $name, $optionValues->getLabel());
-    }
-
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
@@ -146,6 +130,22 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     public function removeOptionValue(OptionValue $optionValue): self
     {
         throw new \BadMethodCallException('The optionValue cannot be modified anymore.');
+    }
+
+    public function getDescriptor(): ?string
+    {
+        if (null === $this->product) {
+            return null;
+        }
+
+        $name = $this->product->getName();
+        $optionValues = $this->getOptionValues();
+
+        if (null === $name || $optionValues->isEmpty()) {
+            return $name;
+        }
+
+        return sprintf('%s【%s】', $name, $optionValues->getLabel());
     }
 
     /**

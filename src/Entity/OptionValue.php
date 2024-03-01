@@ -24,7 +24,7 @@ use Siganushka\ProductBundle\Repository\OptionValueRepository;
  * })
  * @ORM\HasLifecycleCallbacks()
  */
-class OptionValue implements ResourceInterface, SortableInterface, TimestampableInterface, \Stringable
+class OptionValue implements ResourceInterface, SortableInterface, TimestampableInterface
 {
     use ResourceTrait;
     use SortableTrait;
@@ -47,6 +47,11 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
     private ?string $text = null;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private ?string $note = null;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Media::class)
      */
     private ?Media $img = null;
@@ -58,14 +63,11 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
      */
     private Collection $variants;
 
-    public function __construct(string $code = null, string $text = null, Media $img = null)
+    public function __construct(string $text = null, string $note = null, Media $img = null)
     {
-        if (null !== $code && !preg_match('/^[a-zA-Z0-9_]+$/', $code)) {
-            throw new \InvalidArgumentException(sprintf('The code with value "%s" contains illegal character(s).', $code));
-        }
-
-        $this->code = $code ?? mb_substr(md5(uniqid()), 0, 7);
+        $this->code = mb_substr(md5(spl_object_hash($this)), 0, 7);
         $this->text = $text;
+        $this->note = $note;
         $this->img = $img;
         $this->variants = new ArrayCollection();
     }
@@ -104,6 +106,18 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
         return $this;
     }
 
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(?string $note): self
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
     public function getImg(): ?Media
     {
         return $this->img;
@@ -132,11 +146,6 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
     public function removeVariant(ProductVariant $variant): self
     {
         throw new \BadMethodCallException('The variant cannot be modified anymore.');
-    }
-
-    public function __toString(): string
-    {
-        return (string) $this->text;
     }
 
     /**

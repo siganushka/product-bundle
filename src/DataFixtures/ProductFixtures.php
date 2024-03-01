@@ -30,14 +30,36 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
         $product2->setName('迪卡侬保冷野餐包');
         $product2->setImg($this->getReference('media-7', Media::class));
 
+        $product3 = new Product();
+        $product3->setName('新品春季时尚卫衣');
+        $product3->setImg($this->getReference('media-8', Media::class));
+        $product3->addOption($this->getReference('option-0', Option::class));
+        $product3->addOption($this->getReference('option-3', Option::class));
+
+        $product4 = new Product();
+        $product4->setName('耐克幼童易穿脱运动童鞋');
+        $product4->setImg($this->getReference('media-9', Media::class));
+        $product4->addOption($this->getReference('option-4', Option::class));
+
+        $product5 = new Product();
+        $product5->setName('New Balance 新品跑鞋女');
+        $product5->setImg($this->getReference('media-10', Media::class));
+        $product5->addOption($this->getReference('option-5', Option::class));
+
         $manager->persist($product0);
         $manager->persist($product1);
         $manager->persist($product2);
+        $manager->persist($product3);
+        $manager->persist($product4);
+        $manager->persist($product5);
         $manager->flush();
 
         $this->addReference('product-0', $product0);
         $this->addReference('product-1', $product1);
         $this->addReference('product-2', $product2);
+        $this->addReference('product-3', $product3);
+        $this->addReference('product-4', $product4);
+        $this->addReference('product-5', $product5);
     }
 
     public function getDependencies(): array

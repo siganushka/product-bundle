@@ -28,6 +28,9 @@ class OptionValueType extends AbstractType
                 'label' => 'option.value.text',
                 'constraints' => new NotBlank(),
             ])
+            ->add('note', TextType::class, [
+                'label' => 'option.value.note',
+            ])
             ->add('sort', IntegerType::class, [
                 'label' => 'option.value.sort',
             ])
