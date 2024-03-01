@@ -53,7 +53,7 @@ class ProductVariantCollectionType extends AbstractType
             'by_reference' => false,
             'constraints' => new Unique([
                 'message' => 'product.variant.option_values.unique',
-                'normalizer' => fn (ProductVariant $variant) => $variant->getOptionValues()->getValue(),
+                'normalizer' => fn (ProductVariant $variant) => $variant->getCode() ?? spl_object_hash($variant),
             ]),
         ]);
     }
