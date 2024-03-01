@@ -20,13 +20,13 @@ class ProductVariantCollectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
-            $form = $event->getForm();
             $data = $event->getData();
-            if ($data instanceof Product && $data->isOptionally()) {
-                $this->addVariantCollectionField($form, $data);
-            } else {
-                $this->addVariantField($form, $data);
+            if (!$data instanceof Product) {
+                return;
             }
+
+            $method = $data->isOptionally() ? 'addVariantCollectionField' : 'addVariantField';
+            \call_user_func([$this, $method], $event->getForm(), $data);
         });
     }
 
