@@ -127,8 +127,6 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
             return (string) $this->name;
         }
 
-        $values = $this->values->slice(0, 3);
-
         return sprintf(
             '%s【%s】',
             (string) $this->name,

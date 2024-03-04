@@ -42,7 +42,7 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
         $product4->addOption($this->getReference('option-4', Option::class));
 
         $product5 = new Product();
-        $product5->setName('New Balance 新品跑鞋女');
+        $product5->setName('新百伦 (New Balance) 跑鞋女');
         $product5->setImg($this->getReference('media-10', Media::class));
         $product5->addOption($this->getReference('option-5', Option::class));
 
