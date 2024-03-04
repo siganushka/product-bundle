@@ -6,9 +6,9 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
-use Siganushka\ProductBundle\Form\Type\CombinedOptionValuesChoiceType;
 use Siganushka\ProductBundle\Model\CombinedOptionValues;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -65,8 +65,12 @@ class ProductVariantType extends AbstractType
         $variants = $product->getVariants();
         $usedChoices = $variants->map(fn (ProductVariant $item) => $item->getCode());
 
-        $form->add('optionValues', CombinedOptionValuesChoiceType::class, [
+        $form->add('optionValues', ChoiceType::class, [
             'label' => 'product.variant.option_values',
+            'choices' => $product->getCombinedOptionValues(),
+            'choice_value' => 'value',
+            'choice_label' => 'label',
+            'choice_translation_domain' => false,
             'choice_attr' => function (CombinedOptionValues $optionValues) use ($usedChoices, $variant): array {
                 if ($optionValues->equalsTo($variant->getOptionValues())) {
                     return ['disabled' => false];
@@ -75,13 +79,10 @@ class ProductVariantType extends AbstractType
                 return ['disabled' => $usedChoices->contains($optionValues->getValue())];
             },
             'disabled' => null !== $variant->getId(),
-            'product' => $product,
             'placeholder' => 'generic.choice',
             'constraints' => new NotBlank(),
             'priority' => 1,
-            'setter' => function (ProductVariant &$variant, ?CombinedOptionValues $optionValues): void {
-                $optionValues && $variant->setOptionValues($optionValues);
-            },
+            'setter' => fn (ProductVariant &$variant, ?CombinedOptionValues $optionValues) => $variant->setOptionValues($optionValues),
         ]);
     }
 }

@@ -46,8 +46,12 @@ class CombinedOptionValues extends ArrayCollection
         return $this->value;
     }
 
-    public function equalsTo(self $target): bool
+    public function equalsTo(?self $target): bool
     {
+        if (null === $target) {
+            return false;
+        }
+
         return $this->value === $target->getValue();
     }
 }

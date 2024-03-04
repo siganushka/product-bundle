@@ -114,10 +114,10 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return new CombinedOptionValues($this->optionValues->toArray());
     }
 
-    public function setOptionValues(CombinedOptionValues $optionValues): self
+    public function setOptionValues(?CombinedOptionValues $optionValues): self
     {
-        $this->code = $optionValues->getValue();
-        $this->optionValues = $optionValues;
+        $this->code = $optionValues ? $optionValues->getValue() : null;
+        $this->optionValues = $optionValues ?? new ArrayCollection();
 
         return $this;
     }
