@@ -34,7 +34,7 @@
         <button
           type="button"
           class="btn btn-link link-danger px-0"
-          onclick="removeCollectionItem('{{ id }}')"
+          onclick="removeCollectionItem('{{ id }}', '{{ 'generic.remove_confirmation'|trans }}')"
           {% if form.parent.vars.disabled %}disabled{% endif %}
         >{{ 'generic.remove'|trans }}</button>
       </td>

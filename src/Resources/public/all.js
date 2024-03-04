@@ -1,4 +1,4 @@
-const addCollectionItem = function (event, target) {
+const addCollectionItem = (event, target) => {
   const collectionHolder = document.getElementById(target)
   const collectionItem = collectionHolder.querySelectorAll('.collection-item')
 
@@ -8,8 +8,8 @@ const addCollectionItem = function (event, target) {
   collectionHolder.insertAdjacentHTML('beforeend', newItem.trim())
 }
 
-const removeCollectionItem = function (target) {
-  if (false === confirm('Are you sure?')) return false
+const removeCollectionItem = (target, confirmationText) => {
+  if (false === confirm(confirmationText)) return false
   const entry = document.getElementById(target)
   entry && entry.remove()
 }
