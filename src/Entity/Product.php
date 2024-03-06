@@ -36,10 +36,10 @@ class Product implements ResourceInterface, TimestampableInterface
     private ?Media $img = null;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Option::class, inversedBy="products")
+     * @ORM\OneToMany(targetEntity=ProductOption::class, mappedBy="product", cascade={"all"}, orphanRemoval=true)
      * @ORM\OrderBy({"sort": "DESC", "createdAt": "ASC", "id": "ASC"})
      *
-     * @var Collection<int, Option>
+     * @var Collection<int, ProductOption>
      */
     private Collection $options;
 
@@ -82,25 +82,30 @@ class Product implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * @return Collection<int, Option>
+     * @return Collection<int, ProductOption>
      */
     public function getOptions(): Collection
     {
         return $this->options;
     }
 
-    public function addOption(Option $option): self
+    public function addOption(ProductOption $option): self
     {
         if (!$this->options->contains($option)) {
             $this->options[] = $option;
+            $option->setProduct($this);
         }
 
         return $this;
     }
 
-    public function removeOption(Option $option): self
+    public function removeOption(ProductOption $option): self
     {
-        $this->options->removeElement($option);
+        if ($this->options->removeElement($option)) {
+            if ($option->getProduct() === $this) {
+                $option->setProduct(null);
+            }
+        }
 
         return $this;
     }
@@ -115,7 +120,9 @@ class Product implements ResourceInterface, TimestampableInterface
 
     public function addVariant(ProductVariant $variant): self
     {
-        if (!$this->variants->contains($variant)) {
+        $codes = $this->variants->map(fn (ProductVariant $variant) => $variant->getCode());
+
+        if (!$codes->contains($variant->getCode())) {
             $this->variants[] = $variant;
             $variant->setProduct($this);
         }
@@ -143,11 +150,26 @@ class Product implements ResourceInterface, TimestampableInterface
     }
 
     /**
+     * @return array<int, ProductVariant>
+     */
+    public function getCombinedVariants(): array
+    {
+        if (!$this->isOptionally()) {
+            return [new ProductVariant()];
+        }
+
+        $values = $this->options->map(fn (ProductOption $option) => $option->getValues());
+        $cartesianProduct = new CartesianProduct($values->toArray());
+
+        return array_map(fn (array $opitonValues) => new ProductVariant($opitonValues), $cartesianProduct->asArray());
+    }
+
+    /**
      * @return array<int, CombinedOptionValues>
      */
     public function getCombinedOptionValues(): array
     {
-        $values = $this->options->map(fn (Option $option) => $option->getValues());
+        $values = $this->options->map(fn (ProductOption $option) => $option->getValues());
         $cartesianProduct = new CartesianProduct($values->toArray());
 
         return array_map(fn (array $opitonValues) => new CombinedOptionValues($opitonValues), $cartesianProduct->asArray());

@@ -13,19 +13,22 @@ use Siganushka\Contracts\Doctrine\SortableInterface;
 use Siganushka\Contracts\Doctrine\SortableTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
-use Siganushka\ProductBundle\Exception\ResourceDisallowRemoveException;
-use Siganushka\ProductBundle\Repository\OptionRepository;
+use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 
 /**
- * @ORM\Entity(repositoryClass=OptionRepository::class)
- * @ORM\Table(name="`option`")
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\Entity(repositoryClass=ProductOptionRepository::class)
  */
-class Option implements ResourceInterface, SortableInterface, TimestampableInterface, \Stringable
+class ProductOption implements ResourceInterface, SortableInterface, TimestampableInterface, \Stringable
 {
     use ResourceTrait;
     use SortableTrait;
     use TimestampableTrait;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="options")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private ?Product $product = null;
 
     /**
      * @ORM\Column(type="string")
@@ -33,24 +36,28 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
     private ?string $name = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=OptionValue::class, mappedBy="option", cascade={"all"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=ProductOptionValue::class, mappedBy="option", cascade={"all"}, orphanRemoval=true)
      * @ORM\OrderBy({"sort": "DESC", "createdAt": "ASC", "id": "ASC"})
      *
-     * @var Collection<int, OptionValue>
+     * @var Collection<int, ProductOptionValue>
      */
     private Collection $values;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Product::class, mappedBy="options")
-     *
-     * @var Collection<int, Product>
-     */
-    private Collection $products;
 
     public function __construct()
     {
         $this->values = new ArrayCollection();
-        $this->products = new ArrayCollection();
+    }
+
+    public function getProduct(): ?Product
+    {
+        return $this->product;
+    }
+
+    public function setProduct(?Product $product): self
+    {
+        $this->product = $product;
+
+        return $this;
     }
 
     public function getName(): ?string
@@ -66,14 +73,14 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
     }
 
     /**
-     * @return Collection<int, OptionValue>
+     * @return Collection<int, ProductOptionValue>
      */
     public function getValues(): Collection
     {
         return $this->values;
     }
 
-    public function addValue(OptionValue $value): self
+    public function addValue(ProductOptionValue $value): self
     {
         if (!$this->values->contains($value)) {
             $this->values[] = $value;
@@ -83,39 +90,12 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
         return $this;
     }
 
-    public function removeValue(OptionValue $value): self
+    public function removeValue(ProductOptionValue $value): self
     {
         if ($this->values->removeElement($value)) {
             if ($value->getOption() === $this) {
                 $value->setOption(null);
             }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Product>
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    public function addProduct(Product $product): self
-    {
-        if (!$this->products->contains($product)) {
-            $this->products[] = $product;
-            $product->addOption($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(Product $product): self
-    {
-        if ($this->products->removeElement($product)) {
-            $product->removeOption($this);
         }
 
         return $this;
@@ -132,15 +112,5 @@ class Option implements ResourceInterface, SortableInterface, TimestampableInter
             (string) $this->name,
             implode('/', $this->values->map(fn (OptionValue $value) => $value->getText())->toArray()),
         );
-    }
-
-    /**
-     * @ORM\PreRemove
-     */
-    public function assertAllowedRemove(): void
-    {
-        if (!$this->products->isEmpty()) {
-            throw new ResourceDisallowRemoveException($this, 'products');
-        }
     }
 }

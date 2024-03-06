@@ -8,7 +8,7 @@ use Siganushka\MediaBundle\AbstractChannel;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Mapping\GenericMetadata;
 
-class OptionValueImg extends AbstractChannel
+class ProductOptionValueImg extends AbstractChannel
 {
     protected function loadConstraints(GenericMetadata $metadata): void
     {

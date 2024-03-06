@@ -24,22 +24,22 @@ use Siganushka\ProductBundle\Repository\OptionValueRepository;
  * })
  * @ORM\HasLifecycleCallbacks()
  */
-class OptionValue implements ResourceInterface, SortableInterface, TimestampableInterface
+class ProductOptionValue implements ResourceInterface, SortableInterface, TimestampableInterface
 {
     use ResourceTrait;
     use SortableTrait;
     use TimestampableTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Option::class, inversedBy="values")
+     * @ORM\ManyToOne(targetEntity=ProductOption::class, inversedBy="values")
      * @ORM\JoinColumn(nullable=false)
      */
-    private ?Option $option = null;
+    private ?ProductOption $option = null;
 
     /**
      * @ORM\Column(type="string", length=7, options={"fixed": true})
      */
-    private string $code;
+    private ?string $code;
 
     /**
      * @ORM\Column(type="string")
@@ -65,26 +65,25 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
 
     public function __construct(string $text = null, string $note = null, Media $img = null)
     {
-        $this->code = mb_substr(md5(spl_object_hash($this)), 0, 7);
-        $this->text = $text;
-        $this->note = $note;
-        $this->img = $img;
+        $this->setText($text);
+        $this->setNote($note);
+        $this->setImg($img);
         $this->variants = new ArrayCollection();
     }
 
-    public function getOption(): ?Option
+    public function getOption(): ?ProductOption
     {
         return $this->option;
     }
 
-    public function setOption(?Option $option): self
+    public function setOption(?ProductOption $option): self
     {
         $this->option = $option;
 
         return $this;
     }
 
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return $this->code;
     }
@@ -101,6 +100,7 @@ class OptionValue implements ResourceInterface, SortableInterface, Timestampable
 
     public function setText(?string $text): self
     {
+        $this->code = null === $text ? null : mb_substr(md5($text), 0, 7);
         $this->text = $text;
 
         return $this;

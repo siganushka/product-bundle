@@ -8,8 +8,8 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Siganushka\MediaBundle\Event\MediaSaveEvent;
 use Siganushka\MediaBundle\Form\DataTransformer\ChannelToAliasTransformer;
-use Siganushka\ProductBundle\Media\OptionValueImg;
 use Siganushka\ProductBundle\Media\ProductImg;
+use Siganushka\ProductBundle\Media\ProductOptionValueImg;
 use Siganushka\ProductBundle\SiganushkaProductBundle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
@@ -32,20 +32,20 @@ class MediaFixtures extends Fixture
         $dir = \dirname($ref->getFileName());
 
         $mapping = [
-            OptionValueImg::class => [
-                $dir.'/Resources/data/option-value-1.jpg',
-                $dir.'/Resources/data/option-value-2.jpg',
-                $dir.'/Resources/data/option-value-3.jpg',
-                $dir.'/Resources/data/option-value-4.jpg',
-                $dir.'/Resources/data/option-value-5.jpg',
-            ],
             ProductImg::class => [
+                $dir.'/Resources/data/product-0.jpg',
                 $dir.'/Resources/data/product-1.jpg',
                 $dir.'/Resources/data/product-2.jpg',
                 $dir.'/Resources/data/product-3.jpg',
                 $dir.'/Resources/data/product-4.jpg',
                 $dir.'/Resources/data/product-5.jpg',
-                $dir.'/Resources/data/product-6.jpg',
+            ],
+            ProductOptionValueImg::class => [
+                $dir.'/Resources/data/option-value-0.jpg',
+                $dir.'/Resources/data/option-value-1.jpg',
+                $dir.'/Resources/data/option-value-2.jpg',
+                $dir.'/Resources/data/option-value-3.jpg',
+                $dir.'/Resources/data/option-value-4.jpg',
             ],
         ];
 

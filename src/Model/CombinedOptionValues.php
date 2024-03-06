@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Siganushka\ProductBundle\Entity\OptionValue;
+use Siganushka\ProductBundle\Entity\ProductOptionValue;
 
 /**
- * @template-extends ArrayCollection<int, OptionValue>
+ * @template-extends ArrayCollection<int, ProductOptionValue>
  */
-class CombinedOptionValues extends ArrayCollection
+class CombinedOptionValues extends ArrayCollection implements \Stringable
 {
     private ?string $label;
     private ?string $value;
@@ -19,8 +19,8 @@ class CombinedOptionValues extends ArrayCollection
     {
         $label = $value = [];
         foreach ($optionValues as $optionValue) {
-            if (!$optionValue instanceof OptionValue) {
-                throw new \UnexpectedValueException(sprintf('Expected argument of type "%s", "%s" given', OptionValue::class, get_debug_type($optionValue)));
+            if (!$optionValue instanceof ProductOptionValue) {
+                throw new \UnexpectedValueException(sprintf('Expected argument of type "%s", "%s" given', ProductOptionValue::class, get_debug_type($optionValue)));
             }
 
             $label[] = $optionValue->getText();
@@ -53,5 +53,10 @@ class CombinedOptionValues extends ArrayCollection
         }
 
         return $this->value === $target->getValue();
+    }
+
+    public function __toString()
+    {
+        return $this->label;
     }
 }

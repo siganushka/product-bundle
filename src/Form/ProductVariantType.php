@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
+use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
-use Siganushka\ProductBundle\Model\CombinedOptionValues;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -33,19 +32,7 @@ class ProductVariantType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
-            $form = $event->getForm();
-            $data = $event->getData();
-
-            // Using prototype_data for embed collection
-            $parent = $form->getParent();
-            $prototypeData = $parent ? $parent->getConfig()->getOption('prototype_data') : null;
-
-            $variant = $data ?? $prototypeData;
-            if ($variant instanceof ProductVariant) {
-                $this->formModifier($form, $variant);
-            }
-        });
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -55,34 +42,29 @@ class ProductVariantType extends AbstractType
         ]);
     }
 
-    public function formModifier(FormInterface $form, ProductVariant $variant): void
+    public function onPreSetData(FormEvent $event): void
     {
-        $product = $variant->getProduct();
-        if (null === $product || !$product->isOptionally()) {
+        $data = $event->getData();
+        if (!$data instanceof ProductVariant) {
             return;
         }
 
-        $variants = $product->getVariants();
-        $usedChoices = $variants->map(fn (ProductVariant $item) => $item->getCode());
+        if (null === $data->getCode()) {
+            return;
+        }
 
-        $form->add('optionValues', ChoiceType::class, [
-            'label' => 'product.variant.option_values',
-            'choices' => $product->getCombinedOptionValues(),
-            'choice_value' => 'value',
-            'choice_label' => 'label',
-            'choice_translation_domain' => false,
-            'choice_attr' => function (CombinedOptionValues $optionValues) use ($usedChoices, $variant): array {
-                if ($optionValues->equalsTo($variant->getOptionValues())) {
-                    return ['disabled' => false];
+        $form = $event->getForm();
+        $form->add('optionValues', TextType::class, [
+            'disabled' => true,
+            'priority' => 1,
+            'getter' => function (ProductVariant $variant): ?string {
+                $optionValues = $variant->getOptionValues();
+                if ($optionValues->isEmpty()) {
+                    return null;
                 }
 
-                return ['disabled' => $usedChoices->contains($optionValues->getValue())];
+                return implode('/', $optionValues->map(fn (ProductOptionValue $value) => $value->getText())->toArray());
             },
-            'disabled' => null !== $variant->getId(),
-            'placeholder' => 'generic.choice',
-            'constraints' => new NotBlank(),
-            'priority' => 1,
-            'setter' => fn (ProductVariant &$variant, ?CombinedOptionValues $optionValues) => $variant->setOptionValues($optionValues),
         ]);
     }
 }
