@@ -1,15 +1,15 @@
-const addCollectionItem = (event, target) => {
-  const collectionHolder = document.getElementById(target)
-  const collectionItem = collectionHolder.querySelectorAll('.collection-item')
+const addCollectionEntry = (event, collectionId, replaceName) => {
+  const collection = document.getElementById(collectionId)
+  const { index, prototype } = event.currentTarget.dataset
 
-  const { prototype } = event.currentTarget.dataset
-  const newItem = prototype.replace(/__name__/g, collectionItem.length ++)
+  const newEntry = prototype.replace(new RegExp(replaceName, 'g'), index)
+  collection.insertAdjacentHTML('beforeend', newEntry.trim())
 
-  collectionHolder.insertAdjacentHTML('beforeend', newItem.trim())
+  event.currentTarget.dataset.index ++
 }
 
-const removeCollectionItem = (target, confirmationText) => {
+const removeCollectionEntry = (collectionEntryId, confirmationText) => {
   if (false === confirm(confirmationText)) return false
-  const entry = document.getElementById(target)
-  entry && entry.remove()
+  const collectionEntry = document.getElementById(collectionEntryId)
+  collectionEntry && collectionEntry.remove()
 }

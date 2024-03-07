@@ -4,8 +4,9 @@
       <button
         type="button"
         class="btn btn-primary"
+        data-index="{{ form|length }}"
         data-prototype="{{ form_widget(prototype)|e('html_attr') }}"
-        onclick="addCollectionItem(event, '{{ id }}')"
+        onclick="addCollectionEntry(event, '{{ id }}', '{{ prototype.vars.name }}')"
         {% if disabled %}disabled{% endif %}
       >{{ 'generic.add'|trans }}</button>
     </div>
@@ -13,28 +14,28 @@
 
   <table class="table border-top my-0">
     <tbody id="{{ id }}">
-      {%- for item in form -%}
-        {{ form_widget(item) }}
+      {%- for entry in form -%}
+        {{ form_widget(entry) }}
       {%- endfor -%}
     </tbody>
   </table>
 {%- endblock -%}
 
 {%- block collection_entry_widget -%}
-  <tr id="{{ id }}" class="collection-item">
-    {%- for item in form -%}
+  <tr id="{{ id }}">
+    {%- for entry in form -%}
       <td>
-        {{ form_widget(item) }}
-        {{ form_errors(item) }}
+        {{ form_widget(entry) }}
+        {{ form_errors(entry) }}
       </td>
     {%- endfor -%}
 
     {% if form.parent.vars.allow_delete %}
-      <td style="min-width: 60px">
+      <td style="min-width: 50px">
         <button
           type="button"
           class="btn btn-link link-danger px-0"
-          onclick="removeCollectionItem('{{ id }}', '{{ 'generic.remove_confirmation'|trans }}')"
+          onclick="removeCollectionEntry('{{ id }}', '{{ 'generic.remove_confirmation'|trans }}')"
           {% if form.parent.vars.disabled %}disabled{% endif %}
         >{{ 'generic.remove'|trans }}</button>
       </td>
