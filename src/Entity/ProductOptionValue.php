@@ -39,7 +39,7 @@ class ProductOptionValue implements ResourceInterface, SortableInterface, Timest
     /**
      * @ORM\Column(type="string", length=7, options={"fixed": true})
      */
-    private ?string $code;
+    private ?string $code = null;
 
     /**
      * @ORM\Column(type="string")
@@ -146,6 +146,17 @@ class ProductOptionValue implements ResourceInterface, SortableInterface, Timest
     public function removeVariant(ProductVariant $variant): self
     {
         throw new \BadMethodCallException('The variant cannot be modified anymore.');
+    }
+
+    public function getDescriptor(): ?string
+    {
+        $optionName = $this->option ? $this->option->getName() : null;
+
+        if (\is_string($this->text) && \is_string($optionName)) {
+            return sprintf('%s: %s', $optionName, $this->text);
+        }
+
+        return $this->text;
     }
 
     /**

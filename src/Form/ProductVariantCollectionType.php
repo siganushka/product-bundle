@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Unique;
 
@@ -18,7 +19,15 @@ class ProductVariantCollectionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+            $data = $event->getData();
+            if (!$data instanceof Product) {
+                return;
+            }
+
+            $method = $data->isOptionally() ? 'addVariantCollectionField' : 'addVariantField';
+            \call_user_func([$this, $method], $event->getForm(), $data);
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -28,17 +37,11 @@ class ProductVariantCollectionType extends AbstractType
         ]);
     }
 
-    public function onPreSetData(FormEvent $event): void
+    public function addVariantCollectionField(FormInterface $form, Product $product): void
     {
-        $data = $event->getData();
-        if (!$data instanceof Product) {
-            return;
-        }
+        $generatedVariants = $product->getGeneratedVariants();
+        array_walk($generatedVariants, [$product, 'addVariant']);
 
-        $combinedVariants = $data->getCombinedVariants();
-        array_walk($combinedVariants, [$data, 'addVariant']);
-
-        $form = $event->getForm();
         $form->add('variants', CollectionType::class, [
             'label' => 'product.variants',
             'entry_type' => ProductVariantType::class,
@@ -49,6 +52,18 @@ class ProductVariantCollectionType extends AbstractType
                 'message' => 'product.variant.option_values.unique',
                 'normalizer' => fn (ProductVariant $variant) => $variant->getCode() ?? spl_object_hash($variant),
             ]),
+        ]);
+    }
+
+    public function addVariantField(FormInterface $form, Product $product): void
+    {
+        $emptyData = new ProductVariant();
+        $emptyData->setProduct($product);
+
+        $form->add('variant', ProductVariantType::class, [
+            'label' => 'product.variants',
+            'property_path' => 'variants[0]',
+            'empty_data' => $emptyData,
         ]);
     }
 }

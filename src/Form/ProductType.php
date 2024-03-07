@@ -45,18 +45,24 @@ class ProductType extends AbstractType
     public function onPreSetData(FormEvent $event): void
     {
         $data = $event->getData();
-        $disabled = $data instanceof Product && null !== $data->getId() ? true : false;
+        if (!$data instanceof Product) {
+            return;
+        }
+
+        $isNew = null === $data->getId();
+        if (false === $isNew && false === $data->isOptionally()) {
+            return;
+        }
 
         $form = $event->getForm();
         $form->add('options', CollectionType::class, [
-            'label' => 'product.variants',
+            'label' => 'product.options',
             'entry_type' => ProductOptionType::class,
             'entry_options' => ['label' => false],
-            'allow_add' => true,
-            'allow_delete' => true,
+            'allow_add' => $isNew,
+            'allow_delete' => $isNew,
             'error_bubbling' => false,
             'by_reference' => false,
-            'disabled' => $disabled,
         ]);
     }
 }

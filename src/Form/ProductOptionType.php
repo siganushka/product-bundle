@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\ProductOption;
+use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Unique;
 
 class ProductOptionType extends AbstractType
 {
@@ -29,6 +32,15 @@ class ProductOptionType extends AbstractType
                 'allow_delete' => true,
                 'error_bubbling' => false,
                 'by_reference' => false,
+                // [important] Using nested collections
+                'prototype_name' => '__PRODUCT_OPTION_VALUES__',
+                'constraints' => [
+                    new Count(['min' => 2, 'minMessage' => 'option.values.min_count.invalid']),
+                    new Unique([
+                        'message' => 'product.variant.option_values.unique',
+                        'normalizer' => fn (ProductOptionValue $value) => $value->getCode() ?? spl_object_hash($value),
+                    ]),
+                ],
             ])
         ;
     }

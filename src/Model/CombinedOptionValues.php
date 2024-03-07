@@ -10,7 +10,7 @@ use Siganushka\ProductBundle\Entity\ProductOptionValue;
 /**
  * @template-extends ArrayCollection<int, ProductOptionValue>
  */
-class CombinedOptionValues extends ArrayCollection implements \Stringable
+class CombinedOptionValues extends ArrayCollection
 {
     private ?string $label;
     private ?string $value;
@@ -23,7 +23,7 @@ class CombinedOptionValues extends ArrayCollection implements \Stringable
                 throw new \UnexpectedValueException(sprintf('Expected argument of type "%s", "%s" given', ProductOptionValue::class, get_debug_type($optionValue)));
             }
 
-            $label[] = $optionValue->getText();
+            $label[] = $optionValue->getDescriptor();
             $value[] = $optionValue->getCode();
         }
 
@@ -53,10 +53,5 @@ class CombinedOptionValues extends ArrayCollection implements \Stringable
         }
 
         return $this->value === $target->getValue();
-    }
-
-    public function __toString()
-    {
-        return $this->label;
     }
 }

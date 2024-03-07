@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Symfony\Component\Form\AbstractType;
@@ -49,22 +48,17 @@ class ProductVariantType extends AbstractType
             return;
         }
 
+        // non-optionally
         if (null === $data->getCode()) {
             return;
         }
 
         $form = $event->getForm();
         $form->add('optionValues', TextType::class, [
+            'label' => 'product.variant.option_values',
             'disabled' => true,
             'priority' => 1,
-            'getter' => function (ProductVariant $variant): ?string {
-                $optionValues = $variant->getOptionValues();
-                if ($optionValues->isEmpty()) {
-                    return null;
-                }
-
-                return implode('/', $optionValues->map(fn (ProductOptionValue $value) => $value->getText())->toArray());
-            },
+            'getter' => fn (ProductVariant $variant) => $variant->getOptionValues()->getLabel(),
         ]);
     }
 }

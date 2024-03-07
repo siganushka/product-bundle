@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
+use Siganushka\ProductBundle\Model\CombinedOptionValues;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 /**
@@ -53,15 +53,13 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      */
     private Collection $optionValues;
 
-    public function __construct(array $optionValues = [])
+    public function __construct(Product $product = null, array $optionValues = [])
     {
-        $codes = array_map(fn (ProductOptionValue $optionValue) => $optionValue->getCode(), $optionValues);
+        $optionValues = new CombinedOptionValues($optionValues);
 
-        // [important] Generate identity from sorted value
-        sort($codes);
-
-        $this->code = \count($codes) ? implode('-', $codes) : null;
-        $this->optionValues = new ArrayCollection($optionValues);
+        $this->product = $product;
+        $this->optionValues = $optionValues;
+        $this->code = $optionValues->getValue();
     }
 
     public function getProduct(): ?Product
@@ -111,11 +109,15 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * @return Collection<int, ProductOptionValue>
+     * @return CombinedOptionValues
      */
     public function getOptionValues(): Collection
     {
-        return $this->optionValues;
+        if ($this->optionValues instanceof CombinedOptionValues) {
+            return $this->optionValues;
+        }
+
+        return new CombinedOptionValues($this->optionValues->toArray());
     }
 
     public function addOptionValue(ProductOptionValue $optionValue): self
@@ -130,18 +132,14 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     public function getDescriptor(): ?string
     {
-        if (null === $this->product) {
-            return null;
+        $label = $this->getOptionValues()->getLabel();
+        $productName = $this->product ? $this->product->getName() : null;
+
+        if (\is_string($label) && \is_string($productName)) {
+            return sprintf('%s【%s】', $productName, $label);
         }
 
-        $name = $this->product->getName();
-        $optionValues = $this->getOptionValues();
-
-        if (null === $name || $optionValues->isEmpty()) {
-            return $name;
-        }
-
-        return sprintf('%s【%s】', $name, $optionValues->getLabel());
+        return $productName;
     }
 
     /**

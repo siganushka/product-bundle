@@ -30,11 +30,11 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
 
         $option2 = new ProductOption();
         $option2->setName('辣度');
-        $option2->addValue(new ProductOptionValue('不辣', null, $this->getReference('media-0', Media::class)));
-        $option2->addValue(new ProductOptionValue('微辣', null, $this->getReference('media-1', Media::class)));
-        $option2->addValue(new ProductOptionValue('中辣', null, $this->getReference('media-2', Media::class)));
-        $option2->addValue(new ProductOptionValue('特辣', null, $this->getReference('media-3', Media::class)));
-        $option2->addValue(new ProductOptionValue('变态辣', null, $this->getReference('media-4', Media::class)));
+        $option2->addValue(new ProductOptionValue('不辣', null, $this->getReference('media-6', Media::class)));
+        $option2->addValue(new ProductOptionValue('微辣', null, $this->getReference('media-7', Media::class)));
+        $option2->addValue(new ProductOptionValue('中辣', null, $this->getReference('media-8', Media::class)));
+        $option2->addValue(new ProductOptionValue('特辣', null, $this->getReference('media-9', Media::class)));
+        $option2->addValue(new ProductOptionValue('变态辣', null, $this->getReference('media-10', Media::class)));
 
         $option3 = new ProductOption();
         $option3->setName('尺码');

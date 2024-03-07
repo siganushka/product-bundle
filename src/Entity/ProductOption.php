@@ -18,7 +18,7 @@ use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 /**
  * @ORM\Entity(repositoryClass=ProductOptionRepository::class)
  */
-class ProductOption implements ResourceInterface, SortableInterface, TimestampableInterface, \Stringable
+class ProductOption implements ResourceInterface, SortableInterface, TimestampableInterface
 {
     use ResourceTrait;
     use SortableTrait;
@@ -99,18 +99,5 @@ class ProductOption implements ResourceInterface, SortableInterface, Timestampab
         }
 
         return $this;
-    }
-
-    public function __toString(): string
-    {
-        if ($this->values->isEmpty()) {
-            return (string) $this->name;
-        }
-
-        return sprintf(
-            '%s【%s】',
-            (string) $this->name,
-            implode('/', $this->values->map(fn (OptionValue $value) => $value->getText())->toArray()),
-        );
     }
 }

@@ -13,7 +13,6 @@ use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
-use Siganushka\ProductBundle\Model\CombinedOptionValues;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
 /**
@@ -152,26 +151,15 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @return array<int, ProductVariant>
      */
-    public function getCombinedVariants(): array
+    public function getGeneratedVariants(): array
     {
         if (!$this->isOptionally()) {
-            return [new ProductVariant()];
+            return [new ProductVariant($this)];
         }
 
         $values = $this->options->map(fn (ProductOption $option) => $option->getValues());
         $cartesianProduct = new CartesianProduct($values->toArray());
 
-        return array_map(fn (array $opitonValues) => new ProductVariant($opitonValues), $cartesianProduct->asArray());
-    }
-
-    /**
-     * @return array<int, CombinedOptionValues>
-     */
-    public function getCombinedOptionValues(): array
-    {
-        $values = $this->options->map(fn (ProductOption $option) => $option->getValues());
-        $cartesianProduct = new CartesianProduct($values->toArray());
-
-        return array_map(fn (array $opitonValues) => new CombinedOptionValues($opitonValues), $cartesianProduct->asArray());
+        return array_map(fn (array $opitonValues) => new ProductVariant($this, $opitonValues), $cartesianProduct->asArray());
     }
 }
