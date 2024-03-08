@@ -100,4 +100,9 @@ class ProductOption implements ResourceInterface, SortableInterface, Timestampab
 
         return $this;
     }
+
+    public function __clone()
+    {
+        $this->values->map(fn (ProductOptionValue $value) => $this->addValue(clone $value));
+    }
 }

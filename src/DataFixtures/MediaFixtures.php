@@ -39,13 +39,15 @@ class MediaFixtures extends Fixture
                 $dir.'/Resources/data/product-3.jpg',
                 $dir.'/Resources/data/product-4.jpg',
                 $dir.'/Resources/data/product-5.jpg',
+                $dir.'/Resources/data/product-6.jpg',
+                $dir.'/Resources/data/product-7.jpg',
             ],
             ProductOptionValueImg::class => [
-                $dir.'/Resources/data/option-value-0.jpg',
-                $dir.'/Resources/data/option-value-1.jpg',
-                $dir.'/Resources/data/option-value-2.jpg',
-                $dir.'/Resources/data/option-value-3.jpg',
-                $dir.'/Resources/data/option-value-4.jpg',
+                $dir.'/Resources/data/product-option-value-0.jpg',
+                $dir.'/Resources/data/product-option-value-1.jpg',
+                $dir.'/Resources/data/product-option-value-2.jpg',
+                $dir.'/Resources/data/product-option-value-3.jpg',
+                $dir.'/Resources/data/product-option-value-4.jpg',
             ],
         ];
 
