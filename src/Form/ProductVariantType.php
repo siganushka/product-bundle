@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
+use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
+use Siganushka\ProductBundle\Media\ProductVariantImg;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -54,7 +56,13 @@ class ProductVariantType extends AbstractType
         }
 
         $form = $event->getForm();
-        $form->add('optionValues', TextType::class, [
+        $form->add('img', MediaType::class, [
+            'label' => 'option.value.img',
+            'channel' => ProductVariantImg::class,
+            'style' => $form->isRoot() ? 'width: 100px; height: 100px' : 'width: 38px; height: 38px',
+            'priority' => 1,
+        ])
+        ->add('optionValues', TextType::class, [
             'label' => 'product.variant.option_values',
             'disabled' => true,
             'priority' => 1,
