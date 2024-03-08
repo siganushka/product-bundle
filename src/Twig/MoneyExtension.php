@@ -20,12 +20,7 @@ class MoneyExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('money', [$this, 'moneyFilter']),
+            new TwigFilter('money', [$this->formatter, 'format']),
         ];
-    }
-
-    public function moneyFilter(?int $value, array $context = []): string
-    {
-        return $this->formatter->format($value, $context);
     }
 }
