@@ -24,11 +24,11 @@ class ProductVariantType extends AbstractType
     {
         $builder
             ->add('price', CentsMoneyType::class, [
-                'label' => 'product.variant.price',
+                'label' => 'product_variant.price',
                 'constraints' => new NotBlank(),
             ])
             ->add('inventory', IntegerType::class, [
-                'label' => 'product.variant.inventory',
+                'label' => 'product_variant.inventory',
                 'constraints' => new GreaterThanOrEqual(0),
             ])
         ;
@@ -57,13 +57,13 @@ class ProductVariantType extends AbstractType
 
         $form = $event->getForm();
         $form->add('img', MediaType::class, [
-            'label' => 'option.value.img',
+            'label' => 'product_variant.img',
             'channel' => ProductVariantImg::class,
             'style' => $form->isRoot() ? 'width: 100px; height: 100px' : 'width: 38px; height: 38px',
             'priority' => 1,
         ])
         ->add('optionValues', TextType::class, [
-            'label' => 'product.variant.option_values',
+            'label' => 'product_variant.option_values',
             'disabled' => true,
             'priority' => 1,
             'getter' => fn (ProductVariant $variant) => $variant->getOptionValues()->getLabel(),

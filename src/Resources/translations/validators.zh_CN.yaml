@@ -1,2 +1,2 @@
-option.values.min_count.invalid: 选项值至少应该包含 {{ limit }} 个。
-product.variant.option_values.unique: 库存规格不能重复。
+product_option.values.min_count: 选项值至少应该包含 {{ limit }} 个。
+product_option.values.unique: 选项值文字不能重复。

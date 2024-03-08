@@ -13,20 +13,19 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Unique;
 
 class ProductVariantCollectionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event): void {
+            $form = $event->getForm();
             $data = $event->getData();
-            if (!$data instanceof Product) {
-                return;
+            if ($data instanceof Product && $data->isOptionally()) {
+                $this->addVariantCollectionField($form, $data);
+            } else {
+                $this->addVariantField($form, $data);
             }
-
-            $method = $data->isOptionally() ? 'addVariantCollectionField' : 'addVariantField';
-            \call_user_func([$this, $method], $event->getForm(), $data);
         });
     }
 
@@ -48,14 +47,10 @@ class ProductVariantCollectionType extends AbstractType
             'entry_options' => ['label' => false],
             'error_bubbling' => false,
             'by_reference' => false,
-            'constraints' => new Unique([
-                'message' => 'product.variant.option_values.unique',
-                'normalizer' => fn (ProductVariant $variant) => $variant->getCode() ?? spl_object_hash($variant),
-            ]),
         ]);
     }
 
-    public function addVariantField(FormInterface $form, Product $product): void
+    public function addVariantField(FormInterface $form, ?Product $product): void
     {
         $emptyData = new ProductVariant();
         $emptyData->setProduct($product);

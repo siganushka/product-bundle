@@ -30,7 +30,7 @@ class CombinedOptionValues extends ArrayCollection
         // [important] Generate identity from sorted value
         sort($value);
 
-        $this->label = \count($label) ? implode('/', $label) : null;
+        $this->label = \count($label) ? implode(', ', $label) : null;
         $this->value = \count($value) ? implode('-', $value) : null;
 
         parent::__construct($optionValues);

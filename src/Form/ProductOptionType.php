@@ -21,11 +21,11 @@ class ProductOptionType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'option.name',
+                'label' => 'product_option.name',
                 'constraints' => new NotBlank(),
             ])
             ->add('values', CollectionType::class, [
-                'label' => 'option.values',
+                'label' => 'product_option.values',
                 'entry_type' => ProductOptionValueType::class,
                 'entry_options' => ['label' => false],
                 'allow_add' => true,
@@ -35,9 +35,9 @@ class ProductOptionType extends AbstractType
                 // [important] Using nested collections
                 'prototype_name' => '__PRODUCT_OPTION_VALUES__',
                 'constraints' => [
-                    new Count(['min' => 2, 'minMessage' => 'option.values.min_count.invalid']),
+                    new Count(['min' => 2, 'minMessage' => 'product_option.values.min_count']),
                     new Unique([
-                        'message' => 'product.variant.option_values.unique',
+                        'message' => 'product_option.values.unique',
                         'normalizer' => fn (ProductOptionValue $value) => $value->getCode() ?? spl_object_hash($value),
                     ]),
                 ],

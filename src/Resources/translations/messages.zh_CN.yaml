@@ -1,13 +1,16 @@
-option.name: 名称
-option.note: 备注
-option.values: 选项
-option.value.text: 文字
-option.value.img: 图片
-
 product.name: 名称
 product.img: 图片
 product.options: 选项
 product.variants: 库存
-product.variant.option_values: 库存规格
-product.variant.price: 销售单价
-product.variant.inventory: 库存数量
+
+product_option.name: 选项名称
+product_option.values: 选项值
+
+product_option_value.text: 文字
+product_option_value.note: 备注
+product_option_value.img: 图片
+
+product_variant.option_values: 库存规格
+product_variant.price: 销售单价
+product_variant.inventory: 库存数量
+product_variant.img: 库存图片
