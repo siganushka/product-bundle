@@ -18,16 +18,12 @@ class ProductOptionValueType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        // Setting label from CollectionType
-        $style = null === $options['label']
-            ? 'width: 100px; height: 100px'
-            : 'width: 38px; height: 38px';
-
         $builder
             ->add('img', MediaType::class, [
                 'label' => 'product_option_value.img',
                 'channel' => ProductOptionValueImg::class,
-                'style' => $style,
+                // // Setting label from CollectionType
+                'style' => null === $options['label'] ? null : 'width: 38px; height: 38px',
             ])
             ->add('text', TextType::class, [
                 'label' => 'product_option_value.text',

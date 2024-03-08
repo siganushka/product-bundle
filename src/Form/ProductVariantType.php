@@ -59,7 +59,7 @@ class ProductVariantType extends AbstractType
         $form->add('img', MediaType::class, [
             'label' => 'product_variant.img',
             'channel' => ProductVariantImg::class,
-            'style' => $form->isRoot() ? 'width: 100px; height: 100px' : 'width: 38px; height: 38px',
+            'style' => $form->isRoot() ? null : 'width: 38px; height: 38px',
             'priority' => 1,
         ])
         ->add('optionValues', TextType::class, [
