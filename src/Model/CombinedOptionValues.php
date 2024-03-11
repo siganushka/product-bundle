@@ -24,7 +24,7 @@ class CombinedOptionValues extends ArrayCollection
             }
 
             $label[] = $optionValue->getDescriptor();
-            $value[] = $optionValue->getCode();
+            $value[] = $optionValue->getId() ?? spl_object_hash($optionValue);
         }
 
         // [important] Generate identity from sorted value

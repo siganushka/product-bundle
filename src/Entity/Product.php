@@ -119,9 +119,9 @@ class Product implements ResourceInterface, TimestampableInterface
 
     public function addVariant(ProductVariant $variant): self
     {
-        $codes = $this->variants->map(fn (ProductVariant $variant) => $variant->getCode());
+        $filtered = $this->variants->filter(fn (ProductVariant $item) => $item->getOptionValues()->equalsTo($variant->getOptionValues()));
 
-        if (!$codes->contains($variant->getCode())) {
+        if ($filtered->isEmpty()) {
             $this->variants[] = $variant;
             $variant->setProduct($this);
         }

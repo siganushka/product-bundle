@@ -6,6 +6,7 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\Product;
+use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Media\ProductImg;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -14,7 +15,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Unique;
 
 class ProductType extends AbstractType
 {
@@ -58,6 +61,13 @@ class ProductType extends AbstractType
                 'allow_delete' => $isNew,
                 'error_bubbling' => false,
                 'by_reference' => false,
+                'constraints' => [
+                    new Count(['max' => 3, 'maxMessage' => 'product_option.max_count']),
+                    new Unique([
+                        'message' => 'product_option.unique',
+                        'normalizer' => fn (ProductOption $option) => $option->getName() ?? spl_object_hash($option),
+                    ]),
+                ],
             ]);
         }
     }

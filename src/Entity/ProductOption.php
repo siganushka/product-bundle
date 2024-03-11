@@ -43,8 +43,9 @@ class ProductOption implements ResourceInterface, SortableInterface, Timestampab
      */
     private Collection $values;
 
-    public function __construct()
+    public function __construct(string $name = null)
     {
+        $this->name = $name;
         $this->values = new ArrayCollection();
     }
 

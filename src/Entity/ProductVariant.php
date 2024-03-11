@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
@@ -17,7 +16,7 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 /**
  * @ORM\Entity(repositoryClass=ProductVariantRepository::class)
  * @ORM\Table(uniqueConstraints={
- *  @ORM\UniqueConstraint(columns={"product_id", "code"})
+ *  @ORM\UniqueConstraint(columns={"product_id", "option_value1_id", "option_value2_id", "option_value3_id"})
  * })
  */
 class ProductVariant implements ResourceInterface, TimestampableInterface
@@ -32,9 +31,19 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     private ?Product $product = null;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
      */
-    private ?string $code = null;
+    private ?ProductOptionValue $optionValue1 = null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
+     */
+    private ?ProductOptionValue $optionValue2 = null;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
+     */
+    private ?ProductOptionValue $optionValue3 = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -51,21 +60,10 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      */
     private ?Media $img = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=ProductOptionValue::class, inversedBy="variants")
-     * @ORM\OrderBy({"sort": "DESC", "createdAt": "ASC", "id": "ASC"})
-     *
-     * @var Collection<int, ProductOptionValue>
-     */
-    private Collection $optionValues;
-
     public function __construct(Product $product = null, array $optionValues = [])
     {
-        $optionValues = new CombinedOptionValues($optionValues);
-
         $this->product = $product;
-        $this->optionValues = $optionValues;
-        $this->code = $optionValues->getValue();
+        [$this->optionValue1, $this->optionValue2, $this->optionValue3] = array_pad($optionValues, 3, null);
     }
 
     public function getProduct(): ?Product
@@ -80,14 +78,44 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getCode(): ?string
+    public function getOptionValue1(): ?ProductOptionValue
     {
-        return $this->code;
+        return $this->optionValue1;
     }
 
-    public function setCode(string $code): self
+    public function setOptionValue1(?ProductOptionValue $optionValue1): self
     {
-        throw new \BadMethodCallException('The code cannot be modified anymore.');
+        throw new \BadMethodCallException('The optionValue1 cannot be modified anymore.');
+    }
+
+    public function getOptionValue2(): ?ProductOptionValue
+    {
+        return $this->optionValue2;
+    }
+
+    public function setOptionValue2(?ProductOptionValue $optionValue2): self
+    {
+        throw new \BadMethodCallException('The optionValue2 cannot be modified anymore.');
+    }
+
+    public function getOptionValue3(): ?ProductOptionValue
+    {
+        return $this->optionValue3;
+    }
+
+    public function setOptionValue3(?ProductOptionValue $optionValue3): self
+    {
+        throw new \BadMethodCallException('The optionValue3 cannot be modified anymore.');
+    }
+
+    public function getOptionValues(): CombinedOptionValues
+    {
+        $optionValues = array_filter(
+            [$this->optionValue1, $this->optionValue2, $this->optionValue3],
+            fn (?ProductOptionValue $optionValue) => null !== $optionValue
+        );
+
+        return new CombinedOptionValues($optionValues);
     }
 
     public function getPrice(): ?int
@@ -124,28 +152,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         $this->img = $img;
 
         return $this;
-    }
-
-    /**
-     * @return CombinedOptionValues
-     */
-    public function getOptionValues(): Collection
-    {
-        if ($this->optionValues instanceof CombinedOptionValues) {
-            return $this->optionValues;
-        }
-
-        return new CombinedOptionValues($this->optionValues->toArray());
-    }
-
-    public function addOptionValue(ProductOptionValue $optionValue): self
-    {
-        throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
-    }
-
-    public function removeOptionValue(ProductOptionValue $optionValue): self
-    {
-        throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
     }
 
     public function getDescriptor(): ?string

@@ -1,2 +1,4 @@
+product_option.max_count: 选项不能超过 {{ limit }} 个。
+product_option.unique: 选项名称不能重复。
 product_option.values.min_count: 选项值至少应该包含 {{ limit }} 个。
 product_option.values.unique: 选项值文字不能重复。

@@ -50,8 +50,8 @@ class ProductVariantType extends AbstractType
             return;
         }
 
-        // non-optionally
-        if (null === $data->getCode()) {
+        $optionValues = $data->getOptionValues();
+        if ($optionValues->isEmpty()) {
             return;
         }
 
