@@ -29,7 +29,10 @@ class ProductController extends AbstractFOSRestController
      */
     public function getCollection(Request $request, PaginatorInterface $paginator): Response
     {
-        $queryBuilder = $this->productRepository->createQueryBuilder('p');
+        $queryBuilder = $this->productRepository->createQueryBuilder('p')
+            // filter empty variants
+            // ->where('p.variants IS NOT EMPTY')
+        ;
 
         $page = $request->query->getInt('page', 1);
         $size = $request->query->getInt('size', 10);
@@ -115,6 +118,18 @@ class ProductController extends AbstractFOSRestController
     {
         $attributes = [
             'id', 'name', 'img', 'optionally', 'updatedAt', 'createdAt',
+            'options' => [
+                'id',
+                'name',
+                'values' => ['id', 'img', 'text', 'note'],
+            ],
+            'variants' => [
+                'id',
+                'price',
+                'inventory',
+                'img',
+                'optionValues',
+            ],
             'combinedOptionValues',
         ];
 

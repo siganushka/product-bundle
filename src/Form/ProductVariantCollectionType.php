@@ -38,8 +38,9 @@ class ProductVariantCollectionType extends AbstractType
 
     public function addVariantCollectionField(FormInterface $form, Product $product): void
     {
-        $generatedVariants = $product->getGeneratedVariants();
-        array_walk($generatedVariants, [$product, 'addVariant']);
+        foreach ($product->getCombinedOptionValues() as $optionValues) {
+            $product->addVariant(new ProductVariant($product, $optionValues));
+        }
 
         $form->add('variants', CollectionType::class, [
             'label' => 'product.variants',

@@ -154,18 +154,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getDescriptor(): ?string
-    {
-        $label = $this->getOptionValues()->getLabel();
-        $productName = $this->product ? $this->product->getName() : null;
-
-        if (\is_string($label) && \is_string($productName)) {
-            return sprintf('%s【%s】', $productName, $label);
-        }
-
-        return $productName;
-    }
-
     /**
      * Returns whether the variant is out of stock.
      */
