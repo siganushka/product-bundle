@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
@@ -60,10 +61,13 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      */
     private ?Media $img = null;
 
-    public function __construct(Product $product = null, array $optionValues = [])
+    public function __construct(Product $product = null, CombinedOptionValues $optionValues = null)
     {
         $this->product = $product;
-        [$this->optionValue1, $this->optionValue2, $this->optionValue3] = array_pad($optionValues, 3, null);
+
+        if ($optionValues instanceof Collection) {
+            [$this->optionValue1, $this->optionValue2, $this->optionValue3] = array_pad($optionValues->toArray(), 3, null);
+        }
     }
 
     public function getProduct(): ?Product

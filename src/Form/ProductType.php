@@ -47,28 +47,27 @@ class ProductType extends AbstractType
 
     public function onPreSetData(FormEvent $event): void
     {
-        /** @var Product|null */
         $data = $event->getData();
-        $isNew = null === $data || null === $data->getId();
+        $disabled = $data instanceof Product && null !== $data->getId();
 
-        if ($isNew || $data && $data->isOptionally()) {
-            $form = $event->getForm();
-            $form->add('options', CollectionType::class, [
-                'label' => 'product.options',
-                'entry_type' => ProductOptionType::class,
-                'entry_options' => ['label' => false],
-                'allow_add' => $isNew,
-                'allow_delete' => $isNew,
-                'error_bubbling' => false,
-                'by_reference' => false,
-                'constraints' => [
-                    new Count(['max' => 3, 'maxMessage' => 'product_option.max_count']),
-                    new Unique([
-                        'message' => 'product_option.unique',
-                        'normalizer' => fn (ProductOption $option) => $option->getName() ?? spl_object_hash($option),
-                    ]),
-                ],
-            ]);
-        }
+        $form = $event->getForm();
+        $form->add('options', CollectionType::class, [
+            'label' => 'product.options',
+            'entry_type' => ProductOptionType::class,
+            'entry_options' => ['label' => false, 'using_tagsinput' => true],
+            // Disable collection edit when using tagsinput.
+            'disabled' => $disabled,
+            'allow_add' => true,
+            'allow_delete' => true,
+            'error_bubbling' => false,
+            'by_reference' => false,
+            'constraints' => [
+                new Count(['max' => 3, 'maxMessage' => 'product_option.max_count']),
+                new Unique([
+                    'message' => 'product_option.unique',
+                    'normalizer' => fn (ProductOption $option) => $option->getName() ?? spl_object_hash($option),
+                ]),
+            ],
+        ]);
     }
 }
