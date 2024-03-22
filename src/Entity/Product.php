@@ -154,8 +154,14 @@ class Product implements ResourceInterface, TimestampableInterface
      */
     public function getCombinedOptionValues(): array
     {
-        $values = $this->options->map(fn (ProductOption $option) => $option->getValues());
-        $cartesianProduct = new CartesianProduct($values->toArray());
+        $values = [];
+        foreach ($this->options as $option) {
+            if (!$option->getValues()->isEmpty()) {
+                $values[] = $option->getValues();
+            }
+        }
+
+        $cartesianProduct = new CartesianProduct($values);
 
         return array_map(fn (array $opitonValues) => new CombinedOptionValues($opitonValues), $cartesianProduct->asArray());
     }
