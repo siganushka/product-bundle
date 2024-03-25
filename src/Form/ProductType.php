@@ -48,17 +48,17 @@ class ProductType extends AbstractType
     public function onPreSetData(FormEvent $event): void
     {
         $data = $event->getData();
-        $disabled = $data instanceof Product && null !== $data->getId();
+        $persisted = $data instanceof Product && null !== $data->getId();
 
         $form = $event->getForm();
         $form->add('options', CollectionType::class, [
             'label' => 'product.options',
             'entry_type' => ProductOptionType::class,
-            'entry_options' => ['label' => false, 'using_tagsinput' => true],
+            'entry_options' => ['label' => false],
             // Disable collection edit when using tagsinput.
-            'disabled' => $disabled,
-            'allow_add' => true,
-            'allow_delete' => true,
+            // 'disabled' => $disabled,
+            'allow_add' => !$persisted,
+            'allow_delete' => !$persisted,
             'error_bubbling' => false,
             'by_reference' => false,
             'constraints' => [
