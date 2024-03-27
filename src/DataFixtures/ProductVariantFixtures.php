@@ -28,6 +28,16 @@ class ProductVariantFixtures extends Fixture implements DependentFixtureInterfac
 
         $prices = [100, 200, 300, 400, 500];
         foreach ($products as $index => $product) {
+            if (!$product->isOptionally()) {
+                $variant = new ProductVariant($product);
+                $variant->setPrice($prices[array_rand($prices)]);
+                $variant->setInventory(100);
+                $manager->persist($variant);
+
+                $this->addReference(sprintf('product-%d-variant-0', $index), $variant);
+                continue;
+            }
+
             foreach ($product->getCombinedOptionValues() as $index2 => $optionValues) {
                 $variant = new ProductVariant($product, $optionValues);
                 $variant->setPrice($prices[array_rand($prices)]);

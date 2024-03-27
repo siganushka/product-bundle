@@ -53,13 +53,10 @@ class ProductVariantCollectionType extends AbstractType
 
     public function addVariantField(FormInterface $form, ?Product $product): void
     {
-        $emptyData = new ProductVariant();
-        $emptyData->setProduct($product);
-
         $form->add('variant', ProductVariantType::class, [
             'label' => 'product.variants',
             'property_path' => 'variants[0]',
-            'empty_data' => $emptyData,
+            'empty_data' => new ProductVariant($product),
         ]);
     }
 }

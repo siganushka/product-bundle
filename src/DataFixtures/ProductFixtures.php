@@ -16,9 +16,9 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        $option0 = new ProductOption('机型');
-        $option0->addValue(new ProductOptionValue('iPhone 15', '6.1 英寸'));
-        $option0->addValue(new ProductOptionValue('iPhone 15 Plus', '6.7 英寸'));
+        $option0 = new ProductOption('屏幕');
+        $option0->addValue(new ProductOptionValue('6.1 英寸', 'iPhone 15'));
+        $option0->addValue(new ProductOptionValue('6.7 英寸', 'iPhone 15 Plus'));
 
         $option1 = new ProductOption('颜色');
         $option1->addValue(new ProductOptionValue('蓝色'));
@@ -32,9 +32,9 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
         $option2->addValue(new ProductOptionValue('256GB'));
         $option2->addValue(new ProductOptionValue('512GB'));
 
-        $option3 = new ProductOption('机型');
-        $option3->addValue(new ProductOptionValue('iPhone 15 Pro', '6.1 英寸'));
-        $option3->addValue(new ProductOptionValue('iPhone 15 Pro Max', '6.7 英寸'));
+        $option3 = new ProductOption('屏幕');
+        $option3->addValue(new ProductOptionValue('6.1 英寸', 'iPhone 15 Pro'));
+        $option3->addValue(new ProductOptionValue('6.7 英寸', 'iPhone 15 Pro Max'));
 
         $option4 = new ProductOption('颜色');
         $option4->addValue(new ProductOptionValue('原色钛金属'));
@@ -48,9 +48,9 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
         $option5->addValue(new ProductOptionValue('512GB'));
         $option5->addValue(new ProductOptionValue('1TB'));
 
-        $option6 = new ProductOption('机型');
-        $option6->addValue(new ProductOptionValue('S24', '6.2 英寸'));
-        $option6->addValue(new ProductOptionValue('S24+', '6.7 英寸'));
+        $option6 = new ProductOption('屏幕');
+        $option6->addValue(new ProductOptionValue('6.2 英寸', 'S24'));
+        $option6->addValue(new ProductOptionValue('6.7 英寸', 'S24+'));
 
         $option7 = new ProductOption('存储');
         $option7->addValue(new ProductOptionValue('8GB+256GB'));
