@@ -54,7 +54,7 @@ class ProductType extends AbstractType
         $form->add('options', CollectionType::class, [
             'label' => 'product.options',
             'entry_type' => ProductOptionType::class,
-            'entry_options' => ['label' => false],
+            'entry_options' => ['label' => false, 'using_tagsinput' => true],
             // Disable collection edit when using tagsinput.
             // 'disabled' => $disabled,
             'allow_add' => !$persisted,

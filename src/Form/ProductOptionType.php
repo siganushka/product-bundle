@@ -4,22 +4,23 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
-use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
+use Siganushka\ProductBundle\Form\Type\ProductOptionValueInputType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Unique;
 
-use function Symfony\Component\String\u;
-
-class ProductOptionType extends AbstractType implements DataTransformerInterface
+class ProductOptionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -27,13 +28,28 @@ class ProductOptionType extends AbstractType implements DataTransformerInterface
             ->add('name', TextType::class, [
                 'label' => 'product_option.name',
                 'constraints' => new NotBlank(),
+                'priority' => 2,
             ])
         ;
 
+        $valuesOptions = [
+            'label' => 'product_option.values',
+            'priority' => 1,
+            'constraints' => [
+                new Count(['min' => 2, 'minMessage' => 'product_option.values.min_count']),
+                new Unique([
+                    'message' => 'product_option.values.unique',
+                    'normalizer' => fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value),
+                ]),
+            ],
+        ];
+
         if ($options['using_tagsinput']) {
-            $this->addValueTagsinputField($builder);
+            $builder->addEventListener(FormEvents::PRE_SET_DATA, fn (FormEvent $event) => $this->onPreSetData($event, $valuesOptions));
         } else {
-            $this->addValueCollectionField($builder);
+            $this->addValueCollectionField($builder, $valuesOptions)
+                ->add('sort', IntegerType::class, ['label' => 'generic.sort'])
+            ;
         }
     }
 
@@ -45,26 +61,19 @@ class ProductOptionType extends AbstractType implements DataTransformerInterface
         ]);
     }
 
-    private function addValueTagsinputField(FormBuilderInterface $builder): void
+    public function onPreSetData(FormEvent $event, array $defaultOptions = []): void
     {
-        $builder->add('values', TextType::class, [
-            'label' => 'product_option.values',
-            'constraints' => [
-                new Count(['min' => 2, 'minMessage' => 'product_option.values.min_count']),
-                new Unique([
-                    'message' => 'product_option.values.unique',
-                    'normalizer' => fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value),
-                ]),
-            ],
-        ]);
+        $data = $event->getData();
+        $values = $data instanceof ProductOption ? $data->getValues() : new ArrayCollection();
 
-        $builder->get('values')->addModelTransformer($this);
+        $event->getForm()->add('values', ProductOptionValueInputType::class, array_replace($defaultOptions, [
+            'values' => $values,
+        ]));
     }
 
-    private function addValueCollectionField(FormBuilderInterface $builder): void
+    private function addValueCollectionField(FormBuilderInterface $builder, array $defaultOptions = []): FormBuilderInterface
     {
-        $builder->add('values', CollectionType::class, [
-            'label' => 'product_option.values',
+        return $builder->add('values', CollectionType::class, array_replace($defaultOptions, [
             'entry_type' => ProductOptionValueType::class,
             'entry_options' => ['label' => false],
             'allow_add' => true,
@@ -73,38 +82,6 @@ class ProductOptionType extends AbstractType implements DataTransformerInterface
             'by_reference' => false,
             // [important] Using nested collections
             'prototype_name' => '__PRODUCT_OPTION_VALUES__',
-            'constraints' => [
-                new Count(['min' => 2, 'minMessage' => 'product_option.values.min_count']),
-                new Unique([
-                    'message' => 'product_option.values.unique',
-                    'normalizer' => fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value),
-                ]),
-            ],
-        ]);
-    }
-
-    public function transform($value): ?string
-    {
-        if (!$value instanceof Collection) {
-            return null;
-        }
-
-        $texts = $value->map(fn (ProductOptionValue $value) => $value->getText());
-
-        return implode(', ', $texts->toArray());
-    }
-
-    public function reverseTransform($value): array
-    {
-        if (null === $value || u($value)->isEmpty()) {
-            return [];
-        }
-
-        $texts = explode(',', $value);
-        $texts = array_map('trim', $texts);
-        $texts = array_unique($texts);
-        $texts = array_filter($texts);
-
-        return array_map(fn (string $text) => new ProductOptionValue($text), $texts);
+        ]));
     }
 }
