@@ -11,6 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function Symfony\Component\String\u;
@@ -33,10 +34,14 @@ class ProductOptionValueInputType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefault('values', new ArrayCollection());
-        $resolver->setDefault('delimiter', '/');
+        $resolver->setDefault('delimiter', ',');
+        $resolver->setDefault('attr', ['data-toggle' => 'tagsinput']);
 
         $resolver->setAllowedTypes('values', Collection::class);
         $resolver->setAllowedTypes('delimiter', 'string');
+
+        // Trim delimiter options
+        $resolver->setNormalizer('delimiter', fn (Options $options, string $delimiter) => trim($delimiter));
     }
 
     public function getParent(): string
