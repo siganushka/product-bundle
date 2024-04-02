@@ -13,7 +13,7 @@ class ProductOptionValueImg extends AbstractChannel
     protected function loadConstraints(GenericMetadata $metadata): void
     {
         $constraint = new Image();
-        $constraint->mimeTypes = ['image/png', 'image/jpeg'];
+        $constraint->mimeTypes = ['image/png', 'image/jpeg', 'image/webp'];
 
         $metadata->addConstraint($constraint);
     }
