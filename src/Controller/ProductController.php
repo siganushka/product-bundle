@@ -10,6 +10,7 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Knp\Component\Pager\PaginatorInterface;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Form\ProductType;
+use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,6 +88,28 @@ class ProductController extends AbstractFOSRestController
         }
 
         $form = $this->createForm(ProductType::class, $entity);
+        $form->submit($request->request->all(), !$request->isMethod('PATCH'));
+
+        if (!$form->isValid()) {
+            return $this->viewResponse($form);
+        }
+
+        $entityManager->flush();
+
+        return $this->viewResponse($entity);
+    }
+
+    /**
+     * @Route("/products/{id<\d+>}/variants", methods={"PUT", "PATCH"})
+     */
+    public function putItemVariants(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    {
+        $entity = $this->productRepository->find($id);
+        if (!$entity) {
+            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
+        }
+
+        $form = $this->createForm(ProductVariantCollectionType::class, $entity);
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
