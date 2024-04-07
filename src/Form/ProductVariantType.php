@@ -66,7 +66,7 @@ class ProductVariantType extends AbstractType
             'label' => 'product_variant.option_values',
             'disabled' => true,
             'priority' => 1,
-            'getter' => fn (ProductVariant $variant) => $variant->getOptionValues()->getLabel(),
+            'getter' => fn (ProductVariant $variant) => $variant->getOptionValues()->label,
         ]);
     }
 }

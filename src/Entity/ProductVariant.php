@@ -82,44 +82,9 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getOptionValue1(): ?ProductOptionValue
-    {
-        return $this->optionValue1;
-    }
-
-    public function setOptionValue1(?ProductOptionValue $optionValue1): self
-    {
-        throw new \BadMethodCallException('The optionValue1 cannot be modified anymore.');
-    }
-
-    public function getOptionValue2(): ?ProductOptionValue
-    {
-        return $this->optionValue2;
-    }
-
-    public function setOptionValue2(?ProductOptionValue $optionValue2): self
-    {
-        throw new \BadMethodCallException('The optionValue2 cannot be modified anymore.');
-    }
-
-    public function getOptionValue3(): ?ProductOptionValue
-    {
-        return $this->optionValue3;
-    }
-
-    public function setOptionValue3(?ProductOptionValue $optionValue3): self
-    {
-        throw new \BadMethodCallException('The optionValue3 cannot be modified anymore.');
-    }
-
     public function getOptionValues(): CombinedOptionValues
     {
-        $optionValues = array_filter(
-            [$this->optionValue1, $this->optionValue2, $this->optionValue3],
-            fn (?ProductOptionValue $optionValue) => null !== $optionValue
-        );
-
-        return new CombinedOptionValues($optionValues);
+        return new CombinedOptionValues(array_filter([$this->optionValue1, $this->optionValue2, $this->optionValue3]));
     }
 
     public function getPrice(): ?int

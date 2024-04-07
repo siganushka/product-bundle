@@ -12,38 +12,28 @@ use Siganushka\ProductBundle\Entity\ProductOptionValue;
  */
 class CombinedOptionValues extends ArrayCollection
 {
-    private ?string $label;
-    private ?string $value;
+    public ?string $value;
+    public ?string $label;
 
     public function __construct(array $optionValues = [])
     {
-        $label = $value = [];
+        $value = $label = [];
         foreach ($optionValues as $optionValue) {
             if (!$optionValue instanceof ProductOptionValue) {
                 throw new \UnexpectedValueException(sprintf('Expected argument of type "%s", "%s" given', ProductOptionValue::class, get_debug_type($optionValue)));
             }
 
-            $label[] = $optionValue->getDescriptor();
             $value[] = $optionValue->getId() ?? spl_object_hash($optionValue);
+            $label[] = $optionValue->getDescriptor();
         }
 
         // [important] Generate identity from sorted value
         sort($value);
 
-        $this->label = \count($label) ? implode(', ', $label) : null;
         $this->value = \count($value) ? implode('-', $value) : null;
+        $this->label = \count($label) ? implode(', ', $label) : null;
 
         parent::__construct($optionValues);
-    }
-
-    public function getLabel(): ?string
-    {
-        return $this->label;
-    }
-
-    public function getValue(): ?string
-    {
-        return $this->value;
     }
 
     public function equalsTo(?self $target): bool
@@ -52,6 +42,6 @@ class CombinedOptionValues extends ArrayCollection
             return false;
         }
 
-        return $this->value === $target->getValue();
+        return $this->value === $target->value;
     }
 }

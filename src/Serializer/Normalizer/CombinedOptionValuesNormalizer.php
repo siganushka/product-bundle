@@ -17,8 +17,8 @@ class CombinedOptionValuesNormalizer implements NormalizerInterface, CacheableSu
     {
         if ($object instanceof CombinedOptionValues && $object->count()) {
             return [
-                'label' => $object->getLabel(),
-                'value' => $object->getValue(),
+                'label' => $object->label,
+                'value' => $object->value,
             ];
         }
 

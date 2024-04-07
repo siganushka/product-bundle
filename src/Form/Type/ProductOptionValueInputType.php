@@ -66,7 +66,7 @@ class ProductOptionValueInputType extends AbstractType
     /**
      * @param Collection<int, ProductOptionValue> $originValues
      *
-     * @return Collection<int, ProductOptionValue>
+     * @return array<int, ProductOptionValue>
      */
     private function stringToProductOptionValues(?string $value, string $delimiter, Collection $originValues): array
     {
