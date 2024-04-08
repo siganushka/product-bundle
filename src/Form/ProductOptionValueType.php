@@ -22,8 +22,8 @@ class ProductOptionValueType extends AbstractType
             ->add('img', MediaType::class, [
                 'label' => 'product_option_value.img',
                 'channel' => ProductOptionValueImg::class,
-                // // Setting label from CollectionType
-                'style' => null === $options['label'] ? null : 'width: 38px; height: 38px',
+                // Setting label from CollectionType
+                'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
             ])
             ->add('text', TextType::class, [
                 'label' => 'product_option_value.text',

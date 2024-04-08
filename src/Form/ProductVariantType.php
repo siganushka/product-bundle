@@ -23,6 +23,13 @@ class ProductVariantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('img', MediaType::class, [
+                'label' => 'product_variant.img',
+                'channel' => ProductVariantImg::class,
+                'priority' => 2,
+                // Setting label from CollectionType
+                'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
+            ])
             ->add('price', CentsMoneyType::class, [
                 'label' => 'product_variant.price',
                 'constraints' => new NotBlank(),
@@ -55,14 +62,7 @@ class ProductVariantType extends AbstractType
             return;
         }
 
-        $form = $event->getForm();
-        $form->add('img', MediaType::class, [
-            'label' => 'product_variant.img',
-            'channel' => ProductVariantImg::class,
-            'style' => $form->isRoot() ? null : 'width: 38px; height: 38px',
-            'priority' => 1,
-        ])
-        ->add('optionValues', TextType::class, [
+        $event->getForm()->add('optionValues', TextType::class, [
             'label' => 'product_variant.option_values',
             'disabled' => true,
             'priority' => 1,

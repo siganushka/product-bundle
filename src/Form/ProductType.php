@@ -53,10 +53,8 @@ class ProductType extends AbstractType
         $form = $event->getForm();
         $form->add('options', CollectionType::class, [
             'label' => 'product.options',
-            'entry_type' => ProductOptionType::class,
-            'entry_options' => ['label' => false, 'using_tagsinput' => true],
-            // Disable collection edit when using tagsinput.
-            // 'disabled' => $disabled,
+            'entry_type' => ProductOptionSimpleType::class,
+            'entry_options' => ['label' => false],
             'allow_add' => !$persisted,
             'allow_delete' => !$persisted,
             'error_bubbling' => false,
