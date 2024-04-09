@@ -6,9 +6,9 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -19,10 +19,6 @@ class ProductVariantCollectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'product.name',
-                'disabled' => true,
-            ])
             ->add('variants', CollectionType::class, [
                 'label' => 'product.variants',
                 'entry_type' => ProductVariantType::class,
@@ -49,9 +45,9 @@ class ProductVariantCollectionType extends AbstractType
             return;
         }
 
-        $combinedOptionValues = $data->isOptionally() ? $data->getCombinedOptionValues() : [null];
-        foreach ($combinedOptionValues as $value) {
-            $data->addVariant(new ProductVariant(null, $value));
+        $choices = $data->isOptionally() ? $data->getChoices() : [new ProductVariantChoice()];
+        foreach ($choices as $choice) {
+            $data->addVariant(new ProductVariant($data, $choice->toArray()));
         }
     }
 }

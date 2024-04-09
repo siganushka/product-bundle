@@ -151,9 +151,9 @@ class ProductController extends AbstractFOSRestController
                 'price',
                 'inventory',
                 'img',
-                'optionValues',
+                'choice' => ['value', 'label'],
             ],
-            'combinedOptionValues',
+            'choices' => ['value', 'label'],
         ];
 
         $context = new Context();

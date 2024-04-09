@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Serializer\Normalizer;
 
-use Siganushka\ProductBundle\Model\CombinedOptionValues;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Symfony\Component\Serializer\Normalizer\CacheableSupportsMethodInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class CombinedOptionValuesNormalizer implements NormalizerInterface, CacheableSupportsMethodInterface
+class ProductVariantChoiceNormalizer implements NormalizerInterface, CacheableSupportsMethodInterface
 {
     /**
-     * @param CombinedOptionValues|mixed $object
+     * @param ProductVariantChoice|mixed $object
      */
     public function normalize($object, string $format = null, array $context = []): ?array
     {
-        if ($object instanceof CombinedOptionValues && $object->count()) {
+        if ($object instanceof ProductVariantChoice && $object->count()) {
             return [
                 'label' => $object->label,
                 'value' => $object->value,
@@ -27,7 +27,7 @@ class CombinedOptionValuesNormalizer implements NormalizerInterface, CacheableSu
 
     public function supportsNormalization($data, string $format = null): bool
     {
-        return $data instanceof CombinedOptionValues;
+        return $data instanceof ProductVariantChoice;
     }
 
     public function hasCacheableSupportsMethod(): bool

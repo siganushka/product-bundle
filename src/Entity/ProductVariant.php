@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
-use Siganushka\ProductBundle\Model\CombinedOptionValues;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 /**
@@ -61,13 +60,10 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      */
     private ?Media $img = null;
 
-    public function __construct(Product $product = null, CombinedOptionValues $optionValues = null)
+    public function __construct(Product $product = null, array $optionValues = [])
     {
         $this->product = $product;
-
-        if ($optionValues instanceof Collection) {
-            [$this->optionValue1, $this->optionValue2, $this->optionValue3] = array_pad($optionValues->toArray(), 3, null);
-        }
+        [$this->optionValue1, $this->optionValue2, $this->optionValue3] = array_pad($optionValues, 3, null);
     }
 
     public function getProduct(): ?Product
@@ -80,11 +76,6 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         $this->product = $product;
 
         return $this;
-    }
-
-    public function getOptionValues(): CombinedOptionValues
-    {
-        return new CombinedOptionValues(array_filter([$this->optionValue1, $this->optionValue2, $this->optionValue3]));
     }
 
     public function getPrice(): ?int
@@ -123,16 +114,12 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getDescriptor(): ?string
+    /**
+     * Returns choice for product variant.
+     */
+    public function getChoice(): ProductVariantChoice
     {
-        $productName = $this->product ? $this->product->getName() : null;
-        $optionValues = $this->getOptionValues();
-
-        if (\is_string($productName) && \is_string($optionValues->label)) {
-            return sprintf('%s【%s】', $productName, $optionValues->label);
-        }
-
-        return $productName;
+        return new ProductVariantChoice([$this->optionValue1, $this->optionValue2, $this->optionValue3]);
     }
 
     /**

@@ -26,46 +26,7 @@ class ProductVariantController extends AbstractFOSRestController
     }
 
     /**
-     * @Route("/products/{productId<\d+>}/variants", methods={"GET"})
-     */
-    public function getCollection(int $productId): Response
-    {
-        $product = $this->productRepository->find($productId);
-        if (!$product) {
-            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $productId));
-        }
-
-        return $this->viewResponse($product->getVariants());
-    }
-
-    /**
-     * @Route("/products/{productId<\d+>}/variants", methods={"POST"})
-     */
-    public function postCollection(Request $request, EntityManagerInterface $entityManager, int $productId): Response
-    {
-        $product = $this->productRepository->find($productId);
-        if (!$product) {
-            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $productId));
-        }
-
-        $entity = $this->variantRepository->createNew();
-        $entity->setProduct($product);
-
-        $form = $this->createForm(ProductVariantType::class, $entity);
-        $form->submit($request->request->all());
-
-        if (!$form->isValid()) {
-            return $this->viewResponse($form);
-        }
-
-        $entityManager->persist($entity);
-        $entityManager->flush();
-
-        return $this->viewResponse($entity);
-    }
-
-    /**
-     * @Route("/variants/{id<\d+>}", methods={"GET"})
+     * @Route("/product-variants/{id<\d+>}", methods={"GET"})
      */
     public function getItem(int $id): Response
     {
@@ -78,7 +39,7 @@ class ProductVariantController extends AbstractFOSRestController
     }
 
     /**
-     * @Route("/variants/{id<\d+>}", methods={"PUT", "PATCH"})
+     * @Route("/product-variants/{id<\d+>}", methods={"PUT", "PATCH"})
      */
     public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
@@ -100,7 +61,7 @@ class ProductVariantController extends AbstractFOSRestController
     }
 
     /**
-     * @Route("/variants/{id<\d+>}", methods={"DELETE"})
+     * @Route("/product-variants/{id<\d+>}", methods={"DELETE"})
      */
     public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
     {
@@ -118,9 +79,11 @@ class ProductVariantController extends AbstractFOSRestController
     protected function viewResponse($data = null, int $statusCode = null, array $headers = []): Response
     {
         $attributes = [
-            'id', 'code', 'price', 'inventory', 'updatedAt', 'createdAt',
-            'product' => ['name', 'img'],
-            'optionValues' => ['text', 'code', 'img'],
+            'id',
+            'price',
+            'inventory',
+            'img',
+            'choice' => ['value', 'label'],
         ];
 
         $context = new Context();

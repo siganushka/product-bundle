@@ -22,7 +22,7 @@ class ProductOptionValueInputType extends AbstractType
     {
         /** @var Collection<int, ProductOptionValue> */
         $originValues = $options['values'];
-        /** @var string */
+        /** @var non-empty-string */
         $delimiter = $options['delimiter'];
 
         $builder->addModelTransformer(new CallbackTransformer(
@@ -64,6 +64,7 @@ class ProductOptionValueInputType extends AbstractType
     }
 
     /**
+     * @param non-empty-string                    $delimiter
      * @param Collection<int, ProductOptionValue> $originValues
      *
      * @return array<int, ProductOptionValue>

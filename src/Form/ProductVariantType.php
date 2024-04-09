@@ -57,16 +57,16 @@ class ProductVariantType extends AbstractType
             return;
         }
 
-        $optionValues = $data->getOptionValues();
-        if ($optionValues->isEmpty()) {
+        $choice = $data->getChoice();
+        if ($choice->isEmpty()) {
             return;
         }
 
-        $event->getForm()->add('optionValues', TextType::class, [
+        $event->getForm()->add('choice', TextType::class, [
             'label' => 'product_variant.option_values',
+            'property_path' => 'choice.label',
             'disabled' => true,
             'priority' => 1,
-            'getter' => fn (ProductVariant $variant) => $variant->getOptionValues()->label,
         ]);
     }
 }

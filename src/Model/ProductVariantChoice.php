@@ -10,21 +10,30 @@ use Siganushka\ProductBundle\Entity\ProductOptionValue;
 /**
  * @template-extends ArrayCollection<int, ProductOptionValue>
  */
-class CombinedOptionValues extends ArrayCollection
+class ProductVariantChoice extends ArrayCollection
 {
     public ?string $value;
     public ?string $label;
 
+    /**
+     * @param array<int, ProductOptionValue|null> $optionValues
+     */
     public function __construct(array $optionValues = [])
     {
+        // initialize before
+        parent::__construct();
+
         $value = $label = [];
         foreach ($optionValues as $optionValue) {
             if (!$optionValue instanceof ProductOptionValue) {
-                throw new \UnexpectedValueException(sprintf('Expected argument of type "%s", "%s" given', ProductOptionValue::class, get_debug_type($optionValue)));
+                continue;
             }
 
             $value[] = $optionValue->getId() ?? spl_object_hash($optionValue);
             $label[] = $optionValue->getDescriptor();
+
+            // Add to elements
+            $this->add($optionValue);
         }
 
         // [important] Generate identity from sorted value
@@ -32,16 +41,5 @@ class CombinedOptionValues extends ArrayCollection
 
         $this->value = \count($value) ? implode('-', $value) : null;
         $this->label = \count($label) ? implode(', ', $label) : null;
-
-        parent::__construct($optionValues);
-    }
-
-    public function equalsTo(?self $target): bool
-    {
-        if (null === $target) {
-            return false;
-        }
-
-        return $this->value === $target->value;
     }
 }

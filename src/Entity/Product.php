@@ -13,7 +13,7 @@ use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
-use Siganushka\ProductBundle\Model\CombinedOptionValues;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
 /**
@@ -120,7 +120,7 @@ class Product implements ResourceInterface, TimestampableInterface
 
     public function addVariant(ProductVariant $variant): self
     {
-        $filtered = $this->variants->filter(fn (ProductVariant $item) => $item->getOptionValues()->equalsTo($variant->getOptionValues()));
+        $filtered = $this->variants->filter(fn (ProductVariant $item) => $item->getChoice()->value === $variant->getChoice()->value);
 
         if ($filtered->isEmpty()) {
             $this->variants[] = $variant;
@@ -150,19 +150,21 @@ class Product implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * @return array<int, CombinedOptionValues>
+     * @return array<int, ProductVariantChoice>
      */
-    public function getCombinedOptionValues(): array
+    public function getChoices(): array
     {
-        $values = [];
+        $opitonValues = [];
         foreach ($this->options as $option) {
-            if (!$option->getValues()->isEmpty()) {
-                $values[] = $option->getValues();
+            $values = $option->getValues();
+            if (\count($values)) {
+                $opitonValues[] = $values;
             }
         }
 
-        $cartesianProduct = new CartesianProduct($values);
+        $cartesianProduct = new CartesianProduct($opitonValues);
+        $asArray = $cartesianProduct->asArray();
 
-        return array_map(fn (array $opitonValues) => new CombinedOptionValues($opitonValues), $cartesianProduct->asArray());
+        return array_map(fn (array $opitonValues) => new ProductVariantChoice($opitonValues), $asArray);
     }
 }
