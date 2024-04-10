@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Siganushka\ProductBundle\Form\ProductVariantType;
-use Siganushka\ProductBundle\Repository\ProductRepository;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,12 +15,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProductVariantController extends AbstractFOSRestController
 {
-    private ProductRepository $productRepository;
     private ProductVariantRepository $variantRepository;
 
-    public function __construct(ProductRepository $productRepository, ProductVariantRepository $variantRepository)
+    public function __construct(ProductVariantRepository $variantRepository)
     {
-        $this->productRepository = $productRepository;
         $this->variantRepository = $variantRepository;
     }
 
@@ -83,7 +80,9 @@ class ProductVariantController extends AbstractFOSRestController
             'price',
             'inventory',
             'img',
-            'choice' => ['value', 'label'],
+            'choiceValue',
+            'choiceLabel',
+            'outOfStock',
         ];
 
         $context = new Context();

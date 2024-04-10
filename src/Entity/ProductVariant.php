@@ -60,10 +60,19 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
      */
     private ?Media $img = null;
 
-    public function __construct(Product $product = null, array $optionValues = [])
+    /**
+     * The variant choice.
+     */
+    private ?ProductVariantChoice $choice = null;
+
+    public function __construct(Product $product = null, ProductVariantChoice $choice = null)
     {
         $this->product = $product;
-        [$this->optionValue1, $this->optionValue2, $this->optionValue3] = array_pad($optionValues, 3, null);
+        $this->choice = $choice;
+
+        if ($choice instanceof ProductVariantChoice) {
+            [$this->optionValue1, $this->optionValue2, $this->optionValue3] = array_pad($choice->optionValues, 3, null);
+        }
     }
 
     public function getProduct(): ?Product
@@ -117,9 +126,33 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     /**
      * Returns choice for product variant.
      */
-    public function getChoice(): ProductVariantChoice
+    // public function getChoice(): ProductVariantChoice
+    private function getChoice(): ProductVariantChoice
     {
-        return new ProductVariantChoice([$this->optionValue1, $this->optionValue2, $this->optionValue3]);
+        if ($this->choice instanceof ProductVariantChoice) {
+            return $this->choice;
+        }
+
+        // filter null.
+        $optionValues = array_filter([$this->optionValue1, $this->optionValue2, $this->optionValue3]);
+
+        return $this->choice = new ProductVariantChoice($optionValues);
+    }
+
+    /**
+     * Returns variant choice unique value.
+     */
+    public function getChoiceValue(): ?string
+    {
+        return $this->getChoice()->value;
+    }
+
+    /**
+     * Returns variant choice label.
+     */
+    public function getChoiceLabel(): ?string
+    {
+        return $this->getChoice()->label;
     }
 
     /**

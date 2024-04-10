@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Controller;
 
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -14,6 +15,7 @@ use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractFOSRestController
@@ -94,7 +96,11 @@ class ProductController extends AbstractFOSRestController
             return $this->viewResponse($form);
         }
 
-        $entityManager->flush();
+        try {
+            $entityManager->flush();
+        } catch (ForeignKeyConstraintViolationException $th) {
+            throw new BadRequestHttpException('The associated data can be deleted if it is not empty.');
+        }
 
         return $this->viewResponse($entity);
     }
@@ -151,7 +157,9 @@ class ProductController extends AbstractFOSRestController
                 'price',
                 'inventory',
                 'img',
-                'choice' => ['value', 'label'],
+                'choiceValue',
+                'choiceLabel',
+                'outOfStock',
             ],
             'choices' => ['value', 'label'],
         ];

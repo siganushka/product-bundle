@@ -47,7 +47,7 @@ class ProductVariantCollectionType extends AbstractType
 
         $choices = $data->isOptionally() ? $data->getChoices() : [new ProductVariantChoice()];
         foreach ($choices as $choice) {
-            $data->addVariant(new ProductVariant($data, $choice->toArray()));
+            $data->addVariant(new ProductVariant($data, $choice));
         }
     }
 }
