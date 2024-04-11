@@ -60,9 +60,9 @@ class ProductType extends AbstractType
             'error_bubbling' => false,
             'by_reference' => false,
             'constraints' => [
-                new Count(['max' => 3, 'maxMessage' => 'product_option.max_count']),
+                new Count(['max' => 3, 'maxMessage' => 'product.options.max_count']),
                 new Unique([
-                    'message' => 'product_option.unique',
+                    'message' => 'product.options.unique',
                     'normalizer' => fn (ProductOption $option) => $option->getName() ?? spl_object_hash($option),
                 ]),
             ],
