@@ -1,10 +1,10 @@
-product.name: 名称
-product.img: 图片
-product.options: 选项
+product.name: 商品名称
+product.img: 商品封面
+product.options: 商品选项
 product.variants: 库存
 
 product_option.name: 选项名称
-product_option.values: 选项值
+product_option.values: 选项规格
 
 product_option_value.text: 文字
 product_option_value.note: 备注
