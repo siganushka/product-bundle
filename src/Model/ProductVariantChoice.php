@@ -24,7 +24,7 @@ final class ProductVariantChoice
                 throw new \UnexpectedValueException(sprintf('Expected argument of type "%s", "%s" given.', ProductOptionValue::class, get_debug_type($optionValue)));
             }
 
-            $value[] = $optionValue->getId() ?? spl_object_hash($optionValue);
+            $value[] = $optionValue->getId() ? sprintf('%07d', $optionValue->getId()) : spl_object_hash($optionValue);
             $label[] = $optionValue->getDescriptor();
         }
 
