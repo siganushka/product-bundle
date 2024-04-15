@@ -7,8 +7,6 @@ namespace Siganushka\ProductBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
-use Siganushka\Contracts\Doctrine\SortableInterface;
-use Siganushka\Contracts\Doctrine\SortableTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
@@ -17,10 +15,9 @@ use Siganushka\ProductBundle\Repository\OptionValueRepository;
 /**
  * @ORM\Entity(repositoryClass=OptionValueRepository::class)
  */
-class ProductOptionValue implements ResourceInterface, SortableInterface, TimestampableInterface
+class ProductOptionValue implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
-    use SortableTrait;
     use TimestampableTrait;
 
     /**

@@ -8,7 +8,6 @@ use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -42,9 +41,6 @@ class ProductOptionType extends AbstractType
                         'normalizer' => fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value),
                     ]),
                 ],
-            ])
-            ->add('sort', IntegerType::class, [
-                'label' => 'generic.sort',
             ])
         ;
     }

@@ -8,7 +8,6 @@ use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Media\ProductOptionValueImg;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -31,9 +30,6 @@ class ProductOptionValueType extends AbstractType
             ])
             ->add('note', TextType::class, [
                 'label' => 'product_option_value.note',
-            ])
-            ->add('sort', IntegerType::class, [
-                'label' => 'generic.sort',
             ])
         ;
     }

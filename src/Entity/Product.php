@@ -37,7 +37,7 @@ class Product implements ResourceInterface, TimestampableInterface
 
     /**
      * @ORM\OneToMany(targetEntity=ProductOption::class, mappedBy="product", cascade={"all"}, orphanRemoval=true)
-     * @ORM\OrderBy({"sort": "DESC", "createdAt": "ASC", "id": "ASC"})
+     * @ORM\OrderBy({"createdAt": "ASC", "id": "ASC"})
      *
      * @var Collection<int, ProductOption>
      */

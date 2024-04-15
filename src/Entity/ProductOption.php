@@ -9,8 +9,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
-use Siganushka\Contracts\Doctrine\SortableInterface;
-use Siganushka\Contracts\Doctrine\SortableTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\ProductBundle\Repository\ProductOptionRepository;
@@ -18,10 +16,9 @@ use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 /**
  * @ORM\Entity(repositoryClass=ProductOptionRepository::class)
  */
-class ProductOption implements ResourceInterface, SortableInterface, TimestampableInterface
+class ProductOption implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
-    use SortableTrait;
     use TimestampableTrait;
 
     /**
@@ -37,7 +34,7 @@ class ProductOption implements ResourceInterface, SortableInterface, Timestampab
 
     /**
      * @ORM\OneToMany(targetEntity=ProductOptionValue::class, mappedBy="option", cascade={"all"}, orphanRemoval=true)
-     * @ORM\OrderBy({"sort": "DESC", "createdAt": "ASC", "id": "ASC"})
+     * @ORM\OrderBy({"createdAt": "ASC", "id": "ASC"})
      *
      * @var Collection<int, ProductOptionValue>
      */
