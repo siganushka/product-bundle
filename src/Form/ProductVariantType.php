@@ -28,7 +28,7 @@ class ProductVariantType extends AbstractType
                 'channel' => ProductVariantImg::class,
                 'priority' => 2,
                 // Setting label from CollectionType
-                'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
+                'style' => false === $options['label'] ? 'width: 38px; min-height: 38px' : null,
             ])
             ->add('price', CentsMoneyType::class, [
                 'label' => 'product_variant.price',

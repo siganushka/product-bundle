@@ -4,12 +4,27 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Media;
 
+use Siganushka\GenericBundle\Event\ResizeImageEvent;
 use Siganushka\MediaBundle\AbstractChannel;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Mapping\GenericMetadata;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ProductImg extends AbstractChannel
 {
+    private EventDispatcherInterface $eventDispatcher;
+
+    public function __construct(EventDispatcherInterface $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    public function onPreSave(File $file): void
+    {
+        $this->eventDispatcher->dispatch(new ResizeImageEvent($file, 1000));
+    }
+
     protected function loadConstraints(GenericMetadata $metadata): void
     {
         /**
