@@ -120,7 +120,7 @@ class Product implements ResourceInterface, TimestampableInterface
 
     public function addVariant(ProductVariant $variant): self
     {
-        $fn = fn (int $index, ProductVariant $item): bool => $item->getChoiceValue() === $variant->getChoiceValue();
+        $fn = fn (int $_, ProductVariant $item): bool => $item->getChoiceValue() === $variant->getChoiceValue();
 
         if (!$this->variants->exists($fn)) {
             $this->variants[] = $variant;
@@ -165,6 +165,6 @@ class Product implements ResourceInterface, TimestampableInterface
         $cartesianProduct = new CartesianProduct($opitonValues);
         $asArray = $cartesianProduct->asArray();
 
-        return array_map(fn (array $opitonValues) => new ProductVariantChoice($opitonValues), $asArray);
+        return array_map(fn (array $combinedOptionValues) => new ProductVariantChoice($combinedOptionValues), $asArray);
     }
 }

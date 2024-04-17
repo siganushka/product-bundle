@@ -16,7 +16,7 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 /**
  * @ORM\Entity(repositoryClass=ProductVariantRepository::class)
  * @ORM\Table(uniqueConstraints={
- *  @ORM\UniqueConstraint(columns={"product_id", "option_value1_id", "option_value2_id", "option_value3_id"})
+ *  @ORM\UniqueConstraint(columns={"product_id", "choice1", "choice2", "choice3"})
  * })
  */
 class ProductVariant implements ResourceInterface, TimestampableInterface
@@ -32,18 +32,21 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
+     * @ORM\JoinColumn(name="choice1")
      */
-    private ?ProductOptionValue $optionValue1 = null;
+    private ?ProductOptionValue $choice1 = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
+     * @ORM\JoinColumn(name="choice2")
      */
-    private ?ProductOptionValue $optionValue2 = null;
+    private ?ProductOptionValue $choice2 = null;
 
     /**
      * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
+     * @ORM\JoinColumn(name="choice3")
      */
-    private ?ProductOptionValue $optionValue3 = null;
+    private ?ProductOptionValue $choice3 = null;
 
     /**
      * @ORM\Column(type="integer")
@@ -71,7 +74,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         $this->choice = $choice;
 
         if ($choice instanceof ProductVariantChoice) {
-            [$this->optionValue1, $this->optionValue2, $this->optionValue3] = array_pad($choice->optionValues, 3, null);
+            [$this->choice1, $this->choice2, $this->choice3] = array_pad($choice->combinedOptionValues, 3, null);
         }
     }
 
@@ -126,21 +129,20 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     /**
      * Returns choice for product variant.
      */
-    // public function getChoice(): ProductVariantChoice
-    private function getChoice(): ProductVariantChoice
+    public function getChoice(): ProductVariantChoice
     {
         if ($this->choice instanceof ProductVariantChoice) {
             return $this->choice;
         }
 
         // filter null.
-        $optionValues = array_filter([$this->optionValue1, $this->optionValue2, $this->optionValue3]);
+        $combinedOptionValues = array_filter([$this->choice1, $this->choice2, $this->choice3]);
 
-        return $this->choice = new ProductVariantChoice($optionValues);
+        return $this->choice = new ProductVariantChoice($combinedOptionValues);
     }
 
     /**
-     * Returns variant choice unique value.
+     * Returns choice value for variant.
      */
     public function getChoiceValue(): ?string
     {
@@ -148,7 +150,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * Returns variant choice label.
+     * Returns choice label for variant.
      */
     public function getChoiceLabel(): ?string
     {
