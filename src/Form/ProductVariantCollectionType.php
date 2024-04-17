@@ -6,7 +6,6 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductVariant;
-use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -47,7 +46,12 @@ class ProductVariantCollectionType extends AbstractType
             return;
         }
 
-        $choices = $data->isOptionally() ? $data->getChoices() : [new ProductVariantChoice()];
+        $choices = $data->getChoices();
+        // push default choices
+        if (empty($choices)) {
+            $choices[] = null;
+        }
+
         foreach ($choices as $choice) {
             $data->addVariant(new ProductVariant($data, $choice));
         }

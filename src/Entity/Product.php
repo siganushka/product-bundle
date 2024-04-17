@@ -142,14 +142,6 @@ class Product implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * Returns the product is optionally.
-     */
-    public function isOptionally(): bool
-    {
-        return $this->options->count() > 0;
-    }
-
-    /**
      * @return array<int, ProductVariantChoice>
      */
     public function getChoices(): array

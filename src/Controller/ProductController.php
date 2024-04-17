@@ -6,24 +6,27 @@ namespace Siganushka\ProductBundle\Controller;
 
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
-use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Knp\Component\Pager\PaginatorInterface;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Form\ProductType;
 use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
-class ProductController extends AbstractFOSRestController
+class ProductController extends AbstractController
 {
+    private SerializerInterface $serializer;
     private ProductRepository $productRepository;
 
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(SerializerInterface $serializer, ProductRepository $productRepository)
     {
+        $this->serializer = $serializer;
         $this->productRepository = $productRepository;
     }
 
@@ -42,7 +45,7 @@ class ProductController extends AbstractFOSRestController
 
         $pagination = $paginator->paginate($queryBuilder, $page, $size);
 
-        return $this->viewResponse($pagination);
+        return $this->createResponse($pagination);
     }
 
     /**
@@ -57,13 +60,13 @@ class ProductController extends AbstractFOSRestController
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
-            return $this->viewResponse($form);
+            return $this->createResponse($form);
         }
 
         $entityManager->persist($entity);
         $entityManager->flush();
 
-        return $this->viewResponse($entity, Response::HTTP_CREATED);
+        return $this->createResponse($entity, Response::HTTP_CREATED);
     }
 
     /**
@@ -76,7 +79,7 @@ class ProductController extends AbstractFOSRestController
             throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
         }
 
-        return $this->viewResponse($entity);
+        return $this->createResponse($entity);
     }
 
     /**
@@ -93,7 +96,7 @@ class ProductController extends AbstractFOSRestController
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
-            return $this->viewResponse($form);
+            return $this->createResponse($form);
         }
 
         try {
@@ -102,7 +105,7 @@ class ProductController extends AbstractFOSRestController
             throw new BadRequestHttpException('The associated data can be deleted if it is not empty.');
         }
 
-        return $this->viewResponse($entity);
+        return $this->createResponse($entity);
     }
 
     /**
@@ -119,12 +122,12 @@ class ProductController extends AbstractFOSRestController
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
-            return $this->viewResponse($form);
+            return $this->createResponse($form);
         }
 
         $entityManager->flush();
 
-        return $this->viewResponse($entity);
+        return $this->createResponse($entity);
     }
 
     /**
@@ -140,36 +143,28 @@ class ProductController extends AbstractFOSRestController
         $entityManager->remove($entity);
         $entityManager->flush();
 
-        return $this->viewResponse(null, Response::HTTP_NO_CONTENT);
+        return $this->createResponse(null, Response::HTTP_NO_CONTENT);
     }
 
-    protected function viewResponse($data = null, int $statusCode = null, array $headers = []): Response
+    /**
+     * @param mixed $data
+     */
+    protected function createResponse($data = null, int $statusCode = Response::HTTP_OK, array $headers = []): Response
     {
         $attributes = [
-            'id', 'name', 'img', 'optionally', 'updatedAt', 'createdAt',
+            'id', 'name', 'img', 'updatedAt', 'createdAt',
             'options' => [
-                'id',
-                'name',
+                'id', 'name',
                 'values' => ['id', 'img', 'text', 'note'],
             ],
             'variants' => [
-                'id',
-                'price',
-                'inventory',
-                'img',
-                'choiceValue',
-                'choiceLabel',
-                'outOfStock',
+                'id', 'price', 'inventory', 'img', 'choiceValue', 'choiceLabel', 'outOfStock',
             ],
             'choices' => ['value', 'label'],
         ];
 
-        $context = new Context();
-        $context->setAttribute('attributes', $attributes);
+        $json = $this->serializer->serialize($data, 'json', compact('attributes'));
 
-        $view = $this->view($data, $statusCode, $headers);
-        $view->setContext($context);
-
-        return $this->handleView($view);
+        return JsonResponse::fromJsonString($json, $statusCode, $headers);
     }
 }

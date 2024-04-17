@@ -5,20 +5,23 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
-use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Siganushka\ProductBundle\Form\ProductVariantType;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
-class ProductVariantController extends AbstractFOSRestController
+class ProductVariantController extends AbstractController
 {
+    private SerializerInterface $serializer;
     private ProductVariantRepository $variantRepository;
 
-    public function __construct(ProductVariantRepository $variantRepository)
+    public function __construct(SerializerInterface $serializer, ProductVariantRepository $variantRepository)
     {
+        $this->serializer = $serializer;
         $this->variantRepository = $variantRepository;
     }
 
@@ -32,7 +35,7 @@ class ProductVariantController extends AbstractFOSRestController
             throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
         }
 
-        return $this->viewResponse($entity);
+        return $this->createResponse($entity);
     }
 
     /**
@@ -49,12 +52,12 @@ class ProductVariantController extends AbstractFOSRestController
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
-            return $this->viewResponse($form);
+            return $this->createResponse($form);
         }
 
         $entityManager->flush();
 
-        return $this->viewResponse($entity);
+        return $this->createResponse($entity);
     }
 
     /**
@@ -70,27 +73,18 @@ class ProductVariantController extends AbstractFOSRestController
         $entityManager->remove($entity);
         $entityManager->flush();
 
-        return $this->viewResponse(null, Response::HTTP_NO_CONTENT);
+        return $this->createResponse(null, Response::HTTP_NO_CONTENT);
     }
 
-    protected function viewResponse($data = null, int $statusCode = null, array $headers = []): Response
+    /**
+     * @param mixed $data
+     */
+    protected function createResponse($data = null, int $statusCode = Response::HTTP_OK, array $headers = []): Response
     {
-        $attributes = [
-            'id',
-            'price',
-            'inventory',
-            'img',
-            'choiceValue',
-            'choiceLabel',
-            'outOfStock',
-        ];
+        $attributes = ['id', 'price', 'inventory', 'img', 'choiceValue', 'choiceLabel', 'outOfStock'];
 
-        $context = new Context();
-        $context->setAttribute('attributes', $attributes);
+        $json = $this->serializer->serialize($data, 'json', compact('attributes'));
 
-        $view = $this->view($data, $statusCode, $headers);
-        $view->setContext($context);
-
-        return $this->handleView($view);
+        return JsonResponse::fromJsonString($json, $statusCode, $headers);
     }
 }
