@@ -12,7 +12,6 @@ use Siganushka\ProductBundle\Media\ProductImg;
 use Siganushka\ProductBundle\Media\ProductOptionValueImg;
 use Siganushka\ProductBundle\SiganushkaProductBundle;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MediaFixtures extends Fixture
@@ -60,7 +59,7 @@ class MediaFixtures extends Fixture
                 $fs = new Filesystem();
                 $fs->copy($file, $target);
 
-                $event = new MediaSaveEvent($channel, new File($target));
+                $event = MediaSaveEvent::createFromPath($channel, $target);
                 $this->eventDispatcher->dispatch($event);
 
                 $media = $event->getMedia();
