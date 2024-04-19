@@ -10,10 +10,10 @@ use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
-use Siganushka\ProductBundle\Repository\OptionValueRepository;
+use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 
 /**
- * @ORM\Entity(repositoryClass=OptionValueRepository::class)
+ * @ORM\Entity(repositoryClass=ProductOptionValueRepository::class)
  */
 class ProductOptionValue implements ResourceInterface, TimestampableInterface
 {
