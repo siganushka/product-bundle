@@ -122,10 +122,14 @@ class ProductController extends AbstractController
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
-            return $this->createResponse($form);
+            return $this->createResponse($form, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $entityManager->flush();
+        try {
+            $entityManager->flush();
+        } catch (ForeignKeyConstraintViolationException $th) {
+            throw new BadRequestHttpException('The associated data can be deleted if it is not empty.');
+        }
 
         return $this->createResponse($entity);
     }
