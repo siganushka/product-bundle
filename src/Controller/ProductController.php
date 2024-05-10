@@ -7,7 +7,7 @@ namespace Siganushka\ProductBundle\Controller;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Siganushka\ProductBundle\Entity\Product;
+use Siganushka\GenericBundle\Exception\FormErrorException;
 use Siganushka\ProductBundle\Form\ProductType;
 use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
@@ -53,14 +53,13 @@ class ProductController extends AbstractController
      */
     public function postCollection(Request $request, EntityManagerInterface $entityManager): Response
     {
-        /** @var Product */
         $entity = $this->productRepository->createNew();
 
         $form = $this->createForm(ProductType::class, $entity);
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
-            return $this->createResponse($form);
+            throw new FormErrorException($form);
         }
 
         $entityManager->persist($entity);
@@ -96,7 +95,7 @@ class ProductController extends AbstractController
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
-            return $this->createResponse($form);
+            throw new FormErrorException($form);
         }
 
         try {
@@ -122,7 +121,7 @@ class ProductController extends AbstractController
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
-            return $this->createResponse($form, Response::HTTP_UNPROCESSABLE_ENTITY);
+            throw new FormErrorException($form);
         }
 
         try {

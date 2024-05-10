@@ -80,7 +80,9 @@ class ProductOption implements ResourceInterface, TimestampableInterface
 
     public function addValue(ProductOptionValue $value): self
     {
-        if (!$this->values->contains($value)) {
+        $fn = fn (int $_, ProductOptionValue $item): bool => $item->getText() === $value->getText();
+
+        if (!$this->values->exists($fn)) {
             $this->values[] = $value;
             $value->setOption($this);
         }

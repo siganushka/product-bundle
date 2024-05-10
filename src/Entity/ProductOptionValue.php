@@ -37,7 +37,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     private ?string $note = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Media::class)
+     * @ORM\ManyToOne(targetEntity=Media::class, cascade={"persist"})
      */
     private ?Media $img = null;
 

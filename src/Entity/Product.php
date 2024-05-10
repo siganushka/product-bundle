@@ -30,7 +30,7 @@ class Product implements ResourceInterface, TimestampableInterface
     private ?string $name = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Media::class)
+     * @ORM\ManyToOne(targetEntity=Media::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Media $img = null;
