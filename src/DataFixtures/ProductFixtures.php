@@ -17,86 +17,86 @@ class ProductFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         $option0 = new ProductOption('屏幕');
-        $option0->addValue(new ProductOptionValue('6.1 英寸', 'iPhone 15'));
-        $option0->addValue(new ProductOptionValue('6.7 英寸', 'iPhone 15 Plus'));
+        $option0->addValue(new ProductOptionValue(null, '6.1 英寸', 'iPhone 15'));
+        $option0->addValue(new ProductOptionValue(null, '6.7 英寸', 'iPhone 15 Plus'));
 
         $option1 = new ProductOption('颜色');
-        $option1->addValue(new ProductOptionValue('蓝色'));
-        $option1->addValue(new ProductOptionValue('粉色'));
-        $option1->addValue(new ProductOptionValue('黄色'));
-        $option1->addValue(new ProductOptionValue('绿色'));
-        $option1->addValue(new ProductOptionValue('黑色'));
+        $option1->addValue(new ProductOptionValue('blue', '蓝色'));
+        $option1->addValue(new ProductOptionValue('pink', '粉色'));
+        $option1->addValue(new ProductOptionValue('yellow', '黄色'));
+        $option1->addValue(new ProductOptionValue('green', '绿色'));
+        $option1->addValue(new ProductOptionValue('black', '黑色'));
 
         $option2 = new ProductOption('存储');
-        $option2->addValue(new ProductOptionValue('128GB'));
-        $option2->addValue(new ProductOptionValue('256GB'));
-        $option2->addValue(new ProductOptionValue('512GB'));
+        $option2->addValue(new ProductOptionValue('128gb', '128GB'));
+        $option2->addValue(new ProductOptionValue('256gb', '256GB'));
+        $option2->addValue(new ProductOptionValue('512gb', '512GB'));
 
         $option3 = new ProductOption('屏幕');
-        $option3->addValue(new ProductOptionValue('6.1 英寸', 'iPhone 15 Pro'));
-        $option3->addValue(new ProductOptionValue('6.7 英寸', 'iPhone 15 Pro Max'));
+        $option3->addValue(new ProductOptionValue(null, '6.1 英寸', 'iPhone 15 Pro'));
+        $option3->addValue(new ProductOptionValue(null, '6.7 英寸', 'iPhone 15 Pro Max'));
 
         $option4 = new ProductOption('颜色');
-        $option4->addValue(new ProductOptionValue('原色钛金属'));
-        $option4->addValue(new ProductOptionValue('蓝色钛金属'));
-        $option4->addValue(new ProductOptionValue('白色钛金属'));
-        $option4->addValue(new ProductOptionValue('黑色钛金属'));
+        $option4->addValue(new ProductOptionValue(null, '原色钛金属'));
+        $option4->addValue(new ProductOptionValue(null, '蓝色钛金属'));
+        $option4->addValue(new ProductOptionValue(null, '白色钛金属'));
+        $option4->addValue(new ProductOptionValue(null, '黑色钛金属'));
 
         $option5 = new ProductOption('存储');
-        $option5->addValue(new ProductOptionValue('128GB'));
-        $option5->addValue(new ProductOptionValue('256GB'));
-        $option5->addValue(new ProductOptionValue('512GB'));
-        $option5->addValue(new ProductOptionValue('1TB'));
+        $option5->addValue(new ProductOptionValue(null, '128GB'));
+        $option5->addValue(new ProductOptionValue(null, '256GB'));
+        $option5->addValue(new ProductOptionValue(null, '512GB'));
+        $option5->addValue(new ProductOptionValue(null, '1TB'));
 
         $option6 = new ProductOption('屏幕');
-        $option6->addValue(new ProductOptionValue('6.2 英寸', 'S24'));
-        $option6->addValue(new ProductOptionValue('6.7 英寸', 'S24+'));
+        $option6->addValue(new ProductOptionValue(null, '6.2 英寸', 'S24'));
+        $option6->addValue(new ProductOptionValue(null, '6.7 英寸', 'S24+'));
 
         $option7 = new ProductOption('存储');
-        $option7->addValue(new ProductOptionValue('8GB+256GB'));
-        $option7->addValue(new ProductOptionValue('8GB+512GB'));
-        $option7->addValue(new ProductOptionValue('12GB+512GB'));
+        $option7->addValue(new ProductOptionValue(null, '8GB+256GB'));
+        $option7->addValue(new ProductOptionValue(null, '8GB+512GB'));
+        $option7->addValue(new ProductOptionValue(null, '12GB+512GB'));
 
         $option8 = new ProductOption('颜色');
-        $option8->addValue(new ProductOptionValue('秘矿紫'));
-        $option8->addValue(new ProductOptionValue('浅珀黄'));
-        $option8->addValue(new ProductOptionValue('水墨黑'));
-        $option8->addValue(new ProductOptionValue('雅岩灰'));
+        $option8->addValue(new ProductOptionValue(null, '秘矿紫'));
+        $option8->addValue(new ProductOptionValue(null, '浅珀黄'));
+        $option8->addValue(new ProductOptionValue(null, '水墨黑'));
+        $option8->addValue(new ProductOptionValue(null, '雅岩灰'));
 
         $option9 = new ProductOption('存储');
-        $option9->addValue(new ProductOptionValue('12GB+256GB'));
-        $option9->addValue(new ProductOptionValue('12GB+512GB'));
-        $option9->addValue(new ProductOptionValue('12GB+1TB'));
+        $option9->addValue(new ProductOptionValue(null, '12GB+256GB'));
+        $option9->addValue(new ProductOptionValue(null, '12GB+512GB'));
+        $option9->addValue(new ProductOptionValue(null, '12GB+1TB'));
 
         $option10 = new ProductOption('颜色');
-        $option10->addValue(new ProductOptionValue('钛灰'));
-        $option10->addValue(new ProductOptionValue('钛黑'));
-        $option10->addValue(new ProductOptionValue('钛暮紫'));
-        $option10->addValue(new ProductOptionValue('钛羽黄'));
+        $option10->addValue(new ProductOptionValue(null, '钛灰'));
+        $option10->addValue(new ProductOptionValue(null, '钛黑'));
+        $option10->addValue(new ProductOptionValue(null, '钛暮紫'));
+        $option10->addValue(new ProductOptionValue(null, '钛羽黄'));
 
         $option11 = new ProductOption('尺码');
-        $option11->addValue(new ProductOptionValue('25', '内长约 17cm'));
-        $option11->addValue(new ProductOptionValue('26', '内长约 17.5cm'));
-        $option11->addValue(new ProductOptionValue('27', '内长约 18cm'));
-        $option11->addValue(new ProductOptionValue('28', '内长约 18.5cm'));
-        $option11->addValue(new ProductOptionValue('29', '内长约 19cm'));
-        $option11->addValue(new ProductOptionValue('30', '内长约 19.5cm'));
-        $option11->addValue(new ProductOptionValue('31', '内长约 20cm'));
-        $option11->addValue(new ProductOptionValue('32', '内长约 20.05cm'));
+        $option11->addValue(new ProductOptionValue(null, '25', '内长约 17cm'));
+        $option11->addValue(new ProductOptionValue(null, '26', '内长约 17.5cm'));
+        $option11->addValue(new ProductOptionValue(null, '27', '内长约 18cm'));
+        $option11->addValue(new ProductOptionValue(null, '28', '内长约 18.5cm'));
+        $option11->addValue(new ProductOptionValue(null, '29', '内长约 19cm'));
+        $option11->addValue(new ProductOptionValue(null, '30', '内长约 19.5cm'));
+        $option11->addValue(new ProductOptionValue(null, '31', '内长约 20cm'));
+        $option11->addValue(new ProductOptionValue(null, '32', '内长约 20.05cm'));
 
         $option12 = new ProductOption('尺码');
-        $option12->addValue(new ProductOptionValue('M', '建议90-120斤'));
-        $option12->addValue(new ProductOptionValue('L', '建议120-140斤'));
-        $option12->addValue(new ProductOptionValue('XL', '建议140-160斤'));
-        $option12->addValue(new ProductOptionValue('2XL', '建议160-180'));
-        $option12->addValue(new ProductOptionValue('3XL', '建议180-200斤'));
+        $option12->addValue(new ProductOptionValue(null, 'M', '建议90-120斤'));
+        $option12->addValue(new ProductOptionValue(null, 'L', '建议120-140斤'));
+        $option12->addValue(new ProductOptionValue(null, 'XL', '建议140-160斤'));
+        $option12->addValue(new ProductOptionValue(null, '2XL', '建议160-180'));
+        $option12->addValue(new ProductOptionValue(null, '3XL', '建议180-200斤'));
 
         $option13 = new ProductOption('辣度');
-        $option13->addValue(new ProductOptionValue('不辣', null, $this->getReference('media-8', Media::class)));
-        $option13->addValue(new ProductOptionValue('微辣', null, $this->getReference('media-9', Media::class)));
-        $option13->addValue(new ProductOptionValue('中辣', null, $this->getReference('media-10', Media::class)));
-        $option13->addValue(new ProductOptionValue('特辣', null, $this->getReference('media-11', Media::class)));
-        $option13->addValue(new ProductOptionValue('变态辣', null, $this->getReference('media-12', Media::class)));
+        $option13->addValue(new ProductOptionValue(null, '不辣', null, $this->getReference('media-8', Media::class)));
+        $option13->addValue(new ProductOptionValue(null, '微辣', null, $this->getReference('media-9', Media::class)));
+        $option13->addValue(new ProductOptionValue(null, '中辣', null, $this->getReference('media-10', Media::class)));
+        $option13->addValue(new ProductOptionValue(null, '特辣', null, $this->getReference('media-11', Media::class)));
+        $option13->addValue(new ProductOptionValue(null, '变态辣', null, $this->getReference('media-12', Media::class)));
 
         $product0 = new Product();
         $product0->setName('苹果 iPhone 15 (Plus)');

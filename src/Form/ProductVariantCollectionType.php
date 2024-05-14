@@ -46,13 +46,7 @@ class ProductVariantCollectionType extends AbstractType
             return;
         }
 
-        $choices = $data->getChoices();
-        // push default choices
-        if (empty($choices)) {
-            $choices[] = null;
-        }
-
-        foreach ($choices as $choice) {
+        foreach ($data->getChoices(true) as $choice) {
             $data->addVariant(new ProductVariant($data, $choice));
         }
     }

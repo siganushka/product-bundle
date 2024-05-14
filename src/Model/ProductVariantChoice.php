@@ -31,19 +31,44 @@ final class ProductVariantChoice
                 throw new \UnexpectedValueException(sprintf('Expected argument of type "%s", "%s" given.', ProductOptionValue::class, get_debug_type($optionValue)));
             }
 
-            // Using id for persisted identifier
-            $identifier = $optionValue->getId();
-
-            $value[] = null === $identifier ? spl_object_hash($optionValue) : sprintf('%07d', $identifier);
+            $value[] = $optionValue->getCode();
             $label[] = $optionValue->getDescriptor();
         }
 
-        // [important] Generate unique identity from sorted value
-        sort($value);
-
-        $this->value = \count($value) ? implode('-', $value) : null;
-        $this->label = \count($label) ? implode(', ', $label) : null;
+        $this->value = self::generateValue($value);
+        $this->label = self::generateLabel($label);
 
         $this->combinedOptionValues = $combinedOptionValues;
+    }
+
+    /**
+     * Generate unique choice value for product variant.
+     *
+     * @param array<int, string> $identifiers
+     */
+    public static function generateValue(array $identifiers): ?string
+    {
+        if (0 === \count($identifiers)) {
+            return null;
+        }
+
+        // [important] Generate unique choice value from sorted identifiers
+        sort($identifiers);
+
+        return implode('-', $identifiers);
+    }
+
+    /**
+     * Generate choice label for product variant.
+     *
+     * @param array<int, string|null> $texts
+     */
+    public static function generateLabel(array $texts): ?string
+    {
+        if (0 === \count($texts)) {
+            return null;
+        }
+
+        return implode(', ', $texts);
     }
 }

@@ -89,7 +89,7 @@ class ProductOptionValueInputType extends AbstractType
         }
 
         foreach (array_diff($texts, $valuesText) as $text) {
-            $values[] = new ProductOptionValue($text);
+            $values[] = new ProductOptionValue(null, $text);
         }
 
         return $values;

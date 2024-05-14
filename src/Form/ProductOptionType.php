@@ -35,7 +35,7 @@ class ProductOptionType extends AbstractType
                 // [important] Using nested collections
                 'prototype_name' => '__PRODUCT_OPTION_VALUES__',
                 'constraints' => [
-                    new Count(['min' => 2, 'minMessage' => 'product_option.values.min_count']),
+                    new Count(['min' => 1, 'minMessage' => 'product_option.values.min_count']),
                     new Unique([
                         'message' => 'product_option.values.unique',
                         'normalizer' => fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value),

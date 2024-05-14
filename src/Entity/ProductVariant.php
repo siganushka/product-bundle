@@ -59,7 +59,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     private ?int $inventory = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Media::class, cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=Media::class)
      */
     private ?Media $img = null;
 

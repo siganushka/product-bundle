@@ -30,7 +30,7 @@ class Product implements ResourceInterface, TimestampableInterface
     private ?string $name = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Media::class, cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=Media::class)
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Media $img = null;
@@ -144,8 +144,12 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @return array<int, ProductVariantChoice>
      */
-    public function getChoices(): array
+    public function getChoices(bool $defaultChoiceOnEmptyOptions = false): array
     {
+        if ($defaultChoiceOnEmptyOptions && $this->options->isEmpty()) {
+            return [new ProductVariantChoice()];
+        }
+
         $opitonValues = [];
         foreach ($this->options as $option) {
             $values = $option->getValues();

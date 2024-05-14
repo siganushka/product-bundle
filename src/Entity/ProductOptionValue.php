@@ -14,6 +14,9 @@ use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 
 /**
  * @ORM\Entity(repositoryClass=ProductOptionValueRepository::class)
+ * @ORM\Table(uniqueConstraints={
+ *  @ORM\UniqueConstraint(columns={"option_id", "code"})
+ * })
  */
 class ProductOptionValue implements ResourceInterface, TimestampableInterface
 {
@@ -29,6 +32,11 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     /**
      * @ORM\Column(type="string")
      */
+    private string $code;
+
+    /**
+     * @ORM\Column(type="string")
+     */
     private ?string $text = null;
 
     /**
@@ -37,12 +45,17 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     private ?string $note = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Media::class, cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity=Media::class)
      */
     private ?Media $img = null;
 
-    public function __construct(string $text = null, string $note = null, Media $img = null)
+    public function __construct(string $code = null, string $text = null, string $note = null, Media $img = null)
     {
+        if (null !== $code && !preg_match('/^[a-zA-Z0-9_]+$/', $code)) {
+            throw new \InvalidArgumentException(sprintf('The code with value "%s" contains illegal character(s).', $code));
+        }
+
+        $this->code = $code ?? mb_substr(md5(uniqid()), 0, 7);
         $this->text = $text;
         $this->note = $note;
         $this->img = $img;
@@ -58,6 +71,16 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         $this->option = $option;
 
         return $this;
+    }
+
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        throw new \BadMethodCallException('The code cannot be modified anymore.');
     }
 
     public function getText(): ?string
