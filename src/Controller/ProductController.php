@@ -12,21 +12,17 @@ use Siganushka\ProductBundle\Form\ProductType;
 use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ProductController extends AbstractController
 {
-    private SerializerInterface $serializer;
     private ProductRepository $productRepository;
 
-    public function __construct(SerializerInterface $serializer, ProductRepository $productRepository)
+    public function __construct(ProductRepository $productRepository)
     {
-        $this->serializer = $serializer;
         $this->productRepository = $productRepository;
     }
 
@@ -166,8 +162,6 @@ class ProductController extends AbstractController
             'choices' => ['value', 'label'],
         ];
 
-        $json = $this->serializer->serialize($data, 'json', compact('attributes'));
-
-        return JsonResponse::fromJsonString($json, $statusCode, $headers);
+        return $this->json($data, $statusCode, $headers, compact('attributes'));
     }
 }

@@ -9,20 +9,16 @@ use Siganushka\GenericBundle\Exception\FormErrorException;
 use Siganushka\ProductBundle\Form\ProductVariantType;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ProductVariantController extends AbstractController
 {
-    private SerializerInterface $serializer;
     private ProductVariantRepository $variantRepository;
 
-    public function __construct(SerializerInterface $serializer, ProductVariantRepository $variantRepository)
+    public function __construct(ProductVariantRepository $variantRepository)
     {
-        $this->serializer = $serializer;
         $this->variantRepository = $variantRepository;
     }
 
@@ -84,8 +80,6 @@ class ProductVariantController extends AbstractController
     {
         $attributes = ['id', 'price', 'inventory', 'img', 'choiceValue', 'choiceLabel', 'outOfStock'];
 
-        $json = $this->serializer->serialize($data, 'json', compact('attributes'));
-
-        return JsonResponse::fromJsonString($json, $statusCode, $headers);
+        return $this->json($data, $statusCode, $headers, compact('attributes'));
     }
 }
