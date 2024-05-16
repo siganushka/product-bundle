@@ -6,8 +6,8 @@ namespace Siganushka\ProductBundle\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Siganushka\MediaBundle\ChannelRegistry;
 use Siganushka\MediaBundle\Event\MediaSaveEvent;
-use Siganushka\MediaBundle\Form\DataTransformer\ChannelToAliasTransformer;
 use Siganushka\ProductBundle\Media\ProductImg;
 use Siganushka\ProductBundle\Media\ProductOptionValueImg;
 use Siganushka\ProductBundle\SiganushkaProductBundle;
@@ -17,12 +17,12 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class MediaFixtures extends Fixture
 {
     private EventDispatcherInterface $eventDispatcher;
-    private ChannelToAliasTransformer $transformer;
+    private ChannelRegistry $channelRegistry;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher, ChannelToAliasTransformer $transformer)
+    public function __construct(EventDispatcherInterface $eventDispatcher, ChannelRegistry $channelRegistry)
     {
         $this->eventDispatcher = $eventDispatcher;
-        $this->transformer = $transformer;
+        $this->channelRegistry = $channelRegistry;
     }
 
     public function load(ObjectManager $manager): void
@@ -51,8 +51,8 @@ class MediaFixtures extends Fixture
         ];
 
         $index = 0;
-        foreach ($mapping as $channelAlias => $files) {
-            $channel = $this->transformer->reverseTransform($channelAlias);
+        foreach ($mapping as $channelClass => $files) {
+            $channel = $this->channelRegistry->getByClass($channelClass);
             foreach ($files as $file) {
                 $target = sprintf('%s/%s', sys_get_temp_dir(), pathinfo($file, \PATHINFO_BASENAME));
 
