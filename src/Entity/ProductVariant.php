@@ -25,25 +25,25 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     use TimestampableTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="variants")
+     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="variants", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Product $product = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
+     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class, fetch="EAGER")
      * @ORM\JoinColumn(name="choice1")
      */
     private ?ProductOptionValue $choice1 = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
+     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class, fetch="EAGER")
      * @ORM\JoinColumn(name="choice2")
      */
     private ?ProductOptionValue $choice2 = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
+     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class, fetch="EAGER")
      * @ORM\JoinColumn(name="choice3")
      */
     private ?ProductOptionValue $choice3 = null;
@@ -135,10 +135,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
             return $this->choice;
         }
 
-        // filter null.
-        $combinedOptionValues = array_filter([$this->choice1, $this->choice2, $this->choice3]);
-
-        return $this->choice = new ProductVariantChoice($combinedOptionValues);
+        return $this->choice = new ProductVariantChoice(array_filter([$this->choice1, $this->choice2, $this->choice3]));
     }
 
     /**
