@@ -36,7 +36,7 @@ class Product implements ResourceInterface, TimestampableInterface
     private ?Media $img = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=ProductOption::class, mappedBy="product", cascade={"all"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=ProductOption::class, mappedBy="product", cascade={"all"}, orphanRemoval=true, fetch="EAGER")
      * @ORM\OrderBy({"createdAt": "ASC", "id": "ASC"})
      *
      * @var Collection<int, ProductOption>
@@ -44,7 +44,7 @@ class Product implements ResourceInterface, TimestampableInterface
     private Collection $options;
 
     /**
-     * @ORM\OneToMany(targetEntity=ProductVariant::class, mappedBy="product", cascade={"all"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=ProductVariant::class, mappedBy="product", cascade={"all"}, orphanRemoval=true, fetch="EAGER")
      * @ORM\OrderBy({"createdAt": "ASC", "id": "ASC"})
      *
      * @var Collection<int, ProductVariant>

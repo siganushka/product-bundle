@@ -33,7 +33,7 @@ class ProductOption implements ResourceInterface, TimestampableInterface
     private ?string $name = null;
 
     /**
-     * @ORM\OneToMany(targetEntity=ProductOptionValue::class, mappedBy="option", cascade={"all"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=ProductOptionValue::class, mappedBy="option", cascade={"all"}, orphanRemoval=true, fetch="EAGER")
      * @ORM\OrderBy({"createdAt": "ASC", "id": "ASC"})
      *
      * @var Collection<int, ProductOptionValue>
