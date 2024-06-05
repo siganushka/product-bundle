@@ -25,25 +25,25 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     use TimestampableTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="variants", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="variants")
      * @ORM\JoinColumn(nullable=false)
      */
     private ?Product $product = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class, fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
      * @ORM\JoinColumn(name="choice1")
      */
     private ?ProductOptionValue $choice1 = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class, fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
      * @ORM\JoinColumn(name="choice2")
      */
     private ?ProductOptionValue $choice2 = null;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class, fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
      * @ORM\JoinColumn(name="choice3")
      */
     private ?ProductOptionValue $choice3 = null;
