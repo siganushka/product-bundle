@@ -36,6 +36,11 @@ class ProductController extends AbstractController
             // ->where('p.variants IS NOT EMPTY')
         ;
 
+        if (null !== $name = $request->query->get('name')) {
+            $queryBuilder->andWhere('p.name LIKE :name')
+                ->setParameter('name', "%{$name}%");
+        }
+
         $page = $request->query->getInt('page', 1);
         $size = $request->query->getInt('size', 10);
 
