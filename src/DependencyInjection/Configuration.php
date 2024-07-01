@@ -33,7 +33,7 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode($configName)
                         ->defaultValue($classFqcn)
                         ->validate()
-                            ->ifTrue(function ($v) use ($classFqcn) {
+                            ->ifTrue(function (mixed $v) use ($classFqcn) {
                                 if (!class_exists($v)) {
                                     return false;
                                 }

@@ -13,31 +13,22 @@ use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 
-/**
- * @ORM\Entity(repositoryClass=ProductOptionRepository::class)
- */
+#[ORM\Entity(repositoryClass: ProductOptionRepository::class)]
 class ProductOption implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
     use TimestampableTrait;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="options")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'options')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column]
     private ?string $name = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ProductOptionValue::class, mappedBy="option", cascade={"all"}, orphanRemoval=true)
-     * @ORM\OrderBy({"createdAt": "ASC", "id": "ASC"})
-     *
-     * @var Collection<int, ProductOptionValue>
-     */
+    /** @var Collection<int, ProductOptionValue> */
+    #[ORM\OneToMany(targetEntity: ProductOptionValue::class, mappedBy: 'option', cascade: ['all'], orphanRemoval: true)]
+    #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
     private Collection $values;
 
     public function __construct(string $name = null)
@@ -51,7 +42,7 @@ class ProductOption implements ResourceInterface, TimestampableInterface
         return $this->product;
     }
 
-    public function setProduct(?Product $product): self
+    public function setProduct(?Product $product): static
     {
         $this->product = $product;
 
@@ -63,7 +54,7 @@ class ProductOption implements ResourceInterface, TimestampableInterface
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -78,7 +69,7 @@ class ProductOption implements ResourceInterface, TimestampableInterface
         return $this->values;
     }
 
-    public function addValue(ProductOptionValue $value): self
+    public function addValue(ProductOptionValue $value): static
     {
         $fn = fn (int $_, ProductOptionValue $item): bool => $item->getText() === $value->getText();
 
@@ -90,7 +81,7 @@ class ProductOption implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function removeValue(ProductOptionValue $value): self
+    public function removeValue(ProductOptionValue $value): static
     {
         if ($this->values->removeElement($value)) {
             if ($value->getOption() === $this) {

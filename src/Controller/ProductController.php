@@ -6,8 +6,10 @@ namespace Siganushka\ProductBundle\Controller;
 
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Siganushka\GenericBundle\Exception\FormErrorException;
+use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Form\ProductType;
 use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
@@ -17,18 +19,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
+#[Route('/products')]
 class ProductController extends AbstractController
 {
-    private ProductRepository $productRepository;
-
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(private ProductRepository $productRepository)
     {
-        $this->productRepository = $productRepository;
     }
 
-    /**
-     * @Route("/products", methods={"GET"})
-     */
+    #[Route(methods: 'GET')]
     public function getCollection(Request $request, PaginatorInterface $paginator): Response
     {
         $queryBuilder = $this->productRepository->createQueryBuilder('p')
@@ -49,9 +50,7 @@ class ProductController extends AbstractController
         return $this->createResponse($pagination);
     }
 
-    /**
-     * @Route("/products", methods={"POST"})
-     */
+    #[Route(methods: 'POST')]
     public function postCollection(Request $request, EntityManagerInterface $entityManager): Response
     {
         $entity = $this->productRepository->createNew();
@@ -69,9 +68,7 @@ class ProductController extends AbstractController
         return $this->createResponse($entity, Response::HTTP_CREATED);
     }
 
-    /**
-     * @Route("/products/{id<\d+>}", methods={"GET"})
-     */
+    #[Route('/{id<\d+>}', methods: 'GET')]
     public function getItem(int $id): Response
     {
         $entity = $this->productRepository->find($id);
@@ -82,9 +79,7 @@ class ProductController extends AbstractController
         return $this->createResponse($entity);
     }
 
-    /**
-     * @Route("/products/{id<\d+>}", methods={"PUT", "PATCH"})
-     */
+    #[Route('/{id<\d+>}', methods: ['PUT', 'PATCH'])]
     public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->productRepository->find($id);
@@ -108,9 +103,7 @@ class ProductController extends AbstractController
         return $this->createResponse($entity);
     }
 
-    /**
-     * @Route("/products/{id<\d+>}/variants", methods={"PUT", "PATCH"})
-     */
+    #[Route('/{id<\d+>}/variants', methods: ['PUT', 'PATCH'])]
     public function putItemVariants(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->productRepository->find($id);
@@ -134,9 +127,7 @@ class ProductController extends AbstractController
         return $this->createResponse($entity);
     }
 
-    /**
-     * @Route("/products/{id<\d+>}", methods={"DELETE"})
-     */
+    #[Route('/{id<\d+>}', methods: 'DELETE')]
     public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->productRepository->find($id);
@@ -150,10 +141,7 @@ class ProductController extends AbstractController
         return $this->createResponse(null, Response::HTTP_NO_CONTENT);
     }
 
-    /**
-     * @param mixed $data
-     */
-    protected function createResponse($data = null, int $statusCode = Response::HTTP_OK, array $headers = []): Response
+    protected function createResponse(PaginationInterface|Product|null $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
     {
         $attributes = [
             'id', 'name', 'img', 'updatedAt', 'createdAt',

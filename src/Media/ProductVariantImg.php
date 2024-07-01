@@ -13,11 +13,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ProductVariantImg extends AbstractChannel
 {
-    private EventDispatcherInterface $eventDispatcher;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(private EventDispatcherInterface $eventDispatcher)
     {
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function onPreSave(File $file): void

@@ -13,59 +13,38 @@ use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
-/**
- * @ORM\Entity(repositoryClass=ProductVariantRepository::class)
- * @ORM\Table(uniqueConstraints={
- *  @ORM\UniqueConstraint(columns={"product_id", "choice1", "choice2", "choice3"})
- * })
- */
+#[ORM\Entity(repositoryClass: ProductVariantRepository::class)]
+#[ORM\UniqueConstraint(columns: ['product_id', 'choice1', 'choice2', 'choice3'])]
 class ProductVariant implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
     use TimestampableTrait;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="variants")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'variants')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
-     * @ORM\JoinColumn(name="choice1")
-     */
+    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class)]
+    #[ORM\JoinColumn(name: 'choice1')]
     private ?ProductOptionValue $choice1 = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
-     * @ORM\JoinColumn(name="choice2")
-     */
+    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class)]
+    #[ORM\JoinColumn(name: 'choice2')]
     private ?ProductOptionValue $choice2 = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ProductOptionValue::class)
-     * @ORM\JoinColumn(name="choice3")
-     */
+    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class)]
+    #[ORM\JoinColumn(name: 'choice3')]
     private ?ProductOptionValue $choice3 = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column]
     private ?int $price = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?int $inventory = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Media::class)
-     */
+    #[ORM\ManyToOne(targetEntity: Media::class)]
     private ?Media $img = null;
 
-    /**
-     * The variant choice.
-     */
     private ?ProductVariantChoice $choice = null;
 
     public function __construct(Product $product = null, ProductVariantChoice $choice = null)
@@ -83,7 +62,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this->product;
     }
 
-    public function setProduct(?Product $product): self
+    public function setProduct(?Product $product): static
     {
         $this->product = $product;
 
@@ -95,7 +74,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this->price;
     }
 
-    public function setPrice(?int $price): self
+    public function setPrice(?int $price): static
     {
         $this->price = $price;
 
@@ -107,7 +86,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this->inventory;
     }
 
-    public function setInventory(?int $inventory): self
+    public function setInventory(?int $inventory): static
     {
         $this->inventory = $inventory;
 
@@ -119,7 +98,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this->img;
     }
 
-    public function setImg(?Media $img): self
+    public function setImg(?Media $img): static
     {
         $this->img = $img;
 

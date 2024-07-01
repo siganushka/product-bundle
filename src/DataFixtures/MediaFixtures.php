@@ -16,13 +16,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MediaFixtures extends Fixture
 {
-    private EventDispatcherInterface $eventDispatcher;
-    private ChannelRegistry $channelRegistry;
-
-    public function __construct(EventDispatcherInterface $eventDispatcher, ChannelRegistry $channelRegistry)
+    public function __construct(private EventDispatcherInterface $eventDispatcher, private ChannelRegistry $channelRegistry)
     {
-        $this->eventDispatcher = $eventDispatcher;
-        $this->channelRegistry = $channelRegistry;
     }
 
     public function load(ObjectManager $manager): void
@@ -63,6 +58,10 @@ class MediaFixtures extends Fixture
                 $this->eventDispatcher->dispatch($event);
 
                 $media = $event->getMedia();
+                if (null === $media) {
+                    continue;
+                }
+
                 $manager->persist($media);
 
                 $this->addReference(sprintf('media-%d', $index), $media);

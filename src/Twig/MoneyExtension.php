@@ -10,11 +10,8 @@ use Twig\TwigFilter;
 
 class MoneyExtension extends AbstractExtension
 {
-    private MoneyFormatterInterface $formatter;
-
-    public function __construct(MoneyFormatterInterface $formatter)
+    public function __construct(private MoneyFormatterInterface $formatter)
     {
-        $this->formatter = $formatter;
     }
 
     public function getFilters(): array

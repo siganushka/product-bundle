@@ -15,7 +15,7 @@ class CentsMoneyType extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setNormalizer('constraints', function (Options $options, $constraints): array {
+        $resolver->setNormalizer('constraints', function (Options $options, mixed $constraints): array {
             $constraints = \is_object($constraints) ? [$constraints] : (array) $constraints;
             $constraints[] = new GreaterThanOrEqual($options['negative'] ? -2147483600 : 0);
             $constraints[] = new LessThanOrEqual(2147483600);

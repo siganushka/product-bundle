@@ -12,41 +12,27 @@ use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 
-/**
- * @ORM\Entity(repositoryClass=ProductOptionValueRepository::class)
- * @ORM\Table(uniqueConstraints={
- *  @ORM\UniqueConstraint(columns={"option_id", "code"})
- * })
- */
+#[ORM\Entity(repositoryClass: ProductOptionValueRepository::class)]
+#[ORM\UniqueConstraint(columns: ['option_id', 'code'])]
 class ProductOptionValue implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
     use TimestampableTrait;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=ProductOption::class, inversedBy="values")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: ProductOption::class, inversedBy: 'values')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?ProductOption $option = null;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column]
     private string $code;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column]
     private ?string $text = null;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(nullable: true)]
     private ?string $note = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Media::class)
-     */
+    #[ORM\ManyToOne(targetEntity: Media::class)]
     private ?Media $img = null;
 
     public function __construct(string $code = null, string $text = null, string $note = null, Media $img = null)
@@ -66,7 +52,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         return $this->option;
     }
 
-    public function setOption(?ProductOption $option): self
+    public function setOption(?ProductOption $option): static
     {
         $this->option = $option;
 
@@ -78,7 +64,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         return $this->code;
     }
 
-    public function setCode(string $code): self
+    public function setCode(string $code): static
     {
         throw new \BadMethodCallException('The code cannot be modified anymore.');
     }
@@ -88,7 +74,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         return $this->text;
     }
 
-    public function setText(?string $text): self
+    public function setText(?string $text): static
     {
         $this->text = $text;
 
@@ -100,7 +86,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         return $this->note;
     }
 
-    public function setNote(?string $note): self
+    public function setNote(?string $note): static
     {
         $this->note = $note;
 
@@ -112,7 +98,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         return $this->img;
     }
 
-    public function setImg(?Media $img): self
+    public function setImg(?Media $img): static
     {
         $this->img = $img;
 

@@ -16,39 +16,27 @@ use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
-/**
- * @ORM\Entity(repositoryClass=ProductRepository::class)
- */
+#[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
     use TimestampableTrait;
 
-    /**
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column]
     private ?string $name = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Media::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Media $img = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ProductOption::class, mappedBy="product", cascade={"all"}, orphanRemoval=true)
-     * @ORM\OrderBy({"createdAt": "ASC", "id": "ASC"})
-     *
-     * @var Collection<int, ProductOption>
-     */
+    /** @var Collection<int, ProductOption> */
+    #[ORM\OneToMany(targetEntity: ProductOption::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
+    #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
     private Collection $options;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ProductVariant::class, mappedBy="product", cascade={"all"}, orphanRemoval=true)
-     * @ORM\OrderBy({"createdAt": "ASC", "id": "ASC"})
-     *
-     * @var Collection<int, ProductVariant>
-     */
+    /** @var Collection<int, ProductVariant> */
+    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
+    #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
     private Collection $variants;
 
     public function __construct()
@@ -62,7 +50,7 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this->name;
     }
 
-    public function setName(?string $name): self
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -74,7 +62,7 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this->img;
     }
 
-    public function setImg(?Media $img): self
+    public function setImg(?Media $img): static
     {
         $this->img = $img;
 
@@ -89,7 +77,7 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this->options;
     }
 
-    public function addOption(ProductOption $option): self
+    public function addOption(ProductOption $option): static
     {
         if (!$this->options->contains($option)) {
             $this->options[] = $option;
@@ -99,7 +87,7 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function removeOption(ProductOption $option): self
+    public function removeOption(ProductOption $option): static
     {
         if ($this->options->removeElement($option)) {
             if ($option->getProduct() === $this) {
@@ -118,7 +106,7 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this->variants;
     }
 
-    public function addVariant(ProductVariant $variant): self
+    public function addVariant(ProductVariant $variant): static
     {
         $fn = fn (int $_, ProductVariant $item): bool => $item->getChoiceValue() === $variant->getChoiceValue();
 
@@ -130,7 +118,7 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function removeVariant(ProductVariant $variant): self
+    public function removeVariant(ProductVariant $variant): static
     {
         if ($this->variants->removeElement($variant)) {
             if ($variant->getProduct() === $this) {
