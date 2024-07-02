@@ -30,7 +30,7 @@ class ProductImg extends AbstractChannel
          * @see https://symfony.com/doc/5.x/reference/constraints/Image.html
          */
         $constraint = new Image();
-        $constraint->minWidth = 50;
+        $constraint->minWidth = 100;
         $constraint->minWidthMessage = '_img.min_width.invalid';
         $constraint->allowSquare = true;
         $constraint->allowLandscape = false;
