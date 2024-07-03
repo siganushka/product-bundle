@@ -9,10 +9,10 @@ namespace Siganushka\ProductBundle\Formatter;
  */
 interface MoneyFormatterInterface
 {
-    public const DIVISOR = 'divisor';
-    public const DECIMALS = 'decimals';
-    public const DEC_POINT = 'dec_point';
-    public const THOUSANDS_SEP = 'thousands_sep';
+    public const string DIVISOR = 'divisor';
+    public const string DECIMALS = 'decimals';
+    public const string DEC_POINT = 'dec_point';
+    public const string THOUSANDS_SEP = 'thousands_sep';
 
     /**
      * Format number to money.

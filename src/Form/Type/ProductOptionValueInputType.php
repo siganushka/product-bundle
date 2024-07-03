@@ -33,9 +33,16 @@ class ProductOptionValueInputType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefault('values', new ArrayCollection());
-        $resolver->setDefault('delimiter', ',');
-        $resolver->setDefault('attr', ['data-toggle' => 'tagsinput']);
+        $resolver->setDefaults([
+            'values' => new ArrayCollection(),
+            'delimiter' => ',',
+            'autocomplete' => true,
+            'tom_select_options' => [
+                'create' => true,
+                'createOnBlur' => true,
+                'delimiter' => ',',
+            ],
+        ]);
 
         $resolver->setAllowedTypes('values', Collection::class);
         $resolver->setAllowedTypes('delimiter', 'string');

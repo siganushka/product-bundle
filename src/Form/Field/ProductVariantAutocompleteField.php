@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form\Field;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Symfony\Component\Form\AbstractType;

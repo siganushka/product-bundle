@@ -16,8 +16,10 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MediaFixtures extends Fixture
 {
-    public function __construct(private EventDispatcherInterface $eventDispatcher, private ChannelRegistry $channelRegistry)
-    {
+    public function __construct(
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ChannelRegistry $channelRegistry
+    ) {
     }
 
     public function load(ObjectManager $manager): void

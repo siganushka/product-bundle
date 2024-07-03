@@ -11,17 +11,17 @@ final class ProductVariantChoice
     /**
      * Generated unique value for combined option values.
      */
-    public ?string $value;
+    public readonly ?string $value;
 
     /**
      * Generated label for combined option values.
      */
-    public ?string $label;
+    public readonly ?string $label;
 
     /**
      * @var array<int, ProductOptionValue>
      */
-    public array $combinedOptionValues;
+    public readonly array $combinedOptionValues;
 
     public function __construct(array $combinedOptionValues = [])
     {
@@ -35,8 +35,8 @@ final class ProductVariantChoice
             $label[] = $optionValue->getDescriptor();
         }
 
-        $this->value = self::generateValue($value);
-        $this->label = self::generateLabel($label);
+        $this->value = static::generateValue($value);
+        $this->label = static::generateLabel($label);
 
         $this->combinedOptionValues = $combinedOptionValues;
     }

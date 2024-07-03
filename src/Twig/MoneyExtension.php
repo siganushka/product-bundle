@@ -10,7 +10,7 @@ use Twig\TwigFilter;
 
 class MoneyExtension extends AbstractExtension
 {
-    public function __construct(private MoneyFormatterInterface $formatter)
+    public function __construct(private readonly MoneyFormatterInterface $formatter)
     {
     }
 

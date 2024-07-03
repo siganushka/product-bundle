@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/product-variants')]
 class ProductVariantController extends AbstractController
 {
-    public function __construct(private ProductVariantRepository $variantRepository)
+    public function __construct(private readonly ProductVariantRepository $variantRepository)
     {
     }
 
