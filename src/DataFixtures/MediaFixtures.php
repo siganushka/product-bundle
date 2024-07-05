@@ -29,21 +29,21 @@ class MediaFixtures extends Fixture
 
         $mapping = [
             ProductImg::class => [
-                $dir.'/Resources/data/product-0.jpg',
-                $dir.'/Resources/data/product-1.jpg',
-                $dir.'/Resources/data/product-2.jpg',
-                $dir.'/Resources/data/product-3.jpg',
-                $dir.'/Resources/data/product-4.jpg',
-                $dir.'/Resources/data/product-5.jpg',
-                $dir.'/Resources/data/product-6.jpg',
-                $dir.'/Resources/data/product-7.jpg',
+                $dir.'/DataFixtures/data/product-0.jpg',
+                $dir.'/DataFixtures/data/product-1.jpg',
+                $dir.'/DataFixtures/data/product-2.jpg',
+                $dir.'/DataFixtures/data/product-3.jpg',
+                $dir.'/DataFixtures/data/product-4.jpg',
+                $dir.'/DataFixtures/data/product-5.jpg',
+                $dir.'/DataFixtures/data/product-6.jpg',
+                $dir.'/DataFixtures/data/product-7.jpg',
             ],
             ProductOptionValueImg::class => [
-                $dir.'/Resources/data/product-option-value-0.jpg',
-                $dir.'/Resources/data/product-option-value-1.jpg',
-                $dir.'/Resources/data/product-option-value-2.jpg',
-                $dir.'/Resources/data/product-option-value-3.jpg',
-                $dir.'/Resources/data/product-option-value-4.jpg',
+                $dir.'/DataFixtures/data/product-option-value-0.jpg',
+                $dir.'/DataFixtures/data/product-option-value-1.jpg',
+                $dir.'/DataFixtures/data/product-option-value-2.jpg',
+                $dir.'/DataFixtures/data/product-option-value-3.jpg',
+                $dir.'/DataFixtures/data/product-option-value-4.jpg',
             ],
         ];
 

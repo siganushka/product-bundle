@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Repository;
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Siganushka\GenericBundle\Repository\GenericEntityRepository;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 
@@ -19,4 +20,13 @@ use Siganushka\ProductBundle\Entity\ProductVariant;
  */
 class ProductVariantRepository extends GenericEntityRepository
 {
+    public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder
+    {
+        $queryBuilder = parent::createQueryBuilder($alias, $indexBy);
+        // Overwide default orderBy parts
+        $queryBuilder->orderBy(sprintf('%s.createdAt', $alias), 'ASC');
+        $queryBuilder->addOrderBy(sprintf('%s.id', $alias), 'ASC');
+
+        return $queryBuilder;
+    }
 }
