@@ -24,7 +24,9 @@ class ProductVariantRepository extends GenericEntityRepository
     {
         $queryBuilder = parent::createQueryBuilder($alias, $indexBy);
         // Overwide default orderBy parts
-        $queryBuilder->orderBy(sprintf('%s.createdAt', $alias), 'ASC');
+        $queryBuilder->join(sprintf('%s.product', $alias), 'p');
+        $queryBuilder->orderBy('p.id', 'DESC');
+        $queryBuilder->addOrderBy(sprintf('%s.createdAt', $alias), 'ASC');
         $queryBuilder->addOrderBy(sprintf('%s.id', $alias), 'ASC');
 
         return $queryBuilder;
