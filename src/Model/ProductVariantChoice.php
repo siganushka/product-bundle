@@ -28,7 +28,7 @@ final class ProductVariantChoice
         $value = $label = [];
         foreach ($combinedOptionValues as $optionValue) {
             if (!$optionValue instanceof ProductOptionValue) {
-                throw new \UnexpectedValueException(sprintf('Expected argument of type "%s", "%s" given.', ProductOptionValue::class, get_debug_type($optionValue)));
+                throw new \UnexpectedValueException(\sprintf('Expected argument of type "%s", "%s" given.', ProductOptionValue::class, get_debug_type($optionValue)));
             }
 
             $value[] = $optionValue->getCode();

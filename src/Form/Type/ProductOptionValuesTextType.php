@@ -16,35 +16,33 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use function Symfony\Component\String\u;
 
-class ProductOptionValueInputType extends AbstractType
+class ProductOptionValuesTextType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        /** @var Collection<int, ProductOptionValue> */
-        $originValues = $options['values'];
-        /** @var non-empty-string */
-        $delimiter = $options['delimiter'];
-
         $builder->addModelTransformer(new CallbackTransformer(
-            fn (?Collection $data) => $this->productOptionValuesToString($data, $delimiter),
-            fn (?string $data) => $this->stringToProductOptionValues($data, $delimiter, $originValues),
+            fn (?Collection $data) => $this->productOptionValuesToString($data, $options['delimiter']),
+            fn (?string $data) => $this->stringToProductOptionValues($data, $options['delimiter'], $options['previous_values']),
         ));
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'values' => new ArrayCollection(),
+            'previous_values' => new ArrayCollection(),
             'delimiter' => ',',
             'autocomplete' => true,
-            'tom_select_options' => [
-                'create' => true,
-                'createOnBlur' => true,
-                'delimiter' => ',',
-            ],
+            'tom_select_options' => function (Options $options) {
+                return [
+                    'create' => true,
+                    'createOnBlur' => true,
+                    'duplicates' => true,
+                    'delimiter' => $options['delimiter'],
+                ];
+            },
         ]);
 
-        $resolver->setAllowedTypes('values', Collection::class);
+        $resolver->setAllowedTypes('previous_values', Collection::class);
         $resolver->setAllowedTypes('delimiter', 'string');
 
         // Trim delimiter options
@@ -65,38 +63,27 @@ class ProductOptionValueInputType extends AbstractType
             return null;
         }
 
-        $texts = $value->map(fn (ProductOptionValue $item) => $item->getText());
-
-        return implode($delimiter, $texts->toArray());
+        return implode($delimiter, $value->map(fn (ProductOptionValue $item) => $item->getText())->toArray());
     }
 
     /**
      * @param non-empty-string                    $delimiter
-     * @param Collection<int, ProductOptionValue> $originValues
-     *
-     * @return array<int, ProductOptionValue>
+     * @param Collection<int, ProductOptionValue> $previousValues
      */
-    private function stringToProductOptionValues(?string $value, string $delimiter, Collection $originValues): array
+    private function stringToProductOptionValues(?string $value, string $delimiter, Collection $previousValues): array
     {
         if (null === $value || u($value)->isEmpty()) {
             return [];
         }
 
-        $texts = explode($delimiter, $value);
-        $texts = array_map('trim', $texts);
-        $texts = array_unique($texts);
-        $texts = array_filter($texts);
+        $newTexts = explode($delimiter, $value);
+        $newTexts = array_map('trim', $newTexts);
+        $newTexts = array_filter($newTexts);
 
-        $values = $valuesText = [];
-        foreach ($originValues as $value) {
-            if (\in_array($value->getText(), $texts)) {
-                $values[] = $value;
-                $valuesText[] = $value->getText();
-            }
-        }
-
-        foreach (array_diff($texts, $valuesText) as $text) {
-            $values[] = new ProductOptionValue(null, $text);
+        $values = [];
+        foreach ($newTexts as $text) {
+            $filtered = $previousValues->filter(fn (ProductOptionValue $value) => $value->getText() === $text);
+            $values[] = $filtered->first() ?: new ProductOptionValue(null, $text);
         }
 
         return $values;

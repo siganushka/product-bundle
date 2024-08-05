@@ -51,7 +51,7 @@ class MediaFixtures extends Fixture
         foreach ($mapping as $channelClass => $files) {
             $channel = $this->channelRegistry->getByClass($channelClass);
             foreach ($files as $file) {
-                $target = sprintf('%s/%s', sys_get_temp_dir(), pathinfo($file, \PATHINFO_BASENAME));
+                $target = \sprintf('%s/%s', sys_get_temp_dir(), pathinfo($file, \PATHINFO_BASENAME));
 
                 $fs = new Filesystem();
                 $fs->copy($file, $target);
@@ -66,7 +66,7 @@ class MediaFixtures extends Fixture
 
                 $manager->persist($media);
 
-                $this->addReference(sprintf('media-%d', $index), $media);
+                $this->addReference(\sprintf('media-%d', $index), $media);
 
                 ++$index;
             }

@@ -38,7 +38,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     public function __construct(string $code = null, string $text = null, string $note = null, Media $img = null)
     {
         if (null !== $code && !preg_match('/^[a-zA-Z0-9_]+$/', $code)) {
-            throw new \InvalidArgumentException(sprintf('The code with value "%s" contains illegal character(s).', $code));
+            throw new \InvalidArgumentException(\sprintf('The code with value "%s" contains illegal character(s).', $code));
         }
 
         $this->code = $code ?? mb_substr(md5(uniqid()), 0, 7);
@@ -110,7 +110,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         $optionName = $this->option ? $this->option->getName() : null;
 
         if (\is_string($this->text) && \is_string($optionName)) {
-            return sprintf('%s: %s', $optionName, $this->text);
+            return \sprintf('%s: %s', $optionName, $this->text);
         }
 
         return $this->text;

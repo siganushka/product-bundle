@@ -54,7 +54,7 @@ class ProductVariantAutocompleteField extends AbstractType
 
         $productName = $product->getName();
         if (\is_string($productName) && \is_string($label)) {
-            return sprintf('%s【%s】', $productName, $label);
+            return \sprintf('%s【%s】', $productName, $label);
         }
 
         return $productName;

@@ -73,7 +73,7 @@ class ProductController extends AbstractController
     {
         $entity = $this->productRepository->find($id);
         if (!$entity) {
-            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
+            throw $this->createNotFoundException(\sprintf('Resource #%d not found.', $id));
         }
 
         return $this->createResponse($entity);
@@ -84,7 +84,7 @@ class ProductController extends AbstractController
     {
         $entity = $this->productRepository->find($id);
         if (!$entity) {
-            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
+            throw $this->createNotFoundException(\sprintf('Resource #%d not found.', $id));
         }
 
         $form = $this->createForm(ProductType::class, $entity);
@@ -108,7 +108,7 @@ class ProductController extends AbstractController
     {
         $entity = $this->productRepository->find($id);
         if (!$entity) {
-            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
+            throw $this->createNotFoundException(\sprintf('Resource #%d not found.', $id));
         }
 
         $form = $this->createForm(ProductVariantCollectionType::class, $entity);
@@ -132,7 +132,7 @@ class ProductController extends AbstractController
     {
         $entity = $this->productRepository->find($id);
         if (!$entity) {
-            throw $this->createNotFoundException(sprintf('Resource #%d not found.', $id));
+            throw $this->createNotFoundException(\sprintf('Resource #%d not found.', $id));
         }
 
         $entityManager->remove($entity);
