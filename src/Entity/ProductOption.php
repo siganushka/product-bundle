@@ -14,6 +14,7 @@ use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 
 #[ORM\Entity(repositoryClass: ProductOptionRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class ProductOption implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
@@ -90,6 +91,14 @@ class ProductOption implements ResourceInterface, TimestampableInterface
         }
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function assertNonEmptyValues(): void
+    {
+        if ($this->values->isEmpty()) {
+            throw new \RuntimeException('The values cannot not be empty.');
+        }
     }
 
     /**
