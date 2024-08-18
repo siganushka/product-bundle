@@ -59,7 +59,7 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
     public function testTansformExceptionOnInvalidString(): void
     {
         $this->expectException(TransformationFailedException::class);
-        $this->expectExceptionMessage('Expected an array.');
+        $this->expectExceptionMessage('Expected an array or Traversable.');
 
         $transformer = new ProductOptionValuesToStringTransformer(',');
         $transformer->transform('   ');

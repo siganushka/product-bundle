@@ -54,7 +54,7 @@ class ProductType extends AbstractType
         $form->add('options', CollectionType::class, [
             'label' => 'product.options',
             'entry_type' => ProductOptionType::class,
-            'entry_options' => ['label' => false, 'values_as_tags' => true],
+            'entry_options' => ['label' => false, 'values_as_text' => true],
             'allow_add' => !$persisted,
             'allow_delete' => !$persisted,
             'error_bubbling' => false,

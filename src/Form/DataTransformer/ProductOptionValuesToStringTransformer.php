@@ -33,7 +33,7 @@ class ProductOptionValuesToStringTransformer implements DataTransformerInterface
         }
 
         if (!\is_array($value)) {
-            throw new TransformationFailedException('Expected an array.');
+            throw new TransformationFailedException('Expected an array or Traversable.');
         }
 
         return implode($this->separator, array_map(fn (ProductOptionValue $item) => $item->getText(), $value));

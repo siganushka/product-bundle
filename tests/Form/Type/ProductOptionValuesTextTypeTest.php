@@ -16,14 +16,17 @@ class ProductOptionValuesTextTypeTest extends TypeTestCase
 {
     public function testAll(): void
     {
-        $data = new ArrayCollection([
+        $data = [
             new ProductOptionValue('1', 'AAA'),
             new ProductOptionValue('2', 'BBB'),
             new ProductOptionValue('3', 'CCC'),
-        ]);
+        ];
 
         $form = $this->factory->create(ProductOptionValuesTextType::class, $data, ['data_class' => null]);
         static::assertSame($data, $form->getData());
+
+        $form = $this->factory->create(ProductOptionValuesTextType::class, new ArrayCollection($data), ['data_class' => null]);
+        static::assertSame($data, $form->getData()->toArray());
 
         $view = $form->createView();
         static::assertSame('AAA,BBB,CCC', $view->vars['value']);
@@ -39,5 +42,11 @@ class ProductOptionValuesTextTypeTest extends TypeTestCase
         static::assertInstanceOf(ProductOptionValue::class, $data[2]);
         static::assertSame('3', $data[0]->getCode());
         static::assertSame('2', $data[1]->getCode());
+    }
+
+    public function testNullDefaultData(): void
+    {
+        $form = $this->factory->create(ProductOptionValuesTextType::class);
+        static::assertNull($form->getData());
     }
 }

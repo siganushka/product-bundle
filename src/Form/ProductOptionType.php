@@ -20,7 +20,7 @@ class ProductOptionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $type = $options['values_as_tags']
+        $type = $options['values_as_text']
             ? ProductOptionValuesTextType::class
             : ProductOptionValuesCollectionType::class;
 
@@ -46,7 +46,7 @@ class ProductOptionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ProductOption::class,
-            'values_as_tags' => false,
+            'values_as_text' => false,
         ]);
     }
 }
