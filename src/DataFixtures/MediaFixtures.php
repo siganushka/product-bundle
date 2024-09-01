@@ -18,7 +18,7 @@ class MediaFixtures extends Fixture
 {
     public function __construct(
         private readonly EventDispatcherInterface $eventDispatcher,
-        private readonly ChannelRegistry $channelRegistry
+        private readonly ChannelRegistry $channelRegistry,
     ) {
     }
 
