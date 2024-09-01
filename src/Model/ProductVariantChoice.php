@@ -46,10 +46,10 @@ final class ProductVariantChoice
      *
      * @param array<int, string> $identifiers
      */
-    public static function generateValue(array $identifiers): ?string
+    public static function generateValue(array $identifiers): string
     {
         if (0 === \count($identifiers)) {
-            return null;
+            throw new \InvalidArgumentException('The identifiers cannot be empty.');
         }
 
         // [important] Generate unique choice value from sorted identifiers
@@ -63,10 +63,10 @@ final class ProductVariantChoice
      *
      * @param array<int, string|null> $texts
      */
-    public static function generateLabel(array $texts): ?string
+    public static function generateLabel(array $texts): string
     {
         if (0 === \count($texts)) {
-            return null;
+            throw new \InvalidArgumentException('The identifiers cannot be empty.');
         }
 
         return implode(', ', $texts);
