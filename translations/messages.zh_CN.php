@@ -15,7 +15,7 @@ return [
     'product_option_value.note' => '备注',
     'product_option_value.img' => '图片',
 
-    'product_variant.option_values' => '库存规格',
+    'product_variant.choice' => '库存规格',
     'product_variant.price' => '销售单价',
     'product_variant.inventory' => '库存数量',
     'product_variant.img' => '库存图片',

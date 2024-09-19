@@ -22,14 +22,13 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @psalm-suppress PropertyNotSetInConstructor
  */
-#[Route('/products')]
 class ProductController extends AbstractController
 {
     public function __construct(private readonly ProductRepository $productRepository)
     {
     }
 
-    #[Route(methods: 'GET')]
+    #[Route('/products', methods: 'GET')]
     public function getCollection(Request $request, PaginatorInterface $paginator): Response
     {
         $queryBuilder = $this->productRepository->createQueryBuilder('p')
@@ -50,7 +49,7 @@ class ProductController extends AbstractController
         return $this->createResponse($pagination);
     }
 
-    #[Route(methods: 'POST')]
+    #[Route('/products', methods: 'POST')]
     public function postCollection(Request $request, EntityManagerInterface $entityManager): Response
     {
         $entity = $this->productRepository->createNew();
@@ -68,7 +67,7 @@ class ProductController extends AbstractController
         return $this->createResponse($entity, Response::HTTP_CREATED);
     }
 
-    #[Route('/{id<\d+>}', methods: 'GET')]
+    #[Route('/products/{id<\d+>}', methods: 'GET')]
     public function getItem(int $id): Response
     {
         $entity = $this->productRepository->find($id);
@@ -79,7 +78,7 @@ class ProductController extends AbstractController
         return $this->createResponse($entity);
     }
 
-    #[Route('/{id<\d+>}', methods: ['PUT', 'PATCH'])]
+    #[Route('/products/{id<\d+>}', methods: ['PUT', 'PATCH'])]
     public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->productRepository->find($id);
@@ -103,7 +102,7 @@ class ProductController extends AbstractController
         return $this->createResponse($entity);
     }
 
-    #[Route('/{id<\d+>}/variants', methods: ['PUT', 'PATCH'])]
+    #[Route('/products/{id<\d+>}/variants', methods: ['PUT', 'PATCH'])]
     public function putItemVariants(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->productRepository->find($id);
@@ -127,7 +126,7 @@ class ProductController extends AbstractController
         return $this->createResponse($entity);
     }
 
-    #[Route('/{id<\d+>}', methods: 'DELETE')]
+    #[Route('/products/{id<\d+>}', methods: 'DELETE')]
     public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->productRepository->find($id);
@@ -138,6 +137,7 @@ class ProductController extends AbstractController
         $entityManager->remove($entity);
         $entityManager->flush();
 
+        // 204 No Content
         return $this->createResponse(null, Response::HTTP_NO_CONTENT);
     }
 

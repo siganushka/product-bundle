@@ -17,14 +17,13 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @psalm-suppress PropertyNotSetInConstructor
  */
-#[Route('/product-variants')]
 class ProductVariantController extends AbstractController
 {
     public function __construct(private readonly ProductVariantRepository $variantRepository)
     {
     }
 
-    #[Route('/{id<\d+>}', methods: 'GET')]
+    #[Route('/product-variants/{id<\d+>}', methods: 'GET')]
     public function getItem(int $id): Response
     {
         $entity = $this->variantRepository->find($id);
@@ -35,7 +34,7 @@ class ProductVariantController extends AbstractController
         return $this->createResponse($entity);
     }
 
-    #[Route('/{id<\d+>}', methods: ['PUT', 'PATCH'])]
+    #[Route('/product-variants/{id<\d+>}', methods: ['PUT', 'PATCH'])]
     public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->variantRepository->find($id);
@@ -55,7 +54,7 @@ class ProductVariantController extends AbstractController
         return $this->createResponse($entity);
     }
 
-    #[Route('/{id<\d+>}', methods: 'DELETE')]
+    #[Route('/product-variants/{id<\d+>}', methods: 'DELETE')]
     public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->variantRepository->find($id);
@@ -66,6 +65,7 @@ class ProductVariantController extends AbstractController
         $entityManager->remove($entity);
         $entityManager->flush();
 
+        // 204 No Content
         return $this->createResponse(null, Response::HTTP_NO_CONTENT);
     }
 
