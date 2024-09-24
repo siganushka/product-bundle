@@ -38,6 +38,7 @@ class ProductOptionType extends AbstractType
                         'normalizer' => fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value),
                     ]),
                 ],
+                'attr' => ['class' => 'w-100'],
             ])
         ;
     }
