@@ -9,7 +9,7 @@ return [
     'product.variants' => '库存',
 
     'product_option.name' => '选项名称',
-    'product_option.values' => '选项规格',
+    'product_option.values' => '选项值',
 
     'product_option_value.text' => '文字',
     'product_option_value.note' => '备注',

@@ -28,6 +28,7 @@ class ProductOptionType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'product_option.name',
                 'constraints' => new NotBlank(),
+                'attr' => ['data-collection-class' => 'col-auto'],
             ])
             ->add('values', $type, [
                 'label' => 'product_option.values',
@@ -38,7 +39,6 @@ class ProductOptionType extends AbstractType
                         'normalizer' => fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value),
                     ]),
                 ],
-                'attr' => ['class' => 'w-100'],
             ])
         ;
     }

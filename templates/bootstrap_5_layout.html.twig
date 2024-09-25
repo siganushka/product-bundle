@@ -5,7 +5,7 @@
     {%- endfor -%}
   </div>
 
-  {% if allow_add %}
+  {%- if allow_add -%}
   <div class="d-grid">
     <button
       type="button"
@@ -13,30 +13,28 @@
       data-index="{{ form|length }}"
       data-prototype="{{ form_widget(prototype)|e('html_attr') }}"
       onclick="addCollectionEntry(event, '{{ id }}', '{{ prototype.vars.name }}')"
-      {% if disabled %}disabled{% endif %}
-    >{{ 'generic.add'|trans }}</button>
+      {% if disabled %}disabled{% endif %}>{{ 'generic.add'|trans }}</button>
   </div>
-  {% endif %}
+  {%- endif -%}
 {%- endblock -%}
 
 {%- block collection_entry_widget -%}
-  <div id="{{ id }}" class="d-flex gap-2 mb-2">
+  <div id="{{ id }}" class="row g-2 mb-2">
     {%- for entry in form -%}
-      <div class="{{ entry.vars.attr.class|default('flex-fill') }}">
-        {{ form_widget(entry) }}
+      <div class="{{ entry.vars.attr['data-collection-class']|default('col') }}">
+        {{ form_widget(entry, { attr: { placeholder: entry.vars.label } }) }}
         {{ form_errors(entry) }}
       </div>
     {%- endfor -%}
 
-    {% if form.parent.vars.allow_delete %}
-      <div>
+    {%- if form.parent.vars.allow_delete -%}
+      <div class="col-auto">
         <button
           type="button"
-          class="btn btn-link link-danger text-nowrap px-0"
+          class="btn btn-link link-danger px-0"
           onclick="removeCollectionEntry('{{ id }}', '{{ 'generic.remove_confirmation'|trans }}')"
-          {% if form.parent.vars.disabled %}disabled{% endif %}
-        >{{ 'generic.remove'|trans }}</button>
+          {% if form.parent.vars.disabled %}disabled{% endif %}>{{ 'generic.remove'|trans }}</button>
       </div>
-    {% endif %}
+    {%- endif -%}
   </div>
 {%- endblock -%}

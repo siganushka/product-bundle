@@ -29,7 +29,7 @@ class ProductVariantType extends AbstractType
                 'priority' => 2,
                 // Setting label from CollectionType
                 'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
-                'attr' => ['class' => 'w-auto'],
+                'attr' => ['data-collection-class' => 'col-auto'],
             ])
             ->add('price', CentsMoneyType::class, [
                 'label' => 'product_variant.price',
@@ -67,6 +67,7 @@ class ProductVariantType extends AbstractType
             'label' => 'product_variant.choice',
             'disabled' => true,
             'priority' => 1,
+            'attr' => ['data-collection-class' => 'col-6'],
         ]);
     }
 }
