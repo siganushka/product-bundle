@@ -8,11 +8,13 @@ use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
+use Siganushka\ProductBundle\Twig\MoneyExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Twig\Environment;
 
 class SiganushkaProductExtension extends Extension implements PrependExtensionInterface
 {
@@ -34,6 +36,10 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
         foreach ($repositoriesMapping as $configName => $repositoryClass) {
             $repositoryDef = $container->findDefinition($repositoryClass);
             $repositoryDef->setArgument('$entityClass', $config[$configName]);
+        }
+
+        if (!class_exists(Environment::class)) {
+            $container->removeDefinition(MoneyExtension::class);
         }
     }
 
