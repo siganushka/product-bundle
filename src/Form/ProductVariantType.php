@@ -7,7 +7,7 @@ namespace Siganushka\ProductBundle\Form;
 use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
-use Siganushka\ProductBundle\Media\ProductVariantImg;
+use Siganushka\ProductBundle\Media\ProductImg;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -25,7 +25,7 @@ class ProductVariantType extends AbstractType
         $builder
             ->add('img', MediaType::class, [
                 'label' => 'product_variant.img',
-                'channel' => ProductVariantImg::class,
+                'channel' => ProductImg::class,
                 'priority' => 2,
                 // Setting label from CollectionType
                 'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
