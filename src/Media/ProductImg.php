@@ -7,7 +7,6 @@ namespace Siganushka\ProductBundle\Media;
 use Siganushka\GenericBundle\Event\ResizeImageEvent;
 use Siganushka\MediaBundle\AbstractChannel;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -22,7 +21,7 @@ class ProductImg extends AbstractChannel
         $this->eventDispatcher->dispatch(new ResizeImageEvent($file, 800, 800));
     }
 
-    public function getConstraint(): Constraint
+    public function getConstraint(): Image
     {
         $constraint = new Image();
         $constraint->minWidth = 100;
