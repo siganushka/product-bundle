@@ -19,6 +19,7 @@ return static function (ContainerConfigurator $container): void {
             '../src/DependencyInjection/',
             '../src/Entity/',
             '../src/Event/',
+            '../src/Model/',
             '../src/Exception/',
             '../src/Resources/',
             '../src/SiganushkaProductBundle.php',

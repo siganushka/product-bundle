@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Formatter;
 
-/**
- * Money Formatter.
- */
 class MoneyFormatter implements MoneyFormatterInterface
 {
     private array $defaultContext = [
