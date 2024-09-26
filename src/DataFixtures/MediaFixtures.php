@@ -49,7 +49,7 @@ class MediaFixtures extends Fixture
 
         $index = 0;
         foreach ($mapping as $channelClass => $files) {
-            $channel = $this->channelRegistry->getByClass($channelClass);
+            $channel = $this->channelRegistry->get($channelClass);
             foreach ($files as $file) {
                 $target = \sprintf('%s/%s', sys_get_temp_dir(), pathinfo($file, \PATHINFO_BASENAME));
 

@@ -19,7 +19,6 @@
         "siganushka/doctrine-contracts": "dev-main",
         "siganushka/generic-bundle": "dev-main",
         "siganushka/media-bundle": "dev-main",
-        "siganushka/registry-contracts": "dev-main",
         "symfony/form": "^6.4|^7.0",
         "symfony/framework-bundle": "^6.4|^7.0",
         "symfony/ux-autocomplete": "^2.10",
