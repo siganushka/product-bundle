@@ -22,7 +22,7 @@
   <div id="{{ id }}" class="row g-2 mb-2">
     {%- for entry in form -%}
       <div class="{{ entry.vars.attr['data-collection-class']|default('col') }}">
-        {{ form_widget(entry, { attr: { placeholder: entry.vars.label } }) }}
+        {{ form_widget(entry, {attr: {placeholder: entry.vars.label}}) }}
         {{ form_errors(entry) }}
       </div>
     {%- endfor -%}
