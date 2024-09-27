@@ -23,10 +23,14 @@ class CentsMoneyType extends AbstractType
             return $constraints;
         });
 
+        $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::CURRENCY);
+        $currency = $formatter->getTextAttribute(\NumberFormatter::CURRENCY_CODE);
+        // dump(\locale::getDefault(), $currency);
+
         $resolver->setDefaults([
             'scale' => 2,
             'divisor' => 100,
-            'currency' => 'CNY',
+            'currency' => $currency,
             'negative' => false,
         ]);
 
