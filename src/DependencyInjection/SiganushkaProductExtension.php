@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\DependencyInjection;
 
-use Siganushka\ProductBundle\Repository\ProductOptionRepository;
-use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
-use Siganushka\ProductBundle\Repository\ProductRepository;
-use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Siganushka\ProductBundle\Twig\MoneyExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -26,14 +22,7 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $repositoriesMapping = [
-            'product_class' => ProductRepository::class,
-            'product_option_class' => ProductOptionRepository::class,
-            'product_option_value_class' => ProductOptionValueRepository::class,
-            'product_variant_class' => ProductVariantRepository::class,
-        ];
-
-        foreach ($repositoriesMapping as $configName => $repositoryClass) {
+        foreach (Configuration::$resourceMapping as $configName => [, $repositoryClass]) {
             $repositoryDef = $container->findDefinition($repositoryClass);
             $repositoryDef->setArgument('$entityClass', $config[$configName]);
         }
@@ -45,13 +34,20 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
 
     public function prepend(ContainerBuilder $container): void
     {
-        if (!$container->hasExtension('siganushka_generic')) {
-            return;
-        }
-
         $configs = $container->getExtensionConfig($this->getAlias());
 
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
+        $overrideMappings = [];
+        foreach (Configuration::$resourceMapping as $configName => [$entityClass]) {
+            if ($config[$configName] !== $entityClass) {
+                $overrideMappings[$entityClass] = $config[$configName];
+            }
+        }
+
+        $container->prependExtensionConfig('siganushka_generic', [
+            'doctrine' => ['mapping_override' => $overrideMappings],
+        ]);
     }
 }
