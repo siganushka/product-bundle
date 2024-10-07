@@ -21,19 +21,19 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
 
     #[ORM\ManyToOne(targetEntity: ProductOption::class, inversedBy: 'values')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ProductOption $option = null;
+    protected ?ProductOption $option = null;
 
     #[ORM\Column]
-    private string $code;
+    protected string $code;
 
     #[ORM\Column]
-    private ?string $text = null;
+    protected ?string $text = null;
 
     #[ORM\Column(nullable: true)]
-    private ?string $note = null;
+    protected ?string $note = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
-    private ?Media $img = null;
+    protected ?Media $img = null;
 
     public function __construct(string $code = null, string $text = null, string $note = null, Media $img = null)
     {

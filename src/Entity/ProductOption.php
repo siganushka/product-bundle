@@ -22,15 +22,15 @@ class ProductOption implements ResourceInterface, TimestampableInterface
 
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'options')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Product $product = null;
+    protected ?Product $product = null;
 
     #[ORM\Column]
-    private ?string $name = null;
+    protected ?string $name = null;
 
     /** @var Collection<int, ProductOptionValue> */
     #[ORM\OneToMany(targetEntity: ProductOptionValue::class, mappedBy: 'option', cascade: ['all'], orphanRemoval: true)]
     #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
-    private Collection $values;
+    protected Collection $values;
 
     public function __construct(string $name = null)
     {

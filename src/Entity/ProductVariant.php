@@ -22,30 +22,30 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'variants')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Product $product = null;
+    protected ?Product $product = null;
 
     #[ORM\ManyToOne(targetEntity: ProductOptionValue::class)]
     #[ORM\JoinColumn(name: 'choice1')]
-    private ?ProductOptionValue $choice1 = null;
+    protected ?ProductOptionValue $choice1 = null;
 
     #[ORM\ManyToOne(targetEntity: ProductOptionValue::class)]
     #[ORM\JoinColumn(name: 'choice2')]
-    private ?ProductOptionValue $choice2 = null;
+    protected ?ProductOptionValue $choice2 = null;
 
     #[ORM\ManyToOne(targetEntity: ProductOptionValue::class)]
     #[ORM\JoinColumn(name: 'choice3')]
-    private ?ProductOptionValue $choice3 = null;
+    protected ?ProductOptionValue $choice3 = null;
 
     #[ORM\Column]
-    private ?int $price = null;
+    protected ?int $price = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $inventory = null;
+    protected ?int $inventory = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
-    private ?Media $img = null;
+    protected ?Media $img = null;
 
-    private ?ProductVariantChoice $choice = null;
+    protected ?ProductVariantChoice $choice = null;
 
     public function __construct(Product $product = null, ProductVariantChoice $choice = null)
     {

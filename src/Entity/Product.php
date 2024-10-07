@@ -23,21 +23,21 @@ class Product implements ResourceInterface, TimestampableInterface
     use TimestampableTrait;
 
     #[ORM\Column]
-    private ?string $name = null;
+    protected ?string $name = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Media $img = null;
+    protected ?Media $img = null;
 
     /** @var Collection<int, ProductOption> */
     #[ORM\OneToMany(targetEntity: ProductOption::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
     #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
-    private Collection $options;
+    protected Collection $options;
 
     /** @var Collection<int, ProductVariant> */
     #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
     #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
-    private Collection $variants;
+    protected Collection $variants;
 
     public function __construct()
     {
