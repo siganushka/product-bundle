@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form\Type;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\OptionsResolver\Options;
@@ -13,6 +14,10 @@ use Symfony\Component\Validator\Constraints\LessThanOrEqual;
 
 class CentsMoneyType extends AbstractType
 {
+    public function __construct(private readonly ParameterBagInterface $parameterBag)
+    {
+    }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setNormalizer('constraints', function (Options $options, mixed $constraints): array {
@@ -23,14 +28,10 @@ class CentsMoneyType extends AbstractType
             return $constraints;
         });
 
-        $formatter = new \NumberFormatter(\Locale::getDefault(), \NumberFormatter::CURRENCY);
-        $currency = $formatter->getTextAttribute(\NumberFormatter::CURRENCY_CODE);
-        // dump(\locale::getDefault(), $currency);
-
         $resolver->setDefaults([
+            'currency' => $this->parameterBag->get('currency'),
             'scale' => 2,
             'divisor' => 100,
-            'currency' => $currency,
             'negative' => false,
         ]);
 

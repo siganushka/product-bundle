@@ -23,7 +23,7 @@ class ProductVariantCollectionType extends AbstractType
                 'entry_type' => ProductVariantType::class,
                 'entry_options' => ['label' => false],
                 'allow_add' => false,
-                'allow_delete' => true,
+                'allow_delete' => false,
                 'error_bubbling' => false,
                 'by_reference' => false,
             ])

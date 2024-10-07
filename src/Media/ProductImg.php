@@ -25,15 +25,10 @@ class ProductImg extends AbstractChannel
     {
         $constraint = new Image();
         $constraint->minWidth = 100;
-        $constraint->minWidthMessage = '_img.min_width.invalid';
         $constraint->allowSquare = true;
         $constraint->allowLandscape = false;
         $constraint->allowPortrait = false;
         $constraint->mimeTypes = ['image/png', 'image/jpeg', 'image/webp'];
-
-        $constraint->allowSquareMessage =
-        $constraint->allowLandscapeMessage =
-        $constraint->allowPortraitMessage = '_img.square.invalid';
 
         return $constraint;
     }

@@ -33,11 +33,8 @@ class ProductOptionType extends AbstractType
             ->add('values', $type, [
                 'label' => 'product_option.values',
                 'constraints' => [
-                    new Count(['min' => 1, 'minMessage' => 'product_option.values.min_count']),
-                    new Unique([
-                        'message' => 'product_option.values.unique',
-                        'normalizer' => fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value),
-                    ]),
+                    new Count(min: 1),
+                    new Unique(normalizer: fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value)),
                 ],
             ])
         ;
