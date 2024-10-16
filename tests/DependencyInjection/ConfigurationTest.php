@@ -42,6 +42,7 @@ final class ConfigurationTest extends TestCase
 
         $processedConfig = $this->processor->processConfiguration($this->configuration, []);
         static::assertSame($processedConfig, [
+            'default_currency' => 'CNY',
             'product_class' => Product::class,
             'product_option_class' => ProductOption::class,
             'product_option_value_class' => ProductOptionValue::class,
@@ -52,6 +53,7 @@ final class ConfigurationTest extends TestCase
     public function testCustomConfig(): void
     {
         $config = [
+            'default_currency' => 'USD',
             'product_class' => FooProduct::class,
             'product_option_class' => FooProductOption::class,
             'product_option_value_class' => FooProductOptionValue::class,

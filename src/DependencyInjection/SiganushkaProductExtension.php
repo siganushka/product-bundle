@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\DependencyInjection;
 
+use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Twig\MoneyExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -30,6 +31,9 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
         if (!class_exists(Environment::class)) {
             $container->removeDefinition(MoneyExtension::class);
         }
+
+        $centsMoneyTypeDef = $container->findDefinition(CentsMoneyType::class);
+        $centsMoneyTypeDef->setArgument(0, $config['default_currency']);
     }
 
     public function prepend(ContainerBuilder $container): void

@@ -31,6 +31,12 @@ class Configuration implements ConfigurationInterface
         /** @var ArrayNodeDefinition */
         $rootNode = $treeBuilder->getRootNode();
 
+        $rootNode->children()
+            ->scalarNode('default_currency')
+                ->defaultValue('CNY')
+            ->end()
+        ;
+
         foreach (static::$resourceMapping as $configName => [$entityClass]) {
             $rootNode->children()
                 ->scalarNode($configName)
