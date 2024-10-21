@@ -1,0 +1,23 @@
+{
+    "name": "@siganushka/product-bundle",
+    "description": "Product bundle integration for Symfony",
+    "license": "MIT",
+    "version": "0.1.0",
+    "symfony": {
+        "controllers": {
+            "product": {
+                "main": "dist/controller.js",
+                "name": "sigan-product",
+                "webpackMode": "eager",
+                "fetch": "eager",
+                "enabled": true
+            }
+        },
+        "importmap": {
+            "@hotwired/stimulus": "^3.0.0"
+        }
+    },
+    "peerDependencies": {
+        "@hotwired/stimulus": "^3.0.0"
+    }
+}

@@ -1,7 +1,7 @@
 {
     "name": "siganushka/product-bundle",
     "description": "Product Bundle.",
-    "keywords": ["product-bundle"],
+    "keywords": ["product-bundle", "symfony-ux"],
     "homepage": "https://github.com/siganushka/product-bundle",
     "type": "symfony-bundle",
     "license": "MIT",
