@@ -7,9 +7,9 @@
         "controllers": {
             "product": {
                 "main": "dist/controller.js",
-                "name": "sigan-product",
+                "name": "siganushka-product",
                 "webpackMode": "eager",
-                "fetch": "eager",
+                "fetch": "lazy",
                 "enabled": true
             }
         },

@@ -4,26 +4,20 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
   static targets = ['container']
 
-  static values = {
-    index: Number,
-    prototype: String,
-    prototypeName: String,
-    confirm: String,
-  }
-
-  addItem() {
-    const { indexValue, prototypeValue, prototypeNameValue } = this
-    const entry = prototypeValue.replace(new RegExp(prototypeNameValue, 'g'), indexValue)
+  addItem(event) {
+    const { index, prototype, prototypeName } = event.currentTarget.dataset
+    const entry = prototype.replace(new RegExp(prototypeName, 'g'), index)
 
     this.containerTarget.insertAdjacentHTML('beforeend', entry.trim())
-    this.indexValue ++
+    event.currentTarget.dataset.index ++
   }
 
   removeItem(event) {
     event.preventDefault()
-    if (confirm(this.confirmValue)) {
-      const { node } = event.currentTarget.dataset
-      const entry = document.getElementById(node)
+
+    const { confirmText, nodeId } = event.currentTarget.dataset
+    if (confirm(confirmText)) {
+      const entry = document.getElementById(nodeId)
       entry && entry.remove()
     }
   }

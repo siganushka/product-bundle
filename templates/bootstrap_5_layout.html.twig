@@ -1,11 +1,6 @@
 {%- block collection_widget -%}
-  <div
-    data-controller="sigan-product"
-    data-sigan-product-index-value="{{ form|length }}"
-    data-sigan-product-prototype-value="{{ form_widget(prototype)|e('html_attr') }}"
-    data-sigan-product-prototype-name-value="{{ prototype.vars.name }}"
-  >
-    <div data-sigan-product-target="container">
+  <div data-controller="siganushka-product">
+    <div data-siganushka-product-target="container">
       {%- for entry in form -%}
         {{ form_widget(entry) }}
       {%- endfor -%}
@@ -16,7 +11,10 @@
       <button
         type="button"
         class="btn btn-outline-primary" 
-        data-action="click->sigan-product#addItem"
+        data-action="click->siganushka-product#addItem"
+        data-index="{{ form|length }}"
+        data-prototype="{{ form_widget(prototype)|e('html_attr') }}"
+        data-prototype-name="{{ prototype.vars.name }}"
         {% if disabled %}disabled{% endif %}>{{ 'generic.add'|trans }}</button>
     </div>
     {%- endif -%}
@@ -37,8 +35,9 @@
         <button
           type="button"
           class="btn btn-link link-danger px-0"
-          data-action="click->sigan-product#removeItem"
-          data-node="{{ id }}"
+          data-action="click->siganushka-product#removeItem"
+          data-confirm-text="{{ 'generic.remove_confirmation'|trans }}"
+          data-node-id="{{ id }}"
           {% if form.parent.vars.disabled %}disabled{% endif %}>{{ 'generic.remove'|trans }}</button>
       </div>
     {%- endif -%}
