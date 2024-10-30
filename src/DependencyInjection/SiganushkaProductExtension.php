@@ -6,7 +6,6 @@ namespace Siganushka\ProductBundle\DependencyInjection;
 
 use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Twig\MoneyExtension;
-use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -54,31 +53,5 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
         $container->prependExtensionConfig('siganushka_generic', [
             'doctrine' => ['mapping_override' => $mappingOverride],
         ]);
-
-        // @see https://symfony.com/doc/current/frontend/create_ux_bundle.html#specifics-for-asset-mapper
-        if ($this->isAssetMapperAvailable($container)) {
-            $container->prependExtensionConfig('framework', [
-                'asset_mapper' => [
-                    'paths' => [
-                        __DIR__.'/../../assets/dist' => '@siganushka/product-bundle',
-                    ],
-                ],
-            ]);
-        }
-    }
-
-    private function isAssetMapperAvailable(ContainerBuilder $container): bool
-    {
-        if (!interface_exists(AssetMapperInterface::class)) {
-            return false;
-        }
-
-        /** @var array */
-        $bundlesMetadata = $container->getParameter('kernel.bundles_metadata');
-        if (!isset($bundlesMetadata['FrameworkBundle'])) {
-            return false;
-        }
-
-        return is_file($bundlesMetadata['FrameworkBundle']['path'].'/Resources/config/asset_mapper.php');
     }
 }
