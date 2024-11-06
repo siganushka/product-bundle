@@ -19,28 +19,19 @@ class ProductOptionValuesTextListener implements EventSubscriberInterface
     public function onSubmit(SubmitEvent $event): void
     {
         /** @var array<int, ProductOptionValue> */
-        $previousValues = $event->getForm()->getData() ?? [];
+        $previousData = $event->getForm()->getData() ?? [];
         /** @var array<int, ProductOptionValue> */
-        $newValues = $event->getData();
+        $newData = $event->getData();
 
-        foreach ($newValues as $key => $value) {
-            $newValues[$key] = $this->getComparedValue($previousValues, $value);
-        }
-
-        $event->setData($newValues);
-    }
-
-    /**
-     * @param iterable<int, ProductOptionValue> $previousValues
-     */
-    private function getComparedValue(iterable $previousValues, ProductOptionValue $newValue): ProductOptionValue
-    {
-        foreach ($previousValues as $value) {
-            if ($value->getText() === $newValue->getText()) {
-                return $value;
+        foreach ($newData as $key => $value) {
+            foreach ($previousData as $previousValue) {
+                if ($previousValue->getText() === $value->getText()) {
+                    $newData[$key] = $previousValue;
+                    break;
+                }
             }
         }
 
-        return $newValue;
+        $event->setData($newData);
     }
 }
