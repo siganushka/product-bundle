@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\DependencyInjection;
 
-use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
+use Siganushka\ProductBundle\Form\Extension\MoneyTypeExtension;
+use Siganushka\ProductBundle\Formatter\MoneyFormatter;
 use Siganushka\ProductBundle\Twig\MoneyExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -32,8 +33,18 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
             $container->removeDefinition(MoneyExtension::class);
         }
 
-        $centsMoneyTypeDef = $container->findDefinition(CentsMoneyType::class);
-        $centsMoneyTypeDef->setArgument(0, $config['default_currency']);
+        $moneyTypeExtensionDef = $container->findDefinition(MoneyTypeExtension::class);
+        $moneyTypeExtensionDef->setArgument(0, $config['money_decimals']);
+        $moneyTypeExtensionDef->setArgument(1, $config['money_divisor']);
+        $moneyTypeExtensionDef->setArgument(2, $config['money_currency']);
+
+        $moneyFormatterDef = $container->findDefinition(MoneyFormatter::class);
+        $moneyFormatterDef->setArgument(0, [
+            MoneyFormatter::DIVISOR => $config['money_divisor'],
+            MoneyFormatter::DECIMALS => $config['money_decimals'],
+            MoneyFormatter::DEC_POINT => $config['money_dec_point'],
+            MoneyFormatter::THOUSANDS_SEP => $config['money_thousands_sep'],
+        ]);
     }
 
     public function prepend(ContainerBuilder $container): void

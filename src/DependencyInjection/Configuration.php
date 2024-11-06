@@ -32,8 +32,20 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->getRootNode();
 
         $rootNode->children()
-            ->scalarNode('default_currency')
+            ->scalarNode('money_currency')
                 ->defaultValue('CNY')
+            ->end()
+            ->integerNode('money_divisor')
+                ->defaultValue(100)
+            ->end()
+            ->integerNode('money_decimals')
+                ->defaultValue(2)
+            ->end()
+            ->scalarNode('money_dec_point')
+                ->defaultValue('.')
+            ->end()
+            ->scalarNode('money_thousands_sep')
+                ->defaultValue(',')
             ->end()
         ;
 

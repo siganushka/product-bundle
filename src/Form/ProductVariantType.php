@@ -6,10 +6,10 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\ProductVariant;
-use Siganushka\ProductBundle\Form\Type\CentsMoneyType;
 use Siganushka\ProductBundle\Media\ProductImg;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -31,9 +31,12 @@ class ProductVariantType extends AbstractType
                 'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
                 'attr' => ['data-collection-class' => 'col-auto'],
             ])
-            ->add('price', CentsMoneyType::class, [
+            ->add('price', MoneyType::class, [
                 'label' => 'product_variant.price',
-                'constraints' => new NotBlank(),
+                'constraints' => [
+                    new NotBlank(),
+                    new GreaterThanOrEqual(0),
+                ],
             ])
             ->add('inventory', IntegerType::class, [
                 'label' => 'product_variant.inventory',
