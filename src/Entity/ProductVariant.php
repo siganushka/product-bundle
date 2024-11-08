@@ -93,6 +93,32 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
+    public function incrementInventory(int $quantity): self
+    {
+        if (null === $this->inventory) {
+            throw new \BadMethodCallException('Untracked inventory cannot be modified.');
+        }
+
+        $this->inventory += $quantity;
+
+        return $this;
+    }
+
+    public function decrementInventory(int $quantity): self
+    {
+        if (null === $this->inventory) {
+            throw new \BadMethodCallException('Untracked inventory cannot be modified.');
+        }
+
+        $this->inventory -= $quantity;
+
+        if ($this->inventory < 0) {
+            $this->inventory = 0;
+        }
+
+        return $this;
+    }
+
     public function getImg(): ?Media
     {
         return $this->img;

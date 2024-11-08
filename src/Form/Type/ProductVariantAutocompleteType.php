@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form\Type;
 
-use Doctrine\ORM\QueryBuilder;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
@@ -21,20 +20,9 @@ class ProductVariantAutocompleteType extends AbstractType
             'class' => ProductVariant::class,
             'placeholder' => 'product.name',
             'choice_label' => ChoiceList::label($this, [__CLASS__, 'createChoiceLabel']),
-            // 'choice_attr' => fn (ProductVariant $variant): array => ['disabled' => $variant->isOutOfStock()],
             'max_results' => 20,
             'tom_select_options' => ['maxOptions' => 100],
             'searchable_fields' => ['product.name', 'choice1.text', 'choice2.text', 'choice3.text'],
-            // 'filter_query' => function (QueryBuilder $queryBuilder, string $query): void {
-            //     if (!$query) {
-            //         return;
-            //     }
-
-            //     $queryBuilder->join('entity.product', 'p')
-            //         ->andWhere('p.name LIKE :query')
-            //         ->setParameter('query', '%'.$query.'%')
-            //     ;
-            // },
         ]);
     }
 
