@@ -14,6 +14,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProductOptionValuesTextType extends AbstractType
 {
+    /**
+     * @param array{ delimiter: non-empty-string } $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->addViewTransformer(new ProductOptionValuesToStringTransformer($options['delimiter']));

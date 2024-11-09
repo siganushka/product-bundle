@@ -39,11 +39,6 @@ class ProductOptionValuesToStringTransformer implements DataTransformerInterface
         return implode($this->separator, array_map(fn (ProductOptionValue $item) => $item->getText(), $value));
     }
 
-    /**
-     * @psalm-param mixed $value
-     *
-     * @return array<int, ProductOptionValue>
-     */
     public function reverseTransform(mixed $value): array
     {
         if (null !== $value && !\is_string($value)) {

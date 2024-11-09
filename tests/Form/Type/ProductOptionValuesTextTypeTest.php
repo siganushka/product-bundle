@@ -9,9 +9,6 @@ use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Form\Type\ProductOptionValuesTextType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
-/**
- * @psalm-suppress PropertyNotSetInConstructor
- */
 class ProductOptionValuesTextTypeTest extends TypeTestCase
 {
     public function testAll(): void
@@ -26,7 +23,10 @@ class ProductOptionValuesTextTypeTest extends TypeTestCase
         static::assertSame($data, $form->getData());
 
         $form = $this->factory->create(ProductOptionValuesTextType::class, new ArrayCollection($data), ['data_class' => null]);
-        static::assertSame($data, $form->getData()->toArray());
+
+        /** @var ArrayCollection<int, ProductOptionValue> */
+        $formData = $form->getData();
+        static::assertSame($data, $formData->toArray());
 
         $view = $form->createView();
         static::assertSame('AAA,BBB,CCC', $view->vars['value']);

@@ -19,9 +19,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @psalm-suppress PropertyNotSetInConstructor
- */
 class ProductController extends AbstractController
 {
     public function __construct(private readonly ProductRepository $productRepository)
@@ -141,6 +138,9 @@ class ProductController extends AbstractController
         return $this->createResponse(null, Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * @param PaginationInterface<int, mixed>|Product|null $data
+     */
     protected function createResponse(PaginationInterface|Product|null $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
     {
         $attributes = [

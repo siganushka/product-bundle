@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Repository;
 
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Siganushka\GenericBundle\Repository\GenericEntityRepository;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 
 /**
- * @extends ServiceEntityRepository<ProductOptionValue>
+ * @extends GenericEntityRepository<ProductOptionValue>
  *
  * @method ProductOptionValue      createNew(...$args)
  * @method ProductOptionValue|null find($id, $lockMode = null, $lockVersion = null)

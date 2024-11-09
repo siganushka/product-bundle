@@ -19,9 +19,6 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 
-/**
- * @psalm-suppress PropertyNotSetInConstructor
- */
 final class ConfigurationTest extends TestCase
 {
     private ConfigurationInterface $configuration;
