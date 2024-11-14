@@ -31,7 +31,6 @@ class ProductOptionType extends AbstractType
             ])
             ->add('values', $type, [
                 'label' => 'product_option.values',
-                'attr' => ['data-collection-class' => 'col-8'],
                 'constraints' => [
                     new Count(min: 1),
                     new Unique(normalizer: fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value)),
