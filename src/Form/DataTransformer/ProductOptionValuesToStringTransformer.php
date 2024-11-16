@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form\DataTransformer;
 
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
+use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
@@ -18,7 +19,9 @@ class ProductOptionValuesToStringTransformer implements DataTransformerInterface
     /**
      * @param non-empty-string $separator
      */
-    public function __construct(protected readonly string $separator)
+    public function __construct(
+        private readonly ProductOptionValueRepository $repository,
+        protected readonly string $separator)
     {
     }
 
@@ -53,6 +56,6 @@ class ProductOptionValuesToStringTransformer implements DataTransformerInterface
         $texts = array_map('trim', $texts);
         $texts = array_filter($texts);
 
-        return array_map(fn (string $text) => new ProductOptionValue(null, $text), $texts);
+        return array_map(fn (string $text) => $this->repository->createNew(null, $text), $texts);
     }
 }

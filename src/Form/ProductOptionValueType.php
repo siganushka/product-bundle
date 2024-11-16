@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\MediaBundle\Form\Type\MediaType;
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Media\ProductImg;
+use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,6 +15,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProductOptionValueType extends AbstractType
 {
+    public function __construct(private readonly ProductOptionValueRepository $repository)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -37,7 +41,7 @@ class ProductOptionValueType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => ProductOptionValue::class,
+            'data_class' => $this->repository->getClassName(),
         ]);
     }
 }

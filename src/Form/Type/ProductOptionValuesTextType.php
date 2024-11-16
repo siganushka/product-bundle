@@ -6,6 +6,7 @@ namespace Siganushka\ProductBundle\Form\Type;
 
 use Siganushka\ProductBundle\Form\DataTransformer\ProductOptionValuesToStringTransformer;
 use Siganushka\ProductBundle\Form\EventListener\ProductOptionValuesTextListener;
+use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,12 +15,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProductOptionValuesTextType extends AbstractType
 {
+    public function __construct(private readonly ProductOptionValueRepository $repository)
+    {
+    }
+
     /**
      * @param array{ delimiter: non-empty-string } $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addViewTransformer(new ProductOptionValuesToStringTransformer($options['delimiter']));
+        $builder->addViewTransformer(new ProductOptionValuesToStringTransformer($this->repository, $options['delimiter']));
         $builder->addEventSubscriber(new ProductOptionValuesTextListener());
     }
 

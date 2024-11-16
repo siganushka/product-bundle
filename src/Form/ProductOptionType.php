@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
-use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Form\Type\ProductOptionValuesCollectionType;
 use Siganushka\ProductBundle\Form\Type\ProductOptionValuesTextType;
+use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,6 +18,10 @@ use Symfony\Component\Validator\Constraints\Unique;
 
 class ProductOptionType extends AbstractType
 {
+    public function __construct(private readonly ProductOptionRepository $repository)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $type = $options['values_as_text']
@@ -42,7 +46,7 @@ class ProductOptionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => ProductOption::class,
+            'data_class' => $this->repository->getClassName(),
             'values_as_text' => false,
         ]);
     }

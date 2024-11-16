@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests\Form\DataTransformer;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Form\DataTransformer\ProductOptionValuesToStringTransformer;
+use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class ProductOptionValuesToStringTransformerTest extends TestCase
@@ -20,14 +22,14 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
             new ProductOptionValue('3', 'CCC'),
         ];
 
-        $transformer = new ProductOptionValuesToStringTransformer(',');
+        $transformer = $this->createTransformer(',');
         static::assertSame('AAA,BBB,CCC', $transformer->transform($values));
         static::assertSame('AAA,BBB,CCC', $transformer->transform(new ArrayCollection($values)));
     }
 
     public function testReverseTransform(): void
     {
-        $transformer = new ProductOptionValuesToStringTransformer('/');
+        $transformer = $this->createTransformer('/');
 
         $values = $transformer->reverseTransform('a,b,c');
         static::assertCount(1, $values);
@@ -46,13 +48,13 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
 
     public function testTansformNull(): void
     {
-        $transformer = new ProductOptionValuesToStringTransformer(',');
+        $transformer = $this->createTransformer(',');
         static::assertNull($transformer->transform(null));
     }
 
     public function testTansformEmptyArray(): void
     {
-        $transformer = new ProductOptionValuesToStringTransformer(',');
+        $transformer = $this->createTransformer(',');
         static::assertSame('', $transformer->transform([]));
     }
 
@@ -61,7 +63,7 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
         $this->expectException(TransformationFailedException::class);
         $this->expectExceptionMessage('Expected an array or Traversable.');
 
-        $transformer = new ProductOptionValuesToStringTransformer(',');
+        $transformer = $this->createTransformer(',');
         $transformer->transform('   ');
     }
 
@@ -69,19 +71,19 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
     {
         $this->expectException(\TypeError::class);
 
-        $transformer = new ProductOptionValuesToStringTransformer(',');
+        $transformer = $this->createTransformer(',');
         $transformer->transform([new \stdClass()]);
     }
 
     public function testReverseTransformNull(): void
     {
-        $transformer = new ProductOptionValuesToStringTransformer(',');
+        $transformer = $this->createTransformer(',');
         static::assertSame([], $transformer->reverseTransform(null));
     }
 
     public function testReverseTransformEmptyString(): void
     {
-        $transformer = new ProductOptionValuesToStringTransformer(',');
+        $transformer = $this->createTransformer(',');
         static::assertSame([], $transformer->reverseTransform('    '));
     }
 
@@ -90,7 +92,22 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
         $this->expectException(TransformationFailedException::class);
         $this->expectExceptionMessage('Expected a string.');
 
-        $transformer = new ProductOptionValuesToStringTransformer(',');
+        $transformer = $this->createTransformer(',');
         static::assertSame([], $transformer->reverseTransform([]));
+    }
+
+    /**
+     * @param non-empty-string $separator
+     */
+    private function createTransformer(string $separator): ProductOptionValuesToStringTransformer
+    {
+        /** @var MockObject&ProductOptionValueRepository */
+        $repository = $this->createMock(ProductOptionValueRepository::class);
+        $repository->expects(static::any())
+            ->method('createNew')
+            ->willReturnCallback(fn (...$args) => new ProductOptionValue(...$args))
+        ;
+
+        return new ProductOptionValuesToStringTransformer($repository, $separator);
     }
 }

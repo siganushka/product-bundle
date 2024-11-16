@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,6 +15,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProductVariantCollectionType extends AbstractType
 {
+    public function __construct(private readonly ProductVariantRepository $repository)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -47,7 +51,7 @@ class ProductVariantCollectionType extends AbstractType
         }
 
         foreach ($data->getChoices(true) as $choice) {
-            $data->addVariant(new ProductVariant($data, $choice));
+            $data->addVariant($this->repository->createNew($data, $choice));
         }
     }
 }

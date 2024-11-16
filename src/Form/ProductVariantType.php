@@ -7,6 +7,7 @@ namespace Siganushka\ProductBundle\Form;
 use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Media\ProductImg;
+use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -20,6 +21,10 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProductVariantType extends AbstractType
 {
+    public function __construct(private readonly ProductVariantRepository $repository)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -49,7 +54,7 @@ class ProductVariantType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => ProductVariant::class,
+            'data_class' => $this->repository->getClassName(),
         ]);
     }
 
