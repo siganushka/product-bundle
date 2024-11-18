@@ -34,6 +34,7 @@ class ProductVariantType extends AbstractType
                 'priority' => 2,
                 // Setting label from CollectionType
                 'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
+                'row_attr' => false === $options['label'] ? ['style' => 'width: 1px'] : [],
             ])
             ->add('price', MoneyType::class, [
                 'label' => 'product_variant.price',
