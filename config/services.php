@@ -21,7 +21,6 @@ return static function (ContainerConfigurator $container): void {
             '../src/Event/',
             '../src/Model/',
             '../src/Exception/',
-            '../src/Resources/',
             '../src/SiganushkaProductBundle.php',
         ]);
 };
