@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Siganushka\ProductBundle\Form\Type;
+namespace Siganushka\ProductBundle\Form\Field;
 
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Symfony\Component\Form\AbstractType;
@@ -12,7 +12,7 @@ use Symfony\UX\Autocomplete\Form\AsEntityAutocompleteField;
 use Symfony\UX\Autocomplete\Form\BaseEntityAutocompleteType;
 
 #[AsEntityAutocompleteField]
-class ProductVariantAutocompleteType extends AbstractType
+class ProductVariantAutocompleteField extends AbstractType
 {
     public function configureOptions(OptionsResolver $resolver): void
     {
