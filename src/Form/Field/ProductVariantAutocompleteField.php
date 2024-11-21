@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form\Field;
 
 use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,10 +15,14 @@ use Symfony\UX\Autocomplete\Form\BaseEntityAutocompleteType;
 #[AsEntityAutocompleteField]
 class ProductVariantAutocompleteField extends AbstractType
 {
+    public function __construct(private readonly ProductVariantRepository $repository)
+    {
+    }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'class' => ProductVariant::class,
+            'class' => $this->repository->getClassName(),
             'placeholder' => 'product.name',
             'choice_label' => ChoiceList::label($this, [__CLASS__, 'createChoiceLabel']),
             'max_results' => 20,
