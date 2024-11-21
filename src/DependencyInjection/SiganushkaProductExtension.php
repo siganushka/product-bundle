@@ -25,21 +25,21 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
         $config = $this->processConfiguration($configuration, $configs);
 
         foreach (Configuration::$resourceMapping as $configName => [, $repositoryClass]) {
-            $repositoryDef = $container->findDefinition($repositoryClass);
-            $repositoryDef->setArgument('$entityClass', $config[$configName]);
+            $repository = $container->findDefinition($repositoryClass);
+            $repository->setArgument('$entityClass', $config[$configName]);
         }
 
         if (!class_exists(Environment::class)) {
             $container->removeDefinition(MoneyExtension::class);
         }
 
-        $moneyTypeExtensionDef = $container->findDefinition(MoneyTypeExtension::class);
-        $moneyTypeExtensionDef->setArgument(0, $config['money_decimals']);
-        $moneyTypeExtensionDef->setArgument(1, $config['money_divisor']);
-        $moneyTypeExtensionDef->setArgument(2, $config['money_currency']);
+        $moneyTypeExtension = $container->findDefinition(MoneyTypeExtension::class);
+        $moneyTypeExtension->setArgument(0, $config['money_decimals']);
+        $moneyTypeExtension->setArgument(1, $config['money_divisor']);
+        $moneyTypeExtension->setArgument(2, $config['money_currency']);
 
-        $moneyFormatterDef = $container->findDefinition(MoneyFormatter::class);
-        $moneyFormatterDef->setArgument(0, [
+        $moneyFormatter = $container->findDefinition(MoneyFormatter::class);
+        $moneyFormatter->setArgument(0, [
             MoneyFormatter::DIVISOR => $config['money_divisor'],
             MoneyFormatter::DECIMALS => $config['money_decimals'],
             MoneyFormatter::DEC_POINT => $config['money_dec_point'],
