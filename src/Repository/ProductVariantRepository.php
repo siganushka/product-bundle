@@ -10,12 +10,6 @@ use Siganushka\ProductBundle\Entity\ProductVariant;
 
 /**
  * @extends GenericEntityRepository<ProductVariant>
- *
- * @method ProductVariant      createNew(...$args)
- * @method ProductVariant|null find($id, $lockMode = null, $lockVersion = null)
- * @method ProductVariant|null findOneBy(array $criteria, array $orderBy = null)
- * @method ProductVariant[]    findAll()
- * @method ProductVariant[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ProductVariantRepository extends GenericEntityRepository
 {
