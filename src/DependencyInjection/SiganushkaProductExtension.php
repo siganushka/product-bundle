@@ -27,6 +27,7 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
         foreach (Configuration::$resourceMapping as $configName => [, $repositoryClass]) {
             $repository = $container->findDefinition($repositoryClass);
             $repository->setArgument('$entityClass', $config[$configName]);
+            $repository->addTag('doctrine.repository_service');
         }
 
         if (!class_exists(Environment::class)) {
