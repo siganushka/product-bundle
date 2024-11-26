@@ -13,7 +13,7 @@ use Siganushka\ProductBundle\Entity\ProductVariant;
  */
 class ProductVariantRepository extends GenericEntityRepository
 {
-    public function createQueryBuilder(string $alias, string $indexBy = null): QueryBuilder
+    public function createQueryBuilder(string $alias, ?string $indexBy = null): QueryBuilder
     {
         $queryBuilder = parent::createQueryBuilder($alias, $indexBy);
         // Override default orderBy parts

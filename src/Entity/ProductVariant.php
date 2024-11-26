@@ -47,7 +47,7 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
 
     protected ?ProductVariantChoice $choice = null;
 
-    public function __construct(Product $product = null, ProductVariantChoice $choice = null)
+    public function __construct(?Product $product = null, ?ProductVariantChoice $choice = null)
     {
         $this->product = $product;
         $this->choice = $choice;
