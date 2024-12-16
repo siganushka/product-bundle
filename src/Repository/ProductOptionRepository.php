@@ -8,7 +8,9 @@ use Siganushka\GenericBundle\Repository\GenericEntityRepository;
 use Siganushka\ProductBundle\Entity\ProductOption;
 
 /**
- * @extends GenericEntityRepository<ProductOption>
+ * @template T of ProductOption = ProductOption
+ *
+ * @extends GenericEntityRepository<T>
  */
 class ProductOptionRepository extends GenericEntityRepository
 {

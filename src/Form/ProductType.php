@@ -7,7 +7,6 @@ namespace Siganushka\ProductBundle\Form;
 use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductOption;
-use Siganushka\ProductBundle\Media\ProductImg;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -31,7 +30,7 @@ class ProductType extends AbstractType
         $builder
             ->add('img', MediaType::class, [
                 'label' => 'product.img',
-                'channel' => ProductImg::class,
+                'channel' => 'product_img',
                 'constraints' => new NotBlank(),
             ])
             ->add('name', TextType::class, [

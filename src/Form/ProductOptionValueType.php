@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\MediaBundle\Form\Type\MediaType;
-use Siganushka\ProductBundle\Media\ProductImg;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -24,7 +23,7 @@ class ProductOptionValueType extends AbstractType
         $builder
             ->add('img', MediaType::class, [
                 'label' => 'product_option_value.img',
-                'channel' => ProductImg::class,
+                'channel' => 'product_img',
                 // Setting label from CollectionType
                 'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
                 'row_attr' => false === $options['label'] ? ['style' => 'width: 1px'] : [],

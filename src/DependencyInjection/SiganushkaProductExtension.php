@@ -12,6 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
+use Symfony\Component\Validator\Constraints\Image;
 use Twig\Environment;
 
 class SiganushkaProductExtension extends Extension implements PrependExtensionInterface
@@ -63,6 +64,21 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
 
         $container->prependExtensionConfig('siganushka_generic', [
             'doctrine' => ['mapping_override' => $mappingOverride],
+        ]);
+
+        $container->prependExtensionConfig('siganushka_media', [
+            'channels' => [
+                'product_img' => [
+                    'constraint' => Image::class,
+                    'constraint_options' => [
+                        'minWidth' => 100,
+                        'allowSquare' => true,
+                        'allowLandscape' => false,
+                        'allowPortrait' => false,
+                        'mimeTypes' => ['image/png', 'image/jpeg', 'image/webp'],
+                    ],
+                ],
+            ],
         ]);
     }
 }
