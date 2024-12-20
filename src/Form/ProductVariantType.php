@@ -29,7 +29,7 @@ class ProductVariantType extends AbstractType
         $builder
             ->add('img', MediaType::class, [
                 'label' => 'product_variant.img',
-                'channel' => 'product_img',
+                'channel' => 'product',
                 'priority' => 2,
                 // Setting label from CollectionType
                 'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
