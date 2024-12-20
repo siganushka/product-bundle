@@ -68,7 +68,7 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
 
         $container->prependExtensionConfig('siganushka_media', [
             'channels' => [
-                'product_img' => [
+                'product' => [
                     'constraint' => Image::class,
                     'constraint_options' => [
                         'minWidth' => 100,
