@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Siganushka\GenericBundle\Exception\FormErrorException;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Form\ProductVariantType;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
@@ -43,7 +42,7 @@ class ProductVariantController extends AbstractController
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
-            throw new FormErrorException($form);
+            return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $entityManager->flush();

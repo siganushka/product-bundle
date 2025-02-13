@@ -8,7 +8,6 @@ use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Siganushka\GenericBundle\Exception\FormErrorException;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Form\ProductType;
 use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
@@ -55,7 +54,7 @@ class ProductController extends AbstractController
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
-            throw new FormErrorException($form);
+            return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $entityManager->persist($entity);
@@ -87,7 +86,7 @@ class ProductController extends AbstractController
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
-            throw new FormErrorException($form);
+            return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
@@ -111,7 +110,7 @@ class ProductController extends AbstractController
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
-            throw new FormErrorException($form);
+            return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
