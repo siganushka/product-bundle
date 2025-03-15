@@ -8,8 +8,8 @@ return [
     'product.options' => 'Prodcut Options',
     'product.variants' => 'Variants',
 
-    'product_option.name' => 'Option Name',
-    'product_option.values' => 'Option Values',
+    'product_option.name' => 'Name',
+    'product_option.values' => 'Values',
 
     'product_option_value.text' => 'Text',
     'product_option_value.note' => 'Note',
