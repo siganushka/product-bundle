@@ -31,24 +31,6 @@ class Configuration implements ConfigurationInterface
         /** @var ArrayNodeDefinition */
         $rootNode = $treeBuilder->getRootNode();
 
-        $rootNode->children()
-            ->scalarNode('money_currency')
-                ->defaultValue('CNY')
-            ->end()
-            ->integerNode('money_divisor')
-                ->defaultValue(100)
-            ->end()
-            ->integerNode('money_decimals')
-                ->defaultValue(2)
-            ->end()
-            ->scalarNode('money_dec_point')
-                ->defaultValue('.')
-            ->end()
-            ->scalarNode('money_thousands_sep')
-                ->defaultValue(',')
-            ->end()
-        ;
-
         foreach (static::$resourceMapping as $configName => [$entityClass]) {
             $rootNode->children()
                 ->scalarNode($configName)
