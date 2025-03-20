@@ -14,7 +14,6 @@ use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 
 #[ORM\Entity(repositoryClass: ProductOptionValueRepository::class)]
 #[ORM\UniqueConstraint(columns: ['option_id', 'code'])]
-#[ORM\Cache(usage: 'NONSTRICT_READ_WRITE')]
 class ProductOptionValue implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
