@@ -40,6 +40,6 @@ class ProductVariantChoiceTest extends TestCase
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage('Expected argument of type "Siganushka\ProductBundle\Entity\ProductOptionValue", "stdClass" given');
 
-        new ProductVariantChoice([new \stdClass]);
+        new ProductVariantChoice([new \stdClass()]);
     }
 }

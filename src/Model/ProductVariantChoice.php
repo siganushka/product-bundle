@@ -38,8 +38,8 @@ final class ProductVariantChoice
         // [important] Generate unique choice value from sorted code
         sort($code);
 
-        $this->value = count($code) ? implode('-', $code) : null;
-        $this->label = count($descriptor) ? implode(', ', $descriptor) : null;
+        $this->value = \count($code) ? implode('-', $code) : null;
+        $this->label = \count($descriptor) ? implode(', ', $descriptor) : null;
 
         $this->combinedOptionValues = $combinedOptionValues;
     }
