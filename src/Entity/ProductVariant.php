@@ -140,4 +140,19 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
     {
         return null !== $this->inventory && $this->inventory <= 0;
     }
+
+    public function getDescriptor(): ?string
+    {
+        $label = $this->getChoiceLabel();
+        if (null === $this->product) {
+            return $label;
+        }
+
+        $productName = $this->product->getName();
+        if (\is_string($productName) && \is_string($label)) {
+            return \sprintf('%s【%s】', $productName, $label);
+        }
+
+        return $productName;
+    }
 }

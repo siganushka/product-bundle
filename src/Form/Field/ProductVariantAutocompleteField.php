@@ -25,7 +25,7 @@ class ProductVariantAutocompleteField extends AbstractType
         $resolver->setDefaults([
             'class' => $this->repository->getClassName(),
             'placeholder' => 'product.name',
-            'choice_label' => ChoiceList::label($this, [__CLASS__, 'createChoiceLabel']),
+            'choice_label' => ChoiceList::label($this, fn (ProductVariant $choice) => $choice->getDescriptor()),
             'query_builder' => fn (GenericEntityRepository $er) => $er->createQueryBuilderWithOrdered('entity'),
             'max_results' => 20,
             'tom_select_options' => ['maxOptions' => 100],
@@ -36,22 +36,5 @@ class ProductVariantAutocompleteField extends AbstractType
     public function getParent(): string
     {
         return BaseEntityAutocompleteType::class;
-    }
-
-    public static function createChoiceLabel(ProductVariant $variant): ?string
-    {
-        $product = $variant->getProduct();
-        $label = $variant->getChoiceLabel();
-
-        if (null === $product) {
-            return $label;
-        }
-
-        $productName = $product->getName();
-        if (\is_string($productName) && \is_string($label)) {
-            return \sprintf('%s【%s】', $productName, $label);
-        }
-
-        return $productName;
     }
 }

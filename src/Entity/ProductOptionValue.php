@@ -107,9 +107,8 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
 
     public function getDescriptor(): ?string
     {
-        $optionName = $this->option ? $this->option->getName() : null;
-
-        if (\is_string($this->text) && \is_string($optionName)) {
+        $optionName = $this->option?->getName();
+        if ($optionName && $this->text) {
             return \sprintf('%s: %s', $optionName, $this->text);
         }
 

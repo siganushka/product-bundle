@@ -39,8 +39,9 @@ class Product implements ResourceInterface, TimestampableInterface
     #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
     protected Collection $variants;
 
-    public function __construct()
+    public function __construct(?string $name = null)
     {
+        $this->name = $name;
         $this->options = new ArrayCollection();
         $this->variants = new ArrayCollection();
     }
