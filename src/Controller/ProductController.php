@@ -66,10 +66,8 @@ class ProductController extends AbstractController
     #[Route('/products/{id<\d+>}', methods: 'GET')]
     public function getItem(int $id): Response
     {
-        $entity = $this->productRepository->find($id);
-        if (!$entity) {
-            throw $this->createNotFoundException(\sprintf('Resource #%d not found.', $id));
-        }
+        $entity = $this->productRepository->find($id)
+            ?? throw $this->createNotFoundException();
 
         return $this->createResponse($entity);
     }
@@ -77,10 +75,8 @@ class ProductController extends AbstractController
     #[Route('/products/{id<\d+>}', methods: ['PUT', 'PATCH'])]
     public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
-        $entity = $this->productRepository->find($id);
-        if (!$entity) {
-            throw $this->createNotFoundException(\sprintf('Resource #%d not found.', $id));
-        }
+        $entity = $this->productRepository->find($id)
+            ?? throw $this->createNotFoundException();
 
         $form = $this->createForm(ProductType::class, $entity);
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
@@ -101,10 +97,8 @@ class ProductController extends AbstractController
     #[Route('/products/{id<\d+>}/variants', methods: ['PUT', 'PATCH'])]
     public function putItemVariants(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
-        $entity = $this->productRepository->find($id);
-        if (!$entity) {
-            throw $this->createNotFoundException(\sprintf('Resource #%d not found.', $id));
-        }
+        $entity = $this->productRepository->find($id)
+            ?? throw $this->createNotFoundException();
 
         $form = $this->createForm(ProductVariantCollectionType::class, $entity);
         $form->submit($request->request->all(), !$request->isMethod('PATCH'));
@@ -125,10 +119,8 @@ class ProductController extends AbstractController
     #[Route('/products/{id<\d+>}', methods: 'DELETE')]
     public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
     {
-        $entity = $this->productRepository->find($id);
-        if (!$entity) {
-            throw $this->createNotFoundException(\sprintf('Resource #%d not found.', $id));
-        }
+        $entity = $this->productRepository->find($id)
+            ?? throw $this->createNotFoundException();
 
         $entityManager->remove($entity);
         $entityManager->flush();
