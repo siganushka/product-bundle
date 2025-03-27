@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Product;
+use Siganushka\ProductBundle\Repository\ProductRepository;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -15,7 +16,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProductVariantCollectionType extends AbstractType
 {
-    public function __construct(private readonly ProductVariantRepository $repository)
+    public function __construct(
+        private readonly ProductRepository $repository,
+        private readonly ProductVariantRepository $productVariantRepository)
     {
     }
 
@@ -39,7 +42,7 @@ class ProductVariantCollectionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Product::class,
+            'data_class' => $this->repository->getClassName(),
         ]);
     }
 
@@ -51,7 +54,7 @@ class ProductVariantCollectionType extends AbstractType
         }
 
         foreach ($data->getChoices(true) as $choice) {
-            $data->addVariant($this->repository->createNew($data, $choice));
+            $data->addVariant($this->productVariantRepository->createNew($data, $choice));
         }
     }
 }
