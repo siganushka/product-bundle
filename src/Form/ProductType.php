@@ -64,7 +64,7 @@ class ProductType extends AbstractType
             'error_bubbling' => false,
             'by_reference' => false,
             'constraints' => [
-                new Count(max: 3),
+                new Count(min: 1, max: 3),
                 new Unique(normalizer: fn (ProductOption $option) => $option->getName() ?? spl_object_hash($option)),
             ],
         ]);

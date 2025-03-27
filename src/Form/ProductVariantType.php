@@ -27,14 +27,6 @@ class ProductVariantType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('img', MediaType::class, [
-                'label' => 'product_variant.img',
-                'channel' => 'product',
-                'priority' => 2,
-                // Setting label from CollectionType
-                'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
-                'row_attr' => false === $options['label'] ? ['style' => 'width: 1px'] : [],
-            ])
             ->add('price', MoneyType::class, [
                 'label' => 'product_variant.price',
                 'constraints' => [
@@ -61,19 +53,25 @@ class ProductVariantType extends AbstractType
     public function onPreSetData(FormEvent $event): void
     {
         $data = $event->getData();
-        if (!$data instanceof ProductVariant) {
-            return;
-        }
+        if ($data instanceof ProductVariant && $data->getChoiceValue()) {
+            $form = $event->getForm();
+            $label = $form->getConfig()->getOption('label');
 
-        $choiceLabel = $data->getChoiceLabel();
-        if (null === $choiceLabel) {
-            return;
+            $form
+                ->add('img', MediaType::class, [
+                    'label' => 'product_variant.img',
+                    'channel' => 'product',
+                    'priority' => 2,
+                    // Setting label from CollectionType
+                    'style' => false === $label ? 'width: 38px; height: 38px' : null,
+                    'row_attr' => false === $label ? ['style' => 'width: 1px'] : [],
+                ])
+                ->add('choiceLabel', TextType::class, [
+                    'label' => 'product_variant.choice',
+                    'disabled' => true,
+                    'priority' => 1,
+                ])
+            ;
         }
-
-        $event->getForm()->add('choiceLabel', TextType::class, [
-            'label' => 'product_variant.choice',
-            'disabled' => true,
-            'priority' => 1,
-        ]);
     }
 }
