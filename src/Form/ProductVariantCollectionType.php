@@ -37,7 +37,7 @@ class ProductVariantCollectionType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, $this->onPreSetData(...));
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -55,9 +55,7 @@ class ProductVariantCollectionType extends AbstractType
         }
 
         foreach ($data->getChoices(true) as $choice) {
-            $fn = fn (ProductVariant $item) => $item->getChoiceValue() === $choice->value;
-
-            $variants = $data->getVariants()->filter($fn);
+            $variants = $data->getVariants()->filter(fn (ProductVariant $item) => $item->getChoiceValue() === $choice->value);
             if ($variants->isEmpty()) {
                 $data->addVariant($this->productVariantRepository->createNew($data, $choice));
             }
