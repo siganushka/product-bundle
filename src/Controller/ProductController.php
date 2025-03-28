@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Controller;
 
-use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -15,7 +14,6 @@ use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
@@ -85,11 +83,7 @@ class ProductController extends AbstractController
             return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        try {
-            $entityManager->flush();
-        } catch (ForeignKeyConstraintViolationException $th) {
-            throw new BadRequestHttpException('The associated data can be deleted if it is not empty.');
-        }
+        $entityManager->flush();
 
         return $this->createResponse($entity);
     }
@@ -107,11 +101,7 @@ class ProductController extends AbstractController
             return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        try {
-            $entityManager->flush();
-        } catch (ForeignKeyConstraintViolationException $th) {
-            throw new BadRequestHttpException('The associated data can be deleted if it is not empty.');
-        }
+        $entityManager->flush();
 
         return $this->createResponse($entity);
     }
