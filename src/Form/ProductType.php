@@ -7,8 +7,8 @@ namespace Siganushka\ProductBundle\Form;
 use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductOption;
+use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Repository\ProductRepository;
-use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,9 +23,7 @@ use Symfony\Component\Validator\Constraints\Unique;
 
 class ProductType extends AbstractType
 {
-    public function __construct(
-        private readonly ProductRepository $repository,
-        private readonly ProductVariantRepository $productVariantRepository)
+    public function __construct(private readonly ProductRepository $repository)
     {
     }
 
@@ -69,11 +67,11 @@ class ProductType extends AbstractType
 
     public function addVariantField(FormEvent $event): void
     {
-        $form = $event->getForm();
-        $form->add('variant', ProductVariantType::class, [
+        $event->getForm()->add('variants', ProductVariantType::class, [
             'property_path' => 'variants[0]',
+            // You need to manually set the association here
+            'setter' => fn (Product &$product, ProductVariant $variant) => $product->addVariant($variant),
             'error_bubbling' => false,
-            'empty_data' => $this->productVariantRepository->createNew($event->getData()),
         ]);
     }
 
@@ -82,8 +80,7 @@ class ProductType extends AbstractType
         $data = $event->getData();
         $persisted = $data instanceof Product && null !== $data->getId();
 
-        $form = $event->getForm();
-        $form->add('options', CollectionType::class, [
+        $event->getForm()->add('options', CollectionType::class, [
             'label' => 'product.options',
             'entry_type' => ProductOptionType::class,
             'entry_options' => ['label' => false, 'simple' => true],

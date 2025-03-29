@@ -64,7 +64,7 @@ class ProductVariantType extends AbstractType
                     'priority' => 2,
                     // Setting label from CollectionType
                     'style' => false === $label ? 'width: 38px; height: 38px' : null,
-                    'row_attr' => false === $label ? ['style' => 'width: 1px'] : [],
+                    'row_attr' => false === $label ? ['style' => 'width: 0'] : [],
                 ])
                 ->add('choiceLabel', TextType::class, [
                     'label' => 'product_variant.choice',
