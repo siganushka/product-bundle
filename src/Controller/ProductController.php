@@ -26,14 +26,8 @@ class ProductController extends AbstractController
     public function getCollection(Request $request, PaginatorInterface $paginator): Response
     {
         $queryBuilder = $this->productRepository->createQueryBuilder('p')
-            // filter empty variants
             // ->where('p.variants IS NOT EMPTY')
         ;
-
-        if (null !== $name = $request->query->get('name')) {
-            $queryBuilder->andWhere('p.name LIKE :name')
-                ->setParameter('name', "%{$name}%");
-        }
 
         $page = $request->query->getInt('page', 1);
         $size = $request->query->getInt('size', 10);

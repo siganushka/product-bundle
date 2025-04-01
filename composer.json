@@ -20,11 +20,11 @@
         "siganushka/media-bundle": "dev-main",
         "symfony/form": "^6.4|^7.0",
         "symfony/framework-bundle": "^6.4|^7.0",
+        "symfony/ux-autocomplete": "^2.10",
         "symfony/validator": "^6.4|^7.0"
     },
     "require-dev": {
-        "twig/twig": "^2.13|^3.0.4",
-        "symfony/ux-autocomplete": "^2.10"
+        "twig/twig": "^2.13|^3.0.4"
     },
     "autoload": {
         "psr-4": {

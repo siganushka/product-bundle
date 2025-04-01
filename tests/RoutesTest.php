@@ -42,8 +42,5 @@ class RoutesTest extends TestCase
         yield ['siganushka_product_product_putitem', '/products/{id}', ['PUT', 'PATCH']];
         yield ['siganushka_product_product_putitemvariants', '/products/{id}/variants', ['PUT', 'PATCH']];
         yield ['siganushka_product_product_deleteitem', '/products/{id}', ['DELETE']];
-        yield ['siganushka_product_productvariant_getitem', '/product-variants/{id}', ['GET']];
-        yield ['siganushka_product_productvariant_putitem', '/product-variants/{id}', ['PUT', 'PATCH']];
-        yield ['siganushka_product_productvariant_deleteitem', '/product-variants/{id}', ['DELETE']];
     }
 }
