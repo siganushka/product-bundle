@@ -13,21 +13,29 @@ class ProductOptionValueTest extends TestCase
     /**
      * @dataProvider productOptionValuesProvider
      */
-    public function testAll(?string $optionName, ?string $text, ?string $descriptor): void
+    public function testAll(?string $name, ?string $text, ?string $toString): void
     {
-        $optionValue = new ProductOptionValue(text: $text);
-        $optionValue->setOption(new ProductOption($optionName));
+        $value = new ProductOptionValue(text: $text);
+        $value->setOption(new ProductOption($name));
 
-        static::assertSame($descriptor, $optionValue->getDescriptor());
+        static::assertSame($toString, $value->__toString());
+    }
+
+    public function testCodeInvalidArgumentException(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('The code with value "a@b" contains illegal character(s)');
+
+        new ProductOptionValue('a@b');
     }
 
     public static function productOptionValuesProvider(): iterable
     {
         return [
-            [null, null, null],
-            ['', null, null],
+            [null, null, ''],
+            ['', null, ''],
             [null, '', ''],
-            ['foo', null, null],
+            ['foo', null, ''],
             [null, 'foo', 'foo'],
             ['foo', 'bar', 'foo: bar'],
             ['bar', 'foo', 'bar: foo'],

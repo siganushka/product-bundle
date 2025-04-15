@@ -25,21 +25,21 @@ final class ProductVariantChoice
 
     public function __construct(array $combinedOptionValues = [])
     {
-        $code = $descriptor = [];
+        $codes = $texts = [];
         foreach ($combinedOptionValues as $optionValue) {
             if (!$optionValue instanceof ProductOptionValue) {
                 throw new \UnexpectedValueException(\sprintf('Expected argument of type "%s", "%s" given.', ProductOptionValue::class, get_debug_type($optionValue)));
             }
 
-            $code[] = $optionValue->getCode();
-            $descriptor[] = $optionValue->getDescriptor();
+            $codes[] = $optionValue->getCode();
+            $texts[] = $optionValue->__toString();
         }
 
         // [important] Generate unique choice value from sorted code
-        sort($code);
+        sort($codes);
 
-        $this->value = \count($code) ? implode('-', $code) : null;
-        $this->label = \count($descriptor) ? implode(', ', $descriptor) : null;
+        $this->value = \count($codes) ? implode('-', $codes) : null;
+        $this->label = \count($texts) ? implode(', ', $texts) : null;
 
         $this->combinedOptionValues = $combinedOptionValues;
     }

@@ -14,7 +14,7 @@ use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 
 #[ORM\Entity(repositoryClass: ProductOptionValueRepository::class)]
 #[ORM\UniqueConstraint(columns: ['option_id', 'code'])]
-class ProductOptionValue implements ResourceInterface, TimestampableInterface
+class ProductOptionValue implements ResourceInterface, TimestampableInterface, \Stringable
 {
     use ResourceTrait;
     use TimestampableTrait;
@@ -37,7 +37,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
 
     public function __construct(?string $code = null, ?string $text = null, ?string $note = null, ?Media $img = null)
     {
-        if (null !== $code && !preg_match('/^[a-zA-Z0-9_]+$/', $code)) {
+        if ($code && !preg_match('/^[a-zA-Z0-9_]+$/', $code)) {
             throw new \InvalidArgumentException(\sprintf('The code with value "%s" contains illegal character(s).', $code));
         }
 
@@ -105,13 +105,13 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getDescriptor(): ?string
+    public function __toString(): string
     {
         $optionName = $this->option?->getName();
         if ($optionName && $this->text) {
             return \sprintf('%s: %s', $optionName, $this->text);
         }
 
-        return $this->text;
+        return $this->text ?? '';
     }
 }
