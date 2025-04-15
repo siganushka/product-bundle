@@ -54,6 +54,8 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
                 'minRatio' => 1,
                 'minWidth' => 100,
             ],
+            'resize' => 800,
+            'optimize' => true,
         ];
 
         $container->prependExtensionConfig('siganushka_media', [
