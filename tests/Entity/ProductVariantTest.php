@@ -16,10 +16,10 @@ class ProductVariantTest extends TestCase
     public function testAll(): void
     {
         $variant = new ProductVariant();
-        static::assertNull($variant->getDescriptor());
+        static::assertNull($variant->getName());
 
         $variant = new ProductVariant(new Product('hello'));
-        static::assertSame('hello', $variant->getDescriptor());
+        static::assertSame('hello', $variant->getName());
 
         $v1 = new ProductOptionValue(text: 'aaa');
         $v1->setOption(new ProductOption('foo'));
@@ -28,9 +28,9 @@ class ProductVariantTest extends TestCase
         $v2->setOption(new ProductOption('bar'));
 
         $variant = new ProductVariant(choice: new ProductVariantChoice([$v1, $v2]));
-        static::assertSame('foo: aaa, bar: bbb', $variant->getDescriptor());
+        static::assertSame('foo: aaa, bar: bbb', $variant->getName());
 
         $variant->setProduct(new Product('world'));
-        static::assertSame('world【foo: aaa, bar: bbb】', $variant->getDescriptor());
+        static::assertSame('world【foo: aaa, bar: bbb】', $variant->getName());
     }
 }

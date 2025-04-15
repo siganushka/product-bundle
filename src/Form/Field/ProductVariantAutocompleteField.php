@@ -25,7 +25,7 @@ class ProductVariantAutocompleteField extends AbstractType
         $resolver->setDefaults([
             'class' => $this->repository->getClassName(),
             'placeholder' => 'product.name',
-            'choice_label' => ChoiceList::label($this, fn (ProductVariant $choice) => $choice->getDescriptor()),
+            'choice_label' => ChoiceList::label($this, fn (ProductVariant $choice) => $choice->getName()),
             'query_builder' => fn (GenericEntityRepository $er) => $er->createQueryBuilderWithOrdered('entity'),
             'max_results' => 20,
             'tom_select_options' => ['maxOptions' => 100],

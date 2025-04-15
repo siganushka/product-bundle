@@ -141,7 +141,10 @@ class ProductVariant implements ResourceInterface, TimestampableInterface
         return null !== $this->inventory && $this->inventory <= 0;
     }
 
-    public function getDescriptor(): ?string
+    /**
+     * Returns the variant name.
+     */
+    public function getName(): ?string
     {
         $label = $this->getChoiceLabel();
         if (null === $this->product) {
