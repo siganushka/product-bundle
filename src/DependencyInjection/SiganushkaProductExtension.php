@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\DependencyInjection;
 
+use Spatie\ImageOptimizer\OptimizerChainFactory;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -55,7 +56,7 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
                 'minWidth' => 100,
             ],
             'resize' => 800,
-            'optimize' => true,
+            'optimize' => class_exists(OptimizerChainFactory::class),
         ];
 
         $container->prependExtensionConfig('siganushka_media', [
