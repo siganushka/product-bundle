@@ -55,8 +55,8 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
                 'minRatio' => 1,
                 'minWidth' => 100,
             ],
-            'resize' => 800,
-            'optimize' => class_exists(OptimizerChainFactory::class),
+            'resize' => class_exists(\Imagick::class) ? 800 : false,
+            'optimize' => class_exists(OptimizerChainFactory::class) ? 85 : false,
         ];
 
         $container->prependExtensionConfig('siganushka_media', [
