@@ -5,12 +5,7 @@ declare(strict_types=1);
 return [
     'product.name' => '商品名称',
     'product.img' => '商品封面',
-    'product.virtual' => '虚拟',
-    'product.weight' => '重量（kg）',
-    'product.volume' => '体积（cm³）',
-    'product.length' => '长（cm）',
-    'product.width' => '宽（cm）',
-    'product.height' => '高（cm）',
+    'product.description' => '商品简介',
     'product.options' => '商品选项',
     'product.variants' => '库存',
 

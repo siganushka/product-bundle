@@ -10,17 +10,16 @@ use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Unique;
 
@@ -42,33 +41,17 @@ class ProductType extends AbstractType
                 'label' => 'product.name',
                 'constraints' => new NotBlank(),
             ])
-            ->add('virtual', CheckboxType::class, [
-                'label' => 'product.virtual',
-            ])
-            ->add('weight', IntegerType::class, [
-                'label' => 'product.weight',
-                'constraints' => new NotBlank(groups: ['notVirtualRequired']),
-            ])
-            ->add('length', IntegerType::class, [
-                'label' => 'product.length',
-                'constraints' => new NotBlank(groups: ['notVirtualRequired']),
-            ])
-            ->add('width', IntegerType::class, [
-                'label' => 'product.width',
-                'constraints' => new NotBlank(groups: ['notVirtualRequired']),
-            ])
-            ->add('height', IntegerType::class, [
-                'label' => 'product.height',
-                'constraints' => new NotBlank(groups: ['notVirtualRequired']),
+            ->add('description', TextareaType::class, [
+                'label' => 'product.description',
+                'attr' => ['rows' => 3],
+                'constraints' => new Length(max: 128),
             ])
         ;
 
-        $callable = $options['simple']
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, $options['simple']
             ? $this->addVariantField(...)
-            : $this->addOptionsField(...);
-
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, $callable);
-        $builder->addEventListener(FormEvents::SUBMIT, $this->clearVirtualField(...));
+            : $this->addOptionsField(...)
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -84,13 +67,6 @@ class ProductType extends AbstractType
 
         $resolver->setDefaults([
             'data_class' => $this->repository->getClassName(),
-            'validation_groups' => function (FormInterface $form) {
-                $data = $form->getData();
-
-                return $data instanceof Product && $data->isVirtual()
-                    ? ['Default']
-                    : ['Default', 'notVirtualRequired'];
-            },
             'simple' => $simple,
         ]);
     }
@@ -123,16 +99,5 @@ class ProductType extends AbstractType
                 new Unique(normalizer: fn (ProductOption $option) => $option->getName() ?? spl_object_hash($option)),
             ],
         ]);
-    }
-
-    public function clearVirtualField(FormEvent $event): void
-    {
-        $data = $event->getData();
-        if ($data instanceof Product && $data->isVirtual()) {
-            $data->setWeight(null);
-            $data->setLength(null);
-            $data->setWidth(null);
-            $data->setHeight(null);
-        }
     }
 }

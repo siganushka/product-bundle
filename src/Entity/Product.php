@@ -7,7 +7,6 @@ namespace Siganushka\ProductBundle\Entity;
 use BenTools\CartesianProduct\CartesianProduct;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
@@ -26,24 +25,12 @@ class Product implements ResourceInterface, TimestampableInterface
     #[ORM\Column]
     protected ?string $name = null;
 
+    #[ORM\Column(nullable: true)]
+    protected ?string $description = null;
+
     #[ORM\ManyToOne(targetEntity: Media::class)]
     #[ORM\JoinColumn(nullable: false)]
     protected ?Media $img = null;
-
-    #[ORM\Column('`virtual`', type: Types::BOOLEAN)]
-    protected bool $virtual = false;
-
-    #[ORM\Column(nullable: true)]
-    protected ?int $weight = null;
-
-    #[ORM\Column(nullable: true)]
-    protected ?int $length = null;
-
-    #[ORM\Column(nullable: true)]
-    protected ?int $width = null;
-
-    #[ORM\Column(nullable: true)]
-    protected ?int $height = null;
 
     /** @var Collection<int, ProductOption> */
     #[ORM\OneToMany(targetEntity: ProductOption::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
@@ -74,6 +61,18 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
     public function getImg(): ?Media
     {
         return $this->img;
@@ -82,71 +81,6 @@ class Product implements ResourceInterface, TimestampableInterface
     public function setImg(?Media $img): static
     {
         $this->img = $img;
-
-        return $this;
-    }
-
-    public function isVirtual(): bool
-    {
-        return $this->virtual;
-    }
-
-    public function getVirtual(): bool
-    {
-        return $this->virtual;
-    }
-
-    public function setVirtual(bool $virtual): static
-    {
-        $this->virtual = $virtual;
-
-        return $this;
-    }
-
-    public function getWeight(): ?int
-    {
-        return $this->weight;
-    }
-
-    public function setWeight(?int $weight): static
-    {
-        $this->weight = $weight;
-
-        return $this;
-    }
-
-    public function getLength(): ?int
-    {
-        return $this->length;
-    }
-
-    public function setLength(?int $length): static
-    {
-        $this->length = $length;
-
-        return $this;
-    }
-
-    public function getWidth(): ?int
-    {
-        return $this->width;
-    }
-
-    public function setWidth(?int $width): static
-    {
-        $this->width = $width;
-
-        return $this;
-    }
-
-    public function getHeight(): ?int
-    {
-        return $this->height;
-    }
-
-    public function setHeight(?int $height): static
-    {
-        $this->height = $height;
 
         return $this;
     }
