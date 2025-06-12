@@ -7,6 +7,7 @@ return [
     'product.img' => '商品封面',
     'product.virtual' => '虚拟',
     'product.weight' => '重量（kg）',
+    'product.volume' => '体积（cm³）',
     'product.length' => '长（cm）',
     'product.width' => '宽（cm）',
     'product.height' => '高（cm）',
