@@ -29,6 +29,8 @@ class ProductVariantType extends AbstractType
         $builder
             ->add('price', MoneyType::class, [
                 'label' => 'product_variant.price',
+                // Attributes when embedded in a collection
+                'row_attr' => false === $options['label'] ? ['class' => 'col-4'] : [],
                 'constraints' => [
                     new NotBlank(),
                     new GreaterThanOrEqual(0),
@@ -36,6 +38,8 @@ class ProductVariantType extends AbstractType
             ])
             ->add('inventory', IntegerType::class, [
                 'label' => 'product_variant.inventory',
+                // Attributes when embedded in a collection
+                'row_attr' => false === $options['label'] ? ['class' => 'col-2'] : [],
                 'constraints' => new GreaterThanOrEqual(0),
             ])
         ;
@@ -62,7 +66,7 @@ class ProductVariantType extends AbstractType
                     'label' => 'product_variant.img',
                     'channel' => 'product_variant_img',
                     'priority' => 2,
-                    // Setting label from CollectionType
+                    // Attributes when embedded in a collection
                     'style' => false === $label ? 'width: 38px; height: 38px' : null,
                     'row_attr' => false === $label ? ['style' => 'width: 0'] : [],
                 ])

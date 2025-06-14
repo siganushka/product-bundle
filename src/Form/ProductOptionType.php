@@ -31,6 +31,8 @@ class ProductOptionType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'product_option.name',
+                // Attributes when embedded in a collection
+                'row_attr' => false === $options['label'] ? ['class' => 'col-3'] : [],
                 'constraints' => new NotBlank(),
             ])
             ->add('values', $type, [
