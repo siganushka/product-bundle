@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProductOptionValueType extends AbstractType
@@ -26,7 +27,7 @@ class ProductOptionValueType extends AbstractType
                 'channel' => 'product_option_value_img',
                 // Setting label from CollectionType
                 'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
-                'row_attr' => false === $options['label'] ? ['style' => 'width: 1px'] : [],
+                'row_attr' => false === $options['label'] ? ['style' => 'width: 0'] : [],
             ])
             ->add('text', TextType::class, [
                 'label' => 'product_option_value.text',
@@ -34,6 +35,7 @@ class ProductOptionValueType extends AbstractType
             ])
             ->add('note', TextType::class, [
                 'label' => 'product_option_value.note',
+                'constraints' => new Length(max: 100),
             ])
         ;
     }

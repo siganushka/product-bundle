@@ -43,8 +43,7 @@ class ProductType extends AbstractType
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'product.description',
-                'attr' => ['rows' => 3],
-                'constraints' => new Length(max: 128),
+                'constraints' => new Length(max: 100),
             ])
         ;
 
