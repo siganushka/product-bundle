@@ -13,7 +13,6 @@ return [
     'product_option.values' => 'Values',
 
     'product_option_value.text' => 'Text',
-    'product_option_value.note' => 'Note',
     'product_option_value.img' => 'Image',
 
     'product_variant.choice' => 'Choice',

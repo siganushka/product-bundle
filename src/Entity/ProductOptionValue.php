@@ -29,13 +29,10 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface, \
     #[ORM\Column]
     protected ?string $text = null;
 
-    #[ORM\Column(nullable: true)]
-    protected ?string $note = null;
-
     #[ORM\ManyToOne(targetEntity: Media::class)]
     protected ?Media $img = null;
 
-    public function __construct(?string $code = null, ?string $text = null, ?string $note = null, ?Media $img = null)
+    public function __construct(?string $code = null, ?string $text = null, ?Media $img = null)
     {
         if ($code && !preg_match('/^[a-zA-Z0-9_]+$/', $code)) {
             throw new \InvalidArgumentException(\sprintf('The code with value "%s" contains illegal character(s).', $code));
@@ -43,7 +40,6 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface, \
 
         $this->code = $code ?? mb_substr(md5(uniqid()), 0, 7);
         $this->text = $text;
-        $this->note = $note;
         $this->img = $img;
     }
 
@@ -77,18 +73,6 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface, \
     public function setText(?string $text): static
     {
         $this->text = $text;
-
-        return $this;
-    }
-
-    public function getNote(): ?string
-    {
-        return $this->note;
-    }
-
-    public function setNote(?string $note): static
-    {
-        $this->note = $note;
 
         return $this;
     }

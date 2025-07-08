@@ -10,7 +10,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProductOptionValueType extends AbstractType
@@ -32,10 +31,6 @@ class ProductOptionValueType extends AbstractType
             ->add('text', TextType::class, [
                 'label' => 'product_option_value.text',
                 'constraints' => new NotBlank(),
-            ])
-            ->add('note', TextType::class, [
-                'label' => 'product_option_value.note',
-                'constraints' => new Length(max: 100),
             ])
         ;
     }

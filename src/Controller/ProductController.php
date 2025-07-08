@@ -122,7 +122,7 @@ class ProductController extends AbstractController
             'id', 'name', 'img', 'updatedAt', 'createdAt',
             'options' => [
                 'id', 'name',
-                'values' => ['id', 'code', 'img', 'text', 'note'],
+                'values' => ['id', 'code', 'img', 'text'],
             ],
             'variants' => [
                 'id', 'price', 'inventory', 'img', 'choiceValue', 'choiceLabel', 'outOfStock',
