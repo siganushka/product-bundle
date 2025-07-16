@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\ProductBundle\Entity\Product;
+use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
@@ -53,8 +54,10 @@ class ProductVariantCollectionType extends AbstractType
             return;
         }
 
-        foreach ($data->getChoices(true) as $choice) {
-            $data->addVariant($this->productVariantRepository->createNew($data, $choice));
+        $variants = $data->getVariants();
+        foreach ($data->getChoices(true) as $index => $choice) {
+            $variants[$index] = array_find($variants->toArray(), fn (ProductVariant $item) => $item->getChoiceValue() === $choice->value)
+                ?? $this->productVariantRepository->createNew($choice)->setProduct($data)->setEnabled(false);
         }
     }
 }

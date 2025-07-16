@@ -32,14 +32,14 @@ final class ProductVariantChoice
             }
 
             $codes[] = $optionValue->getCode();
-            $texts[] = $optionValue->__toString();
+            $texts[] = $optionValue->getText();
         }
 
         // [important] Generate unique choice value from sorted code
         sort($codes);
 
         $this->value = \count($codes) ? implode('-', $codes) : null;
-        $this->label = \count($texts) ? implode(', ', $texts) : null;
+        $this->label = \count($texts) ? implode('/', $texts) : null;
 
         $this->combinedOptionValues = $combinedOptionValues;
     }

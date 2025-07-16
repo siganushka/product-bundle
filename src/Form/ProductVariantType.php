@@ -8,12 +8,14 @@ use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -29,18 +31,21 @@ class ProductVariantType extends AbstractType
         $builder
             ->add('price', MoneyType::class, [
                 'label' => 'product_variant.price',
-                // Attributes when embedded in a collection
                 'row_attr' => false === $options['label'] ? ['class' => 'col-4'] : [],
                 'constraints' => [
-                    new NotBlank(),
+                    new NotBlank(groups: ['PriceRequired']),
                     new GreaterThanOrEqual(0),
                 ],
             ])
             ->add('inventory', IntegerType::class, [
                 'label' => 'product_variant.inventory',
-                // Attributes when embedded in a collection
                 'row_attr' => false === $options['label'] ? ['class' => 'col-2'] : [],
                 'constraints' => new GreaterThanOrEqual(0),
+            ])
+            ->add('enabled', CheckboxType::class, [
+                'label' => false === $options['label'] ? false : 'generic.enable',
+                'row_attr' => false === $options['label'] ? ['class' => 'w-0 pt-2'] : [],
+                'priority' => false === $options['label'] ? 8 : -8,
             ])
         ;
 
@@ -51,6 +56,13 @@ class ProductVariantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => $this->repository->getClassName(),
+            'validation_groups' => function (FormInterface $form) {
+                $data = $form->getData();
+
+                return $data instanceof ProductVariant && $data->isEnabled()
+                    ? ['Default', 'PriceRequired']
+                    : ['Default'];
+            },
         ]);
     }
 
@@ -66,7 +78,6 @@ class ProductVariantType extends AbstractType
                     'label' => 'product_variant.img',
                     'channel' => 'product_variant_img',
                     'priority' => 2,
-                    // Attributes when embedded in a collection
                     'style' => false === $label ? 'width: 38px; height: 38px' : null,
                     'row_attr' => false === $label ? ['style' => 'width: 0'] : [],
                 ])

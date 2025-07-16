@@ -25,13 +25,13 @@ class ProductVariantChoiceTest extends TestCase
 
         $choice = new ProductVariantChoice($optionValues);
         static::assertSame('a-b-c', $choice->value);
-        static::assertSame('foo, bar, baz', $choice->label);
+        static::assertSame('foo/bar/baz', $choice->label);
         static::assertSame($optionValues, $choice->combinedOptionValues);
 
         rsort($optionValues);
         $choice = new ProductVariantChoice($optionValues);
         static::assertSame('a-b-c', $choice->value);
-        static::assertSame('baz, bar, foo', $choice->label);
+        static::assertSame('baz/bar/foo', $choice->label);
         static::assertSame($optionValues, $choice->combinedOptionValues);
     }
 
