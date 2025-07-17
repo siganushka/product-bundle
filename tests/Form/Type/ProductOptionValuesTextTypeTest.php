@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests\Form\Type;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use PHPUnit\Framework\MockObject\MockObject;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Form\Type\ProductOptionValuesTextType;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
@@ -54,7 +53,6 @@ class ProductOptionValuesTextTypeTest extends TypeTestCase
 
     protected function getTypes(): array
     {
-        /** @var MockObject&ProductOptionValueRepository */
         $repository = $this->createMock(ProductOptionValueRepository::class);
         $repository->expects(static::any())
             ->method('createNew')

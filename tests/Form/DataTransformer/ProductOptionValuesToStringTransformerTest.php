@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests\Form\DataTransformer;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Form\DataTransformer\ProductOptionValuesToStringTransformer;
@@ -101,7 +100,6 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
      */
     private function createTransformer(string $separator): ProductOptionValuesToStringTransformer
     {
-        /** @var MockObject&ProductOptionValueRepository */
         $repository = $this->createMock(ProductOptionValueRepository::class);
         $repository->expects(static::any())
             ->method('createNew')
