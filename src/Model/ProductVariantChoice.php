@@ -23,6 +23,9 @@ final class ProductVariantChoice
      */
     public readonly array $combinedOptionValues;
 
+    /**
+     * @param array<int, ProductOptionValue> $combinedOptionValues
+     */
     public function __construct(array $combinedOptionValues = [])
     {
         $codes = $texts = [];

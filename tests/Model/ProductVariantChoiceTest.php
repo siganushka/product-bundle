@@ -29,6 +29,7 @@ class ProductVariantChoiceTest extends TestCase
         static::assertSame($optionValues, $choice->combinedOptionValues);
 
         rsort($optionValues);
+
         $choice = new ProductVariantChoice($optionValues);
         static::assertSame('a-b-c', $choice->value);
         static::assertSame('baz/bar/foo', $choice->label);
@@ -40,6 +41,7 @@ class ProductVariantChoiceTest extends TestCase
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessage('Expected argument of type "Siganushka\ProductBundle\Entity\ProductOptionValue", "stdClass" given');
 
+        /* @phpstan-ignore-next-line */
         new ProductVariantChoice([new \stdClass()]);
     }
 }

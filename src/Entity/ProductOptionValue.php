@@ -14,7 +14,7 @@ use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 
 #[ORM\Entity(repositoryClass: ProductOptionValueRepository::class)]
 #[ORM\UniqueConstraint(columns: ['option_id', 'code'])]
-class ProductOptionValue implements ResourceInterface, TimestampableInterface, \Stringable
+class ProductOptionValue implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
     use TimestampableTrait;
@@ -87,15 +87,5 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface, \
         $this->img = $img;
 
         return $this;
-    }
-
-    public function __toString(): string
-    {
-        $optionName = $this->option?->getName();
-        if ($optionName && $this->text) {
-            return \sprintf('%s: %s', $optionName, $this->text);
-        }
-
-        return $this->text ?? '';
     }
 }

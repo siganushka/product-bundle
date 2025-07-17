@@ -154,15 +154,15 @@ class Product implements ResourceInterface, TimestampableInterface
             return [new ProductVariantChoice()];
         }
 
-        $opitonValues = [];
+        $set = [];
         foreach ($this->options as $option) {
             $values = $option->getValues();
-            if (\count($values)) {
-                $opitonValues[] = $values;
+            if ($values->count()) {
+                $set[] = $values;
             }
         }
 
-        $cartesianProduct = new CartesianProduct($opitonValues);
+        $cartesianProduct = new CartesianProduct($set);
         $asArray = $cartesianProduct->asArray();
 
         return array_map(fn (array $combinedOptionValues) => new ProductVariantChoice($combinedOptionValues), $asArray);
