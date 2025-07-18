@@ -28,12 +28,12 @@ class ProductVariantChoiceTest extends TestCase
         static::assertSame('foo/bar/baz', $choice->label);
         static::assertSame($optionValues, $choice->combinedOptionValues);
 
-        rsort($optionValues);
+        $optionValues2 = array_reverse($optionValues);
 
-        $choice = new ProductVariantChoice($optionValues);
+        $choice = new ProductVariantChoice($optionValues2);
         static::assertSame('a-b-c', $choice->value);
         static::assertSame('baz/bar/foo', $choice->label);
-        static::assertSame($optionValues, $choice->combinedOptionValues);
+        static::assertSame($optionValues2, $choice->combinedOptionValues);
     }
 
     public function testUnexpectedValueException(): void
