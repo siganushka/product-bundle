@@ -46,24 +46,20 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
             'doctrine' => ['mapping_override' => $mappingOverride],
         ]);
 
-        $options = [
-            'constraint' => Image::class,
-            'constraint_options' => [
-                'mimeTypes' => ['image/png', 'image/jpeg', 'image/webp'],
-                'maxSize' => '2M',
-                'maxRatio' => 1,
-                'minRatio' => 1,
-                'minWidth' => 100,
-            ],
-            'resize' => class_exists(\Imagick::class) ? 800 : false,
-            'optimize' => class_exists(OptimizerChainFactory::class) ? 85 : false,
-        ];
-
         $container->prependExtensionConfig('siganushka_media', [
             'channels' => [
-                'product_img' => $options,
-                'product_option_value_img' => $options,
-                'product_variant_img' => $options,
+                'product_img' => [
+                    'constraint' => Image::class,
+                    'constraint_options' => [
+                        'mimeTypes' => ['image/png', 'image/jpeg', 'image/webp'],
+                        'maxSize' => '2M',
+                        'maxRatio' => 1,
+                        'minRatio' => 1,
+                        'minWidth' => 100,
+                    ],
+                    'resize' => class_exists(\Imagick::class) ? 800 : false,
+                    'optimize' => class_exists(OptimizerChainFactory::class) ? 85 : false,
+                ],
             ],
         ]);
     }
