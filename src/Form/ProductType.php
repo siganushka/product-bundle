@@ -47,18 +47,18 @@ class ProductType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, $options['simple']
-            ? $this->addVariantField(...)
-            : $this->addOptionsField(...)
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, $options['combinable']
+            ? $this->addOptionsField(...)
+            : $this->addVariantField(...)
         );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $simple = function (Options $options) {
+        $combinable = function (Options $options) {
             $data = $options['data'] ?? null;
             if ($data instanceof Product) {
-                return $data->getOptions()->isEmpty();
+                return !$data->getOptions()->isEmpty();
             }
 
             return false;
@@ -66,7 +66,7 @@ class ProductType extends AbstractType
 
         $resolver->setDefaults([
             'data_class' => $this->repository->getClassName(),
-            'simple' => $simple,
+            'combinable' => $combinable,
         ]);
     }
 

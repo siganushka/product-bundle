@@ -42,11 +42,6 @@ class ProductVariantType extends AbstractType
                 'row_attr' => false === $options['label'] ? ['class' => 'col-2'] : [],
                 'constraints' => new GreaterThanOrEqual(0),
             ])
-            ->add('enabled', CheckboxType::class, [
-                'label' => false === $options['label'] ? false : 'generic.enable',
-                'row_attr' => false === $options['label'] ? ['class' => 'w-0 pt-2'] : [],
-                'priority' => false === $options['label'] ? 8 : -8,
-            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, $this->onPreSetData(...));
@@ -76,7 +71,7 @@ class ProductVariantType extends AbstractType
             $form
                 ->add('img', MediaType::class, [
                     'label' => 'product_variant.img',
-                    'channel' => 'product_variant_img',
+                    'channel' => 'product_img',
                     'priority' => 2,
                     'style' => false === $label ? 'width: 38px; height: 38px' : null,
                     'row_attr' => false === $label ? ['style' => 'width: 0'] : [],
@@ -85,6 +80,11 @@ class ProductVariantType extends AbstractType
                     'label' => 'product_variant.choice',
                     'disabled' => true,
                     'priority' => 1,
+                ])
+                ->add('enabled', CheckboxType::class, [
+                    'label' => false === $label ? false : 'generic.enable',
+                    'row_attr' => false === $label ? ['class' => 'w-0 pt-2'] : [],
+                    'priority' => false === $label ? 8 : -8,
                 ])
             ;
         }
