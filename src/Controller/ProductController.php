@@ -41,8 +41,9 @@ class ProductController extends AbstractController
     public function postCollection(Request $request, EntityManagerInterface $entityManager): Response
     {
         $entity = $this->productRepository->createNew();
+        $combinable = $request->query->has('combinable');
 
-        $form = $this->createForm(ProductType::class, $entity);
+        $form = $this->createForm(ProductType::class, $entity, compact('combinable'));
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
@@ -125,7 +126,7 @@ class ProductController extends AbstractController
                 'values' => ['id', 'code', 'img', 'text'],
             ],
             'variants' => [
-                'id', 'price', 'inventory', 'img', 'choiceValue', 'choiceLabel', 'outOfStock',
+                'id', 'price', 'inventory', 'img', 'choiceValue', 'choiceLabel', 'outOfStock', 'enabled',
             ],
             'choices' => ['value', 'label'],
         ];
