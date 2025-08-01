@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Form\ProductType;
 use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
@@ -15,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class ProductController extends AbstractController
 {
@@ -83,6 +82,17 @@ class ProductController extends AbstractController
         return $this->createResponse($entity);
     }
 
+    #[Route('/products/{id<\d+>}/variants', methods: 'GET')]
+    public function getItemVariants(Request $request, int $id): Response
+    {
+        $entity = $this->productRepository->find($id)
+            ?? throw $this->createNotFoundException();
+
+        return $this->json($entity->getVariants(), context: [
+            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'choice1', 'choice2', 'choice3', 'choice'],
+        ]);
+    }
+
     #[Route('/products/{id<\d+>}/variants', methods: ['PUT', 'PATCH'])]
     public function putItemVariants(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
@@ -114,13 +124,10 @@ class ProductController extends AbstractController
         return $this->createResponse(null, Response::HTTP_NO_CONTENT);
     }
 
-    /**
-     * @param PaginationInterface<int, mixed>|Product|null $data
-     */
-    protected function createResponse(PaginationInterface|Product|null $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
+    protected function createResponse(mixed $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
     {
         $attributes = [
-            'id', 'name', 'img', 'updatedAt', 'createdAt',
+            'id', 'name', 'description', 'img', 'updatedAt', 'createdAt',
             'options' => [
                 'id', 'name',
                 'values' => ['id', 'code', 'img', 'text'],
