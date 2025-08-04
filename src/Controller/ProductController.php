@@ -120,8 +120,7 @@ class ProductController extends AbstractController
         $entityManager->remove($entity);
         $entityManager->flush();
 
-        // 204 No Content
-        return $this->createResponse(null, Response::HTTP_NO_CONTENT);
+        return $this->createResponse(null);
     }
 
     protected function createResponse(mixed $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
