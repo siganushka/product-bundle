@@ -39,8 +39,10 @@ class ProductController extends AbstractController
     #[Route('/products', methods: 'POST')]
     public function postCollection(Request $request, EntityManagerInterface $entityManager): Response
     {
+        // @see https://www.php.net/manual/en/filter.constants.php#constant.filter-validate-bool
+        $combinable = $request->query->getBoolean('combinable', false);
+
         $entity = $this->productRepository->createNew();
-        $combinable = $request->query->has('combinable');
 
         $form = $this->createForm(ProductType::class, $entity, compact('combinable'));
         $form->submit($request->request->all());
@@ -83,13 +85,13 @@ class ProductController extends AbstractController
     }
 
     #[Route('/products/{id<\d+>}/variants', methods: 'GET')]
-    public function getItemVariants(Request $request, int $id): Response
+    public function getItemVariants(int $id): Response
     {
         $entity = $this->productRepository->find($id)
             ?? throw $this->createNotFoundException();
 
         return $this->json($entity->getVariants(), context: [
-            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'choice1', 'choice2', 'choice3', 'choice'],
+            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'choice'],
         ]);
     }
 
@@ -108,7 +110,9 @@ class ProductController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->createResponse($entity);
+        return $this->json($entity->getVariants(), context: [
+            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'choice'],
+        ]);
     }
 
     #[Route('/products/{id<\d+>}', methods: 'DELETE')]
@@ -126,18 +130,8 @@ class ProductController extends AbstractController
 
     protected function createResponse(mixed $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
     {
-        $attributes = [
-            'id', 'name', 'description', 'img', 'updatedAt', 'createdAt',
-            'options' => [
-                'id', 'name',
-                'values' => ['id', 'code', 'img', 'text'],
-            ],
-            'variants' => [
-                'id', 'price', 'inventory', 'img', 'choiceValue', 'choiceLabel', 'outOfStock', 'enabled',
-            ],
-            'choices' => ['value', 'label'],
-        ];
-
-        return $this->json($data, $statusCode, $headers, compact('attributes'));
+        return $this->json($data, $statusCode, $headers, [
+            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'combinedOptionValues'],
+        ]);
     }
 }
