@@ -90,9 +90,7 @@ class ProductController extends AbstractController
         $entity = $this->productRepository->find($id)
             ?? throw $this->createNotFoundException();
 
-        return $this->json($entity->getVariants(), context: [
-            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'choice'],
-        ]);
+        return $this->createResponse($entity->getVariants());
     }
 
     #[Route('/products/{id<\d+>}/variants', methods: ['PUT', 'PATCH'])]
@@ -110,9 +108,7 @@ class ProductController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->json($entity->getVariants(), context: [
-            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'choice'],
-        ]);
+        return $this->createResponse($entity->getVariants());
     }
 
     #[Route('/products/{id<\d+>}', methods: 'DELETE')]
@@ -131,7 +127,7 @@ class ProductController extends AbstractController
     protected function createResponse(mixed $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
     {
         return $this->json($data, $statusCode, $headers, [
-            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'combinedOptionValues'],
+            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'choice', 'combinedOptionValues'],
         ]);
     }
 }
