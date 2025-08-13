@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Doctrine;
 
-use BenTools\CartesianProduct\CartesianProduct;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use Psr\Log\LoggerInterface;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
@@ -14,7 +14,9 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 class ProductListener
 {
-    public function __construct(private readonly ProductVariantRepository $repository)
+    public function __construct(
+        private readonly LoggerInterface $logger,
+        private readonly ProductVariantRepository $repository)
     {
     }
 
@@ -42,35 +44,17 @@ class ProductListener
 
         $products = array_filter($changedProducts);
         foreach (array_unique($products, \SORT_REGULAR) as $entity) {
-            foreach ($this->generateChoices($entity) as $choice) {
+            $choices = $entity->generateChoices();
+            $this->logger->info('Generated product variant choices.', [
+                'product' => $entity->getName(),
+                'choices' => array_map(fn (ProductVariantChoice $item) => $item->label, $choices),
+            ]);
+
+            foreach ($entity->generateChoices() as $choice) {
                 $entity->addVariant($this->repository->createNew($choice)->setEnabled(false));
             }
 
             $uow->computeChangeSet($em->getClassMetadata($entity::class), $entity);
         }
-    }
-
-    /**
-     * @return array<int, ProductVariantChoice>
-     */
-    private function generateChoices(Product $entity): array
-    {
-        $options = $entity->getOptions();
-        if ($options->isEmpty()) {
-            return [new ProductVariantChoice()];
-        }
-
-        $set = [];
-        foreach ($options as $option) {
-            $values = $option->getValues();
-            if ($values->count()) {
-                $set[] = $values;
-            }
-        }
-
-        $cartesianProduct = new CartesianProduct($set);
-        $asArray = $cartesianProduct->asArray();
-
-        return array_map(fn (array $combinedOptionValues) => new ProductVariantChoice($combinedOptionValues), $asArray);
     }
 }

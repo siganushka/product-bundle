@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
+use BenTools\CartesianProduct\CartesianProduct;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,6 +13,7 @@ use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
@@ -141,5 +143,28 @@ class Product implements ResourceInterface, TimestampableInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return array<int, ProductVariantChoice>
+     */
+    public function generateChoices(): array
+    {
+        if ($this->options->isEmpty()) {
+            return [new ProductVariantChoice()];
+        }
+
+        $set = [];
+        foreach ($this->options as $option) {
+            $values = $option->getValues();
+            if ($values->count()) {
+                $set[] = $values;
+            }
+        }
+
+        $cartesianProduct = new CartesianProduct($set);
+        $asArray = $cartesianProduct->asArray();
+
+        return array_map(fn (array $combinedOptionValues) => new ProductVariantChoice($combinedOptionValues), $asArray);
     }
 }
