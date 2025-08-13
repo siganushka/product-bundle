@@ -26,15 +26,15 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
 
     /** @var Collection<int, ProductVariant> */
     #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'choice1', cascade: ['remove'])]
-    protected ?Collection $variant1;
+    protected Collection $variant1;
 
     /** @var Collection<int, ProductVariant> */
     #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'choice2', cascade: ['remove'])]
-    protected ?Collection $variant2;
+    protected Collection $variant2;
 
     /** @var Collection<int, ProductVariant> */
     #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'choice3', cascade: ['remove'])]
-    protected ?Collection $variant3;
+    protected Collection $variant3;
 
     #[ORM\Column]
     protected string $code;
@@ -100,5 +100,29 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         $this->img = $img;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductVariant>
+     */
+    public function getVariant1(): Collection
+    {
+        return $this->variant1;
+    }
+
+    /**
+     * @return Collection<int, ProductVariant>
+     */
+    public function getVariant2(): Collection
+    {
+        return $this->variant2;
+    }
+
+    /**
+     * @return Collection<int, ProductVariant>
+     */
+    public function getVariant3(): Collection
+    {
+        return $this->variant3;
     }
 }
