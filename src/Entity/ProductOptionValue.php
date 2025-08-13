@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
@@ -22,6 +23,18 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     #[ORM\ManyToOne(targetEntity: ProductOption::class, inversedBy: 'values')]
     #[ORM\JoinColumn(nullable: false)]
     protected ?ProductOption $option = null;
+
+    /** @var Collection<int, ProductVariant> */
+    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'choice1', cascade: ['remove'])]
+    protected ?Collection $variant1;
+
+    /** @var Collection<int, ProductVariant> */
+    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'choice2', cascade: ['remove'])]
+    protected ?Collection $variant2;
+
+    /** @var Collection<int, ProductVariant> */
+    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'choice3', cascade: ['remove'])]
+    protected ?Collection $variant3;
 
     #[ORM\Column]
     protected string $code;

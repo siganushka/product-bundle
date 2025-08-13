@@ -27,15 +27,15 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     #[ORM\JoinColumn(nullable: false)]
     protected ?Product $product = null;
 
-    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class)]
+    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class, inversedBy: 'variant1')]
     #[ORM\JoinColumn(name: 'choice1')]
     protected ?ProductOptionValue $choice1 = null;
 
-    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class)]
+    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class, inversedBy: 'variant2')]
     #[ORM\JoinColumn(name: 'choice2')]
     protected ?ProductOptionValue $choice2 = null;
 
-    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class)]
+    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class, inversedBy: 'variant3')]
     #[ORM\JoinColumn(name: 'choice3')]
     protected ?ProductOptionValue $choice3 = null;
 

@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
-use BenTools\CartesianProduct\CartesianProduct;
 use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductVariant;
-use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductRepository;
-use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Event\PostSubmitEvent;
 use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -29,9 +25,7 @@ use Symfony\Component\Validator\Constraints\Unique;
 
 class ProductType extends AbstractType
 {
-    public function __construct(
-        private readonly ProductRepository $repository,
-        private readonly ProductVariantRepository $productVariantRepository)
+    public function __construct(private readonly ProductRepository $repository)
     {
     }
 
@@ -57,8 +51,6 @@ class ProductType extends AbstractType
             ? $this->addOptionsField(...)
             : $this->addVariantField(...)
         );
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, $this->generateVariants(...));
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -107,41 +99,5 @@ class ProductType extends AbstractType
                 new Unique(normalizer: fn (ProductOption $option) => $option->getName() ?? spl_object_hash($option)),
             ],
         ]);
-    }
-
-    public function generateVariants(PostSubmitEvent $event): void
-    {
-        /** @var Product */
-        $data = $event->getData();
-
-        $variants = $data->getVariants();
-        foreach ($this->generateVariantsChoice($data) as $index => $choice) {
-            $variants[$index] = $variants->findFirst(fn ($_, ProductVariant $item) => $item->getChoiceValue() === $choice->value)
-                ?? $this->productVariantRepository->createNew($choice)->setProduct($data)->setEnabled(false);
-        }
-    }
-
-    /**
-     * @return array<int, ProductVariantChoice>
-     */
-    private function generateVariantsChoice(Product $entity, bool $defaultChoiceOnEmptyOptions = false): array
-    {
-        $options = $entity->getOptions();
-        if ($defaultChoiceOnEmptyOptions && $options->isEmpty()) {
-            return [new ProductVariantChoice()];
-        }
-
-        $set = [];
-        foreach ($options as $option) {
-            $values = $option->getValues();
-            if ($values->count()) {
-                $set[] = $values;
-            }
-        }
-
-        $cartesianProduct = new CartesianProduct($set);
-        $asArray = $cartesianProduct->asArray();
-
-        return array_map(fn (array $combinedOptionValues) => new ProductVariantChoice($combinedOptionValues), $asArray);
     }
 }
