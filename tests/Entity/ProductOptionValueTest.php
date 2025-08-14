@@ -9,11 +9,11 @@ use Siganushka\ProductBundle\Entity\ProductOptionValue;
 
 class ProductOptionValueTest extends TestCase
 {
-    public function testCodeInvalidArgumentException(): void
+    public function testAll(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The code with value "a@b" contains illegal character(s)');
+        $entity = new ProductOptionValue(text: 'foo');
 
-        new ProductOptionValue('a@b');
+        static::assertSame('foo', $entity->getText());
+        static::assertNotNull($entity->getCode());
     }
 }
