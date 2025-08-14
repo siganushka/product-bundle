@@ -37,7 +37,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     protected Collection $variant3;
 
     #[ORM\Column]
-    protected string $code;
+    protected ?string $code = null;
 
     #[ORM\Column]
     protected ?string $text = null;
@@ -47,13 +47,9 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
 
     public function __construct(?string $code = null, ?string $text = null, ?Media $img = null)
     {
-        if ($code && !preg_match('/^[a-zA-Z0-9_]+$/', $code)) {
-            throw new \InvalidArgumentException(\sprintf('The code with value "%s" contains illegal character(s).', $code));
-        }
-
-        $this->code = $code ?? mb_substr(md5(uniqid()), 0, 7);
-        $this->text = $text;
-        $this->img = $img;
+        $this->setCode($code);
+        $this->setText($text);
+        $this->setImg($img);
     }
 
     public function getOption(): ?ProductOption
@@ -68,14 +64,16 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getCode(): string
+    public function getCode(): ?string
     {
         return $this->code;
     }
 
-    public function setCode(string $code): static
+    public function setCode(?string $code): static
     {
-        throw new \BadMethodCallException('The code cannot be modified anymore.');
+        $this->code = $code;
+
+        return $this;
     }
 
     public function getText(): ?string
@@ -85,6 +83,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
 
     public function setText(?string $text): static
     {
+        $text && $this->code ??= mb_substr(md5($text), 0, 7);
         $this->text = $text;
 
         return $this;
