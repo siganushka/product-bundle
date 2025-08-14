@@ -19,23 +19,16 @@ final class ProductVariantChoice
     public readonly ?string $label;
 
     /**
-     * @var array<int, ProductOptionValue>
+     * @var ProductOptionValue[]
      */
     public readonly array $combinedOptionValues;
 
-    /**
-     * @param array<int, ProductOptionValue> $combinedOptionValues
-     */
-    public function __construct(array $combinedOptionValues = [])
+    public function __construct(ProductOptionValue ...$combinedOptionValues)
     {
         $codes = $texts = [];
         foreach ($combinedOptionValues as $optionValue) {
-            if (!$optionValue instanceof ProductOptionValue) {
-                throw new \UnexpectedValueException(\sprintf('Expected argument of type "%s", "%s" given.', ProductOptionValue::class, get_debug_type($optionValue)));
-            }
-
-            $codes[] = $optionValue->getCode();
-            $texts[] = $optionValue->getText();
+            $codes[] = $optionValue->getCode() ?? spl_object_id($optionValue);
+            $texts[] = $optionValue->getText() ?? '-';
         }
 
         // [important] Generate unique choice value from sorted code

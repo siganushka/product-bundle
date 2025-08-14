@@ -17,31 +17,22 @@ class ProductVariantChoiceTest extends TestCase
         static::assertNull($choice->label);
         static::assertSame([], $choice->combinedOptionValues);
 
-        $optionValues = [
-            new ProductOptionValue('a', 'foo'),
-            new ProductOptionValue('b', 'bar'),
-            new ProductOptionValue('c', 'baz'),
-        ];
+        $foo = new ProductOptionValue('a', 'foo');
+        $bar = new ProductOptionValue('b', 'bar');
+        $baz = new ProductOptionValue('c', 'baz');
 
-        $choice = new ProductVariantChoice($optionValues);
+        $choice = new ProductVariantChoice($foo, $bar, $baz);
         static::assertSame('a-b-c', $choice->value);
         static::assertSame('foo/bar/baz', $choice->label);
-        static::assertSame($optionValues, $choice->combinedOptionValues);
+        static::assertSame($foo, $choice->combinedOptionValues[0]);
+        static::assertSame($bar, $choice->combinedOptionValues[1]);
+        static::assertSame($baz, $choice->combinedOptionValues[2]);
 
-        $optionValues2 = array_reverse($optionValues);
-
-        $choice = new ProductVariantChoice($optionValues2);
+        $choice = new ProductVariantChoice($baz, $bar, $foo);
         static::assertSame('a-b-c', $choice->value);
         static::assertSame('baz/bar/foo', $choice->label);
-        static::assertSame($optionValues2, $choice->combinedOptionValues);
-    }
-
-    public function testUnexpectedValueException(): void
-    {
-        $this->expectException(\UnexpectedValueException::class);
-        $this->expectExceptionMessage('Expected argument of type "Siganushka\ProductBundle\Entity\ProductOptionValue", "stdClass" given');
-
-        /* @phpstan-ignore-next-line */
-        new ProductVariantChoice([new \stdClass()]);
+        static::assertSame($baz, $choice->combinedOptionValues[0]);
+        static::assertSame($bar, $choice->combinedOptionValues[1]);
+        static::assertSame($foo, $choice->combinedOptionValues[2]);
     }
 }

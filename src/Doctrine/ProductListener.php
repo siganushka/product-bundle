@@ -50,7 +50,7 @@ class ProductListener
                 'choices' => array_map(fn (ProductVariantChoice $item) => $item->label, $choices),
             ]);
 
-            foreach ($entity->generateChoices() as $choice) {
+            foreach ($choices as $choice) {
                 $entity->addVariant($this->repository->createNew($choice)->setEnabled(false));
             }
 

@@ -165,6 +165,6 @@ class Product implements ResourceInterface, TimestampableInterface
         $cartesianProduct = new CartesianProduct($set);
         $asArray = $cartesianProduct->asArray();
 
-        return array_map(fn (array $combinedOptionValues) => new ProductVariantChoice($combinedOptionValues), $asArray);
+        return array_map(fn (array $combinedOptionValues) => new ProductVariantChoice(...$combinedOptionValues), $asArray);
     }
 }

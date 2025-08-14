@@ -48,15 +48,12 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     #[ORM\ManyToOne(targetEntity: Media::class)]
     protected ?Media $img = null;
 
-    protected ?ProductVariantChoice $choice = null;
+    protected ProductVariantChoice $choice;
 
     public function __construct(?ProductVariantChoice $choice = null)
     {
-        $this->choice = $choice;
-
-        if ($choice instanceof ProductVariantChoice) {
-            [$this->choice1, $this->choice2, $this->choice3] = array_pad($choice->combinedOptionValues, 3, null);
-        }
+        $this->choice = $choice ?? new ProductVariantChoice();
+        [$this->choice1, $this->choice2, $this->choice3] = array_pad($this->choice->combinedOptionValues, 3, null);
     }
 
     public function getProduct(): ?Product
@@ -112,11 +109,11 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
      */
     public function getChoice(): ProductVariantChoice
     {
-        if ($this->choice instanceof ProductVariantChoice) {
+        if (isset($this->choice)) {
             return $this->choice;
         }
 
-        return $this->choice = new ProductVariantChoice(array_filter([$this->choice1, $this->choice2, $this->choice3]));
+        return $this->choice = new ProductVariantChoice(...array_filter([$this->choice1, $this->choice2, $this->choice3]));
     }
 
     /**

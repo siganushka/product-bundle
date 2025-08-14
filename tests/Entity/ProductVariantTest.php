@@ -24,7 +24,7 @@ class ProductVariantTest extends TestCase
         $v1 = new ProductOptionValue(text: 'aaa');
         $v2 = new ProductOptionValue(text: 'bbb');
 
-        $variant = new ProductVariant(new ProductVariantChoice([$v1, $v2]));
+        $variant = new ProductVariant(new ProductVariantChoice($v1, $v2));
         static::assertSame('aaa/bbb', $variant->getName());
 
         $variant->setProduct(new Product('world'));
