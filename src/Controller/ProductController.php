@@ -24,9 +24,7 @@ class ProductController extends AbstractController
     #[Route('/products', methods: 'GET')]
     public function getCollection(Request $request, PaginatorInterface $paginator): Response
     {
-        $queryBuilder = $this->productRepository->createQueryBuilder('p')
-            // ->where('p.variants IS NOT EMPTY')
-        ;
+        $queryBuilder = $this->productRepository->createQueryBuilderWithOrdered('p');
 
         $page = $request->query->getInt('page', 1);
         $size = $request->query->getInt('size', 10);
