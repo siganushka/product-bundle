@@ -6,14 +6,12 @@ namespace Siganushka\ProductBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Siganushka\ProductBundle\Doctrine\Filter\ProductFilter;
 use Siganushka\ProductBundle\Form\ProductType;
 use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
@@ -24,14 +22,9 @@ class ProductController extends AbstractController
     }
 
     #[Route('/products', methods: 'GET')]
-    public function getCollection(Request $request, PaginatorInterface $paginator, #[MapQueryParameter] ?string $name): Response
+    public function getCollection(Request $request, PaginatorInterface $paginator): Response
     {
         $queryBuilder = $this->productRepository->createQueryBuilderWithOrdered('p');
-
-        if ($name) {
-            $filter = $queryBuilder->getEntityManager()->getFilters()->enable(ProductFilter::class);
-            $filter->setParameter(ProductFilter::FILTER_NAME, '%'.$name.'%');
-        }
 
         $page = $request->query->getInt('page', 1);
         $size = $request->query->getInt('size', 10);
@@ -132,7 +125,7 @@ class ProductController extends AbstractController
     protected function createResponse(mixed $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
     {
         return $this->json($data, $statusCode, $headers, [
-            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'option', 'variant1', 'variant2', 'variant3', 'choice', 'combinedOptionValues'],
+            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'variant1', 'variant2', 'variant3', 'choice', 'combinedOptionValues'],
         ]);
     }
 }
