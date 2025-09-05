@@ -125,7 +125,7 @@ class ProductController extends AbstractController
     protected function createResponse(mixed $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
     {
         return $this->json($data, $statusCode, $headers, [
-            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'variant1', 'variant2', 'variant3', 'choice', 'combinedOptionValues'],
+            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'option', 'variant1', 'variant2', 'variant3', 'choice', 'combinedOptionValues'],
         ]);
     }
 }
