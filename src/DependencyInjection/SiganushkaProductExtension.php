@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\DependencyInjection;
 
 use Doctrine\ORM\Events;
+use Siganushka\Contracts\Doctrine\ResourceInterface;
+use Siganushka\ProductBundle\Doctrine\Filter\ProductFilter;
 use Siganushka\ProductBundle\Doctrine\ProductListener;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 use Symfony\Component\Config\FileLocator;
@@ -67,5 +69,17 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
                 ],
             ],
         ]);
+
+        if ($container::willBeAvailable('siganushka/doctrine-contracts', ResourceInterface::class, ['siganushka/generic-bundle'])) {
+            $container->prependExtensionConfig('doctrine', [
+                'orm' => [
+                    'filters' => [
+                        ProductFilter::class => [
+                            'class' => ProductFilter::class,
+                        ],
+                    ],
+                ],
+            ]);
+        }
     }
 }
