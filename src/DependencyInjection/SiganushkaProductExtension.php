@@ -52,7 +52,7 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
         ]);
 
         $container->prependExtensionConfig('siganushka_media', [
-            'channels' => [
+            'rules' => [
                 'product_img' => [
                     'constraint' => Image::class,
                     'constraint_options' => [

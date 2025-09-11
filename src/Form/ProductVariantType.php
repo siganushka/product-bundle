@@ -71,7 +71,7 @@ class ProductVariantType extends AbstractType
             $form
                 ->add('img', MediaType::class, [
                     'label' => 'product_variant.img',
-                    'channel' => 'product_img',
+                    'rule' => 'product_img',
                     'priority' => 2,
                     'style' => false === $label ? 'width: 38px; height: 38px' : null,
                     'row_attr' => false === $label ? ['style' => 'width: 0'] : [],

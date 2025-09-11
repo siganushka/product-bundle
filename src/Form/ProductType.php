@@ -34,7 +34,7 @@ class ProductType extends AbstractType
         $builder
             ->add('img', MediaType::class, [
                 'label' => 'product.img',
-                'channel' => 'product_img',
+                'rule' => 'product_img',
                 'constraints' => new NotBlank(),
             ])
             ->add('name', TextType::class, [
