@@ -1,0 +1,22 @@
+Siganushka\ProductBundle\Entity\ProductVariant:
+    attributes:
+        id:
+            groups: ['product_variant:collection', 'product:item', 'product:collection']
+        price:
+            groups: ['product_variant:collection', 'product:item', 'product:collection']
+        inventory:
+            groups: ['product_variant:collection', 'product:item', 'product:collection']
+        img:
+            groups: ['product_variant:collection', 'product:item', 'product:collection']
+        choiceValue:
+            groups: ['product_variant:collection', 'product:item', 'product:collection']
+        choiceLabel:
+            groups: ['product_variant:collection', 'product:item', 'product:collection']
+        outOfStock:
+            groups: ['product_variant:collection', 'product:item', 'product:collection']
+        enabled:
+            groups: ['product_variant:collection', 'product:item', 'product:collection']
+        createdAt:
+            groups: ['product_variant:collection', 'product:item', 'product:collection']
+        updatedAt:
+            groups: ['product_variant:collection', 'product:item', 'product:collection']

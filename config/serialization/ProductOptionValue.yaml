@@ -1,0 +1,14 @@
+Siganushka\ProductBundle\Entity\ProductOptionValue:
+    attributes:
+        id:
+            groups: ['product_option:item', 'product:item', 'product:collection']
+        code:
+            groups: ['product_option:item', 'product:item', 'product:collection']
+        text:
+            groups: ['product_option:item', 'product:item', 'product:collection']
+        img:
+            groups: ['product_option:item', 'product:item', 'product:collection']
+        createdAt:
+            groups: ['product_option:item', 'product:item', 'product:collection']
+        updatedAt:
+            groups: ['product_option:item', 'product:item', 'product:collection']

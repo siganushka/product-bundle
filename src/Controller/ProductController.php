@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class ProductController extends AbstractController
 {
@@ -29,7 +29,9 @@ class ProductController extends AbstractController
         $queryBuilder = $this->productRepository->createQueryBuilderWithOrdered('p');
         $pagination = $paginator->paginate($queryBuilder, $dto->page, $dto->size);
 
-        return $this->createResponse($pagination);
+        return $this->json($pagination, context: [
+            AbstractNormalizer::GROUPS => ['product:collection'],
+        ]);
     }
 
     #[Route('/products', methods: 'POST')]
@@ -50,7 +52,9 @@ class ProductController extends AbstractController
         $entityManager->persist($entity);
         $entityManager->flush();
 
-        return $this->createResponse($entity, Response::HTTP_CREATED);
+        return $this->json($entity, Response::HTTP_CREATED, context: [
+            AbstractNormalizer::GROUPS => ['product:item'],
+        ]);
     }
 
     #[Route('/products/{id<\d+>}', methods: 'GET')]
@@ -59,7 +63,9 @@ class ProductController extends AbstractController
         $entity = $this->productRepository->find($id)
             ?? throw $this->createNotFoundException();
 
-        return $this->createResponse($entity);
+        return $this->json($entity, context: [
+            AbstractNormalizer::GROUPS => ['product:item'],
+        ]);
     }
 
     #[Route('/products/{id<\d+>}', methods: ['PUT', 'PATCH'])]
@@ -77,7 +83,22 @@ class ProductController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->createResponse($entity);
+        return $this->json($entity, context: [
+            AbstractNormalizer::GROUPS => ['product:item'],
+        ]);
+    }
+
+    #[Route('/products/{id<\d+>}', methods: 'DELETE')]
+    public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
+    {
+        $entity = $this->productRepository->find($id)
+            ?? throw $this->createNotFoundException();
+
+        $entityManager->remove($entity);
+        $entityManager->flush();
+
+        // 204 No Content
+        return new Response(status: Response::HTTP_NO_CONTENT);
     }
 
     #[Route('/products/{id<\d+>}/variants', methods: 'GET')]
@@ -86,7 +107,9 @@ class ProductController extends AbstractController
         $entity = $this->productRepository->find($id)
             ?? throw $this->createNotFoundException();
 
-        return $this->createResponse($entity->getVariants());
+        return $this->json($entity->getVariants(), context: [
+            AbstractNormalizer::GROUPS => ['product_variant:collection'],
+        ]);
     }
 
     #[Route('/products/{id<\d+>}/variants', methods: ['PUT', 'PATCH'])]
@@ -104,26 +127,8 @@ class ProductController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->createResponse($entity->getVariants());
-    }
-
-    #[Route('/products/{id<\d+>}', methods: 'DELETE')]
-    public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
-    {
-        $entity = $this->productRepository->find($id)
-            ?? throw $this->createNotFoundException();
-
-        $entityManager->remove($entity);
-        $entityManager->flush();
-
-        // 204 No Content
-        return new Response(status: Response::HTTP_NO_CONTENT);
-    }
-
-    protected function createResponse(mixed $data, int $statusCode = Response::HTTP_OK, array $headers = []): Response
-    {
-        return $this->json($data, $statusCode, $headers, [
-            ObjectNormalizer::IGNORED_ATTRIBUTES => ['product', 'option', 'variant1', 'variant2', 'variant3', 'choice', 'combinedOptionValues'],
+        return $this->json($entity->getVariants(), context: [
+            AbstractNormalizer::GROUPS => ['product_variant:collection'],
         ]);
     }
 }
