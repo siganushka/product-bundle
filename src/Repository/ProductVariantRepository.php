@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Repository;
 
+use Doctrine\ORM\QueryBuilder;
 use Siganushka\GenericBundle\Repository\GenericEntityRepository;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 
@@ -14,4 +15,11 @@ use Siganushka\ProductBundle\Entity\ProductVariant;
  */
 class ProductVariantRepository extends GenericEntityRepository
 {
+    public function createQueryBuilderWithEnabled(string $alias, bool $enabled = true): QueryBuilder
+    {
+        return $this->createQueryBuilderWithOrdered($alias)
+            ->andWhere(\sprintf('%s.enabled = :enabled', $alias))
+            ->setParameter('enabled', $enabled)
+        ;
+    }
 }

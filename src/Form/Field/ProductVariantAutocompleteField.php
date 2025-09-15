@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form\Field;
 
-use Siganushka\GenericBundle\Repository\GenericEntityRepository;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
@@ -25,7 +24,7 @@ class ProductVariantAutocompleteField extends AbstractType
         $resolver->setDefaults([
             'class' => $this->repository->getClassName(),
             'choice_label' => ChoiceList::label($this, fn (ProductVariant $choice) => $choice->getName()),
-            'query_builder' => fn (GenericEntityRepository $er) => $er->createQueryBuilderWithOrdered('entity'),
+            'query_builder' => fn (ProductVariantRepository $er) => $er->createQueryBuilderWithEnabled('entity'),
             'max_results' => 20,
             'tom_select_options' => ['maxOptions' => 100],
             'searchable_fields' => ['product.name', 'choice1.text', 'choice2.text', 'choice3.text'],
