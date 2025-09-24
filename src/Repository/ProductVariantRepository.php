@@ -17,7 +17,7 @@ class ProductVariantRepository extends GenericEntityRepository
 {
     public function createQueryBuilderWithEnabled(string $alias, bool $enabled = true): QueryBuilder
     {
-        return $this->createQueryBuilderWithOrdered($alias)
+        return $this->createQueryBuilderWithOrderBy($alias)
             ->andWhere(\sprintf('%s.enabled = :enabled', $alias))
             ->setParameter('enabled', $enabled)
         ;
