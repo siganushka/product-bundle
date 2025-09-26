@@ -26,7 +26,7 @@ class ProductOptionController extends AbstractController
             ?? throw $this->createNotFoundException();
 
         return $this->json($entity, context: [
-            AbstractNormalizer::GROUPS => ['product_option:item'],
+            AbstractNormalizer::GROUPS => ['item'],
         ]);
     }
 
@@ -46,7 +46,7 @@ class ProductOptionController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity, context: [
-            AbstractNormalizer::GROUPS => ['product_option:item'],
+            AbstractNormalizer::GROUPS => ['item'],
         ]);
     }
 }

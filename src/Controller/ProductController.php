@@ -30,7 +30,7 @@ class ProductController extends AbstractController
         $pagination = $paginator->paginate($queryBuilder, $dto->page, $dto->size);
 
         return $this->json($pagination, context: [
-            AbstractNormalizer::GROUPS => ['product:collection'],
+            AbstractNormalizer::GROUPS => ['collection'],
         ]);
     }
 
@@ -53,7 +53,7 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity, Response::HTTP_CREATED, context: [
-            AbstractNormalizer::GROUPS => ['product:item'],
+            AbstractNormalizer::GROUPS => ['item'],
         ]);
     }
 
@@ -64,7 +64,7 @@ class ProductController extends AbstractController
             ?? throw $this->createNotFoundException();
 
         return $this->json($entity, context: [
-            AbstractNormalizer::GROUPS => ['product:item'],
+            AbstractNormalizer::GROUPS => ['item'],
         ]);
     }
 
@@ -84,7 +84,7 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity, context: [
-            AbstractNormalizer::GROUPS => ['product:item'],
+            AbstractNormalizer::GROUPS => ['item'],
         ]);
     }
 
@@ -108,7 +108,7 @@ class ProductController extends AbstractController
             ?? throw $this->createNotFoundException();
 
         return $this->json($entity->getVariants(), context: [
-            AbstractNormalizer::GROUPS => ['product_variant:collection'],
+            AbstractNormalizer::GROUPS => ['collection'],
         ]);
     }
 
@@ -128,7 +128,7 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity->getVariants(), context: [
-            AbstractNormalizer::GROUPS => ['product_variant:collection'],
+            AbstractNormalizer::GROUPS => ['collection'],
         ]);
     }
 }
