@@ -1,0 +1,6 @@
+Siganushka\ProductBundle\Entity\Product:
+    attributes:
+        img:
+            groups: ['item', 'collection']
+        options:
+            groups: ['item', 'collection']

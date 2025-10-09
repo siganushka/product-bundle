@@ -1,10 +1,6 @@
 Siganushka\ProductBundle\Entity\ProductVariant:
     attributes:
+        img:
+            groups: ['item', 'collection']
         choice:
-            ignore: true
-        choice1:
-            ignore: true
-        choice2:
-            ignore: true
-        choice3:
             ignore: true
