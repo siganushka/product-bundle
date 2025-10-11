@@ -15,7 +15,7 @@ use Siganushka\ProductBundle\Entity\ProductVariant;
  */
 class ProductVariantRepository extends GenericEntityRepository
 {
-    public function createQueryBuilderWithEnabled(string $alias, bool $enabled = true): QueryBuilder
+    public function createQueryBuilderByEnabled(string $alias, bool $enabled = true): QueryBuilder
     {
         return $this->createQueryBuilderWithOrderBy($alias)
             ->andWhere(\sprintf('%s.enabled = :enabled', $alias))
