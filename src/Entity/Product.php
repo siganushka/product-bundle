@@ -29,7 +29,6 @@ class Product implements ResourceInterface, TimestampableInterface
     protected ?string $description = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
-    #[ORM\JoinColumn(nullable: false)]
     protected ?Media $img = null;
 
     /** @var Collection<int, ProductOption> */
