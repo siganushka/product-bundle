@@ -26,6 +26,12 @@ class ProductListener
         $uow = $em->getUnitOfWork();
 
         $changedProducts = [];
+        foreach ($uow->getScheduledEntityInsertions() as $entity) {
+            if ($entity instanceof Product) {
+                $changedProducts[] = $entity;
+            }
+        }
+
         foreach ($uow->getScheduledCollectionUpdates() as $collection) {
             $owner = $collection->getOwner();
             $mappig = $collection->getMapping();
