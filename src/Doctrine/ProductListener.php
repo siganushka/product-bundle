@@ -26,12 +26,6 @@ class ProductListener
         $uow = $em->getUnitOfWork();
 
         $changedProducts = [];
-        foreach ($uow->getScheduledEntityInsertions() as $entity) {
-            if ($entity instanceof Product) {
-                $changedProducts[] = $entity;
-            }
-        }
-
         foreach ($uow->getScheduledCollectionUpdates() as $collection) {
             $owner = $collection->getOwner();
             $mappig = $collection->getMapping();
@@ -42,8 +36,12 @@ class ProductListener
             }
         }
 
-        $products = array_filter($changedProducts);
-        foreach (array_unique($products, \SORT_REGULAR) as $entity) {
+        $generatedProducts = [];
+        foreach ($changedProducts as $entity) {
+            if (null === $entity || \in_array($entity, $generatedProducts, true)) {
+                continue;
+            }
+
             $choices = $entity->generateChoices();
             $this->logger->info('Generated product variant choices.', [
                 'product' => $entity->getName(),
@@ -54,7 +52,14 @@ class ProductListener
                 $entity->addVariant($this->repository->createNew($choice)->setEnabled(false));
             }
 
+            foreach ($entity->getVariants() as $variant) {
+                if (!\in_array($variant->getChoice(), $choices)) {
+                    $em->remove($variant);
+                }
+            }
+
             $uow->computeChangeSet($em->getClassMetadata($entity::class), $entity);
+            $generatedProducts[] = $entity;
         }
     }
 }
