@@ -13,6 +13,7 @@ use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
+use Siganushka\ProductBundle\Model\CombinedOptionValueCollection;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
@@ -123,7 +124,7 @@ class Product implements ResourceInterface, TimestampableInterface
 
     public function addVariant(ProductVariant $variant): static
     {
-        $fn = fn ($_, ProductVariant $item) => $item->getChoiceValue() === $variant->getChoiceValue();
+        $fn = fn ($_, ProductVariant $item) => $item->getCode() === $variant->getCode();
 
         if (!$this->variants->exists($fn)) {
             $this->variants[] = $variant;
@@ -165,5 +166,28 @@ class Product implements ResourceInterface, TimestampableInterface
         $asArray = $cartesianProduct->asArray();
 
         return array_map(fn (array $combinedOptionValues) => new ProductVariantChoice(...$combinedOptionValues), $asArray);
+    }
+
+    /**
+     * @return array<int, CombinedOptionValueCollection>
+     */
+    public function generateCombinedOptionValues(): array
+    {
+        if ($this->options->isEmpty()) {
+            return [new CombinedOptionValueCollection()];
+        }
+
+        $set = [];
+        foreach ($this->options as $option) {
+            $values = $option->getValues();
+            if ($values->count()) {
+                $set[] = $values;
+            }
+        }
+
+        $cartesianProduct = new CartesianProduct($set);
+        $asArray = $cartesianProduct->asArray();
+
+        return array_map(fn (array $combinedOptionValues) => new CombinedOptionValueCollection(...$combinedOptionValues), $asArray);
     }
 }

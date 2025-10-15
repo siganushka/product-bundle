@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\EnableInterface;
 use Siganushka\Contracts\Doctrine\EnableTrait;
@@ -12,11 +13,11 @@ use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
-use Siganushka\ProductBundle\Model\ProductVariantChoice;
+use Siganushka\ProductBundle\Model\CombinedOptionValueCollection;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 #[ORM\Entity(repositoryClass: ProductVariantRepository::class)]
-#[ORM\UniqueConstraint(columns: ['product_id', 'choice1', 'choice2', 'choice3'])]
+#[ORM\UniqueConstraint(columns: ['product_id', 'code'])]
 class ProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface
 {
     use EnableTrait;
@@ -27,17 +28,8 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     #[ORM\JoinColumn(nullable: false)]
     protected ?Product $product = null;
 
-    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class, inversedBy: 'variant1')]
-    #[ORM\JoinColumn(name: 'choice1')]
-    protected ?ProductOptionValue $choice1 = null;
-
-    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class, inversedBy: 'variant2')]
-    #[ORM\JoinColumn(name: 'choice2')]
-    protected ?ProductOptionValue $choice2 = null;
-
-    #[ORM\ManyToOne(targetEntity: ProductOptionValue::class, inversedBy: 'variant3')]
-    #[ORM\JoinColumn(name: 'choice3')]
-    protected ?ProductOptionValue $choice3 = null;
+    #[ORM\Column(nullable: true, updatable: false)]
+    protected ?string $code = null;
 
     #[ORM\Column(nullable: true)]
     protected ?int $price = null;
@@ -48,12 +40,19 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     #[ORM\ManyToOne(targetEntity: Media::class)]
     protected ?Media $img = null;
 
-    protected ProductVariantChoice $choice;
+    /**
+     * @var Collection<int, ProductOptionValue>
+     */
+    #[ORM\ManyToMany(targetEntity: ProductOptionValue::class, inversedBy: 'variants')]
+    #[ORM\JoinTable('product_variant_value')]
+    protected Collection $optionValues;
 
-    public function __construct(?ProductVariantChoice $choice = null)
+    public function __construct(?CombinedOptionValueCollection $combinedOptionValues = null)
     {
-        $this->choice = $choice ?? new ProductVariantChoice();
-        [$this->choice1, $this->choice2, $this->choice3] = array_pad($this->choice->combinedOptionValues, 3, null);
+        $combinedOptionValues ??= new CombinedOptionValueCollection();
+
+        $this->code = $combinedOptionValues->code;
+        $this->optionValues = $combinedOptionValues;
     }
 
     public function getProduct(): ?Product
@@ -66,6 +65,16 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         $this->product = $product;
 
         return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(?string $code): static
+    {
+        throw new \BadMethodCallException('The code cannot be modified anymore.');
     }
 
     public function getPrice(): ?int
@@ -104,32 +113,23 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return $this;
     }
 
-    /**
-     * Returns choice for product variant.
-     */
-    public function getChoice(): ProductVariantChoice
+    public function getOptionValues(): CombinedOptionValueCollection
     {
-        if (isset($this->choice)) {
-            return $this->choice;
+        if ($this->optionValues instanceof CombinedOptionValueCollection) {
+            return $this->optionValues;
         }
 
-        return $this->choice = new ProductVariantChoice(...array_filter([$this->choice1, $this->choice2, $this->choice3]));
+        return $this->optionValues = CombinedOptionValueCollection::create($this->optionValues);
     }
 
-    /**
-     * Returns choice value for variant.
-     */
-    public function getChoiceValue(): ?string
+    public function addOptionValue(ProductOptionValue $optionValue): static
     {
-        return $this->getChoice()->value;
+        throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
     }
 
-    /**
-     * Returns choice label for variant.
-     */
-    public function getChoiceLabel(): ?string
+    public function removeOptionValue(ProductOptionValue $optionValue): static
     {
-        return $this->getChoice()->label;
+        throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
     }
 
     /**
@@ -140,12 +140,17 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return null !== $this->inventory && $this->inventory <= 0;
     }
 
+    public function getLabel(): ?string
+    {
+        return $this->getOptionValues()->text;
+    }
+
     /**
      * Returns the variant name.
      */
     public function getName(): ?string
     {
-        $label = $this->getChoiceLabel();
+        $label = $this->getLabel();
         if (null === $this->product) {
             return $label;
         }

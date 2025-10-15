@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\ResourceInterface;
@@ -24,19 +25,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     #[ORM\JoinColumn(nullable: false)]
     protected ?ProductOption $option = null;
 
-    /** @var Collection<int, ProductVariant> */
-    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'choice1', cascade: ['remove'])]
-    protected Collection $variant1;
-
-    /** @var Collection<int, ProductVariant> */
-    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'choice2', cascade: ['remove'])]
-    protected Collection $variant2;
-
-    /** @var Collection<int, ProductVariant> */
-    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'choice3', cascade: ['remove'])]
-    protected Collection $variant3;
-
-    #[ORM\Column]
+    #[ORM\Column(updatable: false)]
     protected ?string $code = null;
 
     #[ORM\Column]
@@ -45,11 +34,18 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     #[ORM\ManyToOne(targetEntity: Media::class)]
     protected ?Media $img = null;
 
+    /**
+     * @var Collection<int, ProductVariant>
+     */
+    #[ORM\ManyToMany(targetEntity: ProductVariant::class, mappedBy: 'optionValues', cascade: ['all'])]
+    protected Collection $variants;
+
     public function __construct(?string $code = null, ?string $text = null, ?Media $img = null)
     {
         $this->code = $code ?? mb_substr(md5(uniqid()), 0, 7);
         $this->text = $text;
         $this->img = $img;
+        $this->variants = new ArrayCollection();
     }
 
     public function getOption(): ?ProductOption
@@ -71,9 +67,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
 
     public function setCode(?string $code): static
     {
-        $this->code = $code;
-
-        return $this;
+        throw new \BadMethodCallException('The code cannot be modified anymore.');
     }
 
     public function getText(): ?string
@@ -103,24 +97,18 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     /**
      * @return Collection<int, ProductVariant>
      */
-    public function getVariant1(): Collection
+    public function getVariants(): Collection
     {
-        return $this->variant1;
+        return $this->variants;
     }
 
-    /**
-     * @return Collection<int, ProductVariant>
-     */
-    public function getVariant2(): Collection
+    public function addVariant(ProductVariant $variant): static
     {
-        return $this->variant2;
+        throw new \BadMethodCallException('The variants cannot be modified anymore.');
     }
 
-    /**
-     * @return Collection<int, ProductVariant>
-     */
-    public function getVariant3(): Collection
+    public function removeVariant(ProductVariant $variant): static
     {
-        return $this->variant3;
+        throw new \BadMethodCallException('The variants cannot be modified anymore.');
     }
 }

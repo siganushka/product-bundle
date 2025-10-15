@@ -64,7 +64,7 @@ class ProductVariantType extends AbstractType
     public function onPreSetData(FormEvent $event): void
     {
         $data = $event->getData();
-        if ($data instanceof ProductVariant && $data->getChoiceValue()) {
+        if ($data instanceof ProductVariant && $data->getCode()) {
             $form = $event->getForm();
             $label = $form->getConfig()->getOption('label');
 
@@ -76,7 +76,7 @@ class ProductVariantType extends AbstractType
                     'style' => false === $label ? 'width: 38px; height: 38px' : null,
                     'row_attr' => false === $label ? ['style' => 'width: 0'] : [],
                 ])
-                ->add('choiceLabel', TextType::class, [
+                ->add('label', TextType::class, [
                     'label' => 'product_variant.choice',
                     'disabled' => true,
                     'priority' => 1,
