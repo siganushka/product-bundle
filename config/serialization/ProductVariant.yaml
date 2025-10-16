@@ -1,4 +1,0 @@
-Siganushka\ProductBundle\Entity\ProductVariant:
-    attributes:
-        choice:
-            ignore: true
