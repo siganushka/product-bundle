@@ -13,11 +13,11 @@ use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
-use Siganushka\ProductBundle\Model\CombinedOptionValueCollection;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 #[ORM\Entity(repositoryClass: ProductVariantRepository::class)]
-#[ORM\UniqueConstraint(columns: ['product_id', 'code'])]
+#[ORM\UniqueConstraint(columns: ['product_id', 'value'])]
 class ProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface
 {
     use EnableTrait;
@@ -29,7 +29,10 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     protected ?Product $product = null;
 
     #[ORM\Column(nullable: true, updatable: false)]
-    protected ?string $code = null;
+    protected ?string $value = null;
+
+    #[ORM\Column(nullable: true)]
+    protected ?string $label = null;
 
     #[ORM\Column(nullable: true)]
     protected ?int $price = null;
@@ -47,12 +50,13 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     #[ORM\JoinTable('product_variant_value')]
     protected Collection $optionValues;
 
-    public function __construct(?CombinedOptionValueCollection $combinedOptionValues = null)
+    public function __construct(?ProductVariantChoice $choice = null)
     {
-        $combinedOptionValues ??= new CombinedOptionValueCollection();
+        $choice ??= new ProductVariantChoice();
 
-        $this->code = $combinedOptionValues->code;
-        $this->optionValues = $combinedOptionValues;
+        $this->value = $choice->value;
+        $this->label = $choice->label;
+        $this->optionValues = $choice;
     }
 
     public function getProduct(): ?Product
@@ -67,14 +71,24 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return $this;
     }
 
-    public function getCode(): ?string
+    public function getValue(): ?string
     {
-        return $this->code;
+        return $this->value;
     }
 
-    public function setCode(?string $code): static
+    public function setValue(?string $value): static
     {
-        throw new \BadMethodCallException('The code cannot be modified anymore.');
+        throw new \BadMethodCallException('The value cannot be modified anymore.');
+    }
+
+    public function getLabel(): ?string
+    {
+        return $this->label;
+    }
+
+    public function setLabel(?string $label): static
+    {
+        throw new \BadMethodCallException('The label cannot be modified anymore.');
     }
 
     public function getPrice(): ?int
@@ -113,13 +127,12 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return $this;
     }
 
-    public function getOptionValues(): CombinedOptionValueCollection
+    /**
+     * @return Collection<int, ProductOptionValue>
+     */
+    public function getOptionValues(): Collection
     {
-        if ($this->optionValues instanceof CombinedOptionValueCollection) {
-            return $this->optionValues;
-        }
-
-        return $this->optionValues = CombinedOptionValueCollection::create($this->optionValues);
+        return $this->optionValues;
     }
 
     public function addOptionValue(ProductOptionValue $optionValue): static
@@ -140,24 +153,18 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return null !== $this->inventory && $this->inventory <= 0;
     }
 
-    public function getLabel(): ?string
-    {
-        return $this->getOptionValues()->text;
-    }
-
     /**
      * Returns the variant name.
      */
     public function getName(): ?string
     {
-        $label = $this->getLabel();
         if (null === $this->product) {
-            return $label;
+            return $this->label;
         }
 
         $productName = $this->product->getName();
-        if (\is_string($productName) && \is_string($label)) {
-            return \sprintf('%s【%s】', $productName, $label);
+        if (\is_string($productName) && \is_string($this->label)) {
+            return \sprintf('%s【%s】', $productName, $this->label);
         }
 
         return $productName;

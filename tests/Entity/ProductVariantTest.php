@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Entity\ProductVariant;
-use Siganushka\ProductBundle\Model\CombinedOptionValueCollection;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 
 class ProductVariantTest extends TestCase
 {
@@ -21,10 +21,12 @@ class ProductVariantTest extends TestCase
         $variant->setProduct(new Product('hello'));
         static::assertSame('hello', $variant->getName());
 
-        $v1 = new ProductOptionValue(text: 'aaa');
-        $v2 = new ProductOptionValue(text: 'bbb');
+        $choice = ProductVariantChoice::create(
+            new ProductOptionValue(text: 'aaa'),
+            new ProductOptionValue(text: 'bbb')
+        );
 
-        $variant = new ProductVariant(new CombinedOptionValueCollection($v1, $v2));
+        $variant = new ProductVariant($choice);
         static::assertSame('aaa/bbb', $variant->getName());
 
         $variant->setProduct(new Product('world'));

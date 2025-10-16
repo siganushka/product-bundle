@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Doctrine;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\UnitOfWork;
 use Psr\Log\LoggerInterface;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductOption;
@@ -25,10 +27,16 @@ class ProductListener
         $em = $event->getObjectManager();
         $uow = $em->getUnitOfWork();
 
-        $changedProducts = [];
+        $changedProducts = $changedProductOptionValues = [];
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
             if ($entity instanceof Product) {
                 $changedProducts[] = $entity;
+            }
+        }
+
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            if ($entity instanceof ProductOptionValue && \array_key_exists('text', $uow->getEntityChangeSet($entity))) {
+                $changedProductOptionValues[] = $entity;
             }
         }
 
@@ -37,14 +45,23 @@ class ProductListener
             $mappig = $collection->getMapping();
             if ($owner instanceof Product && is_subclass_of($mappig->targetEntity, ProductOption::class)) {
                 $changedProducts[] = $owner;
-            } elseif ($owner instanceof ProductOption && is_subclass_of($mappig->targetEntity, ProductOptionValue::class)) {
-                $changedProducts[] = $owner->getProduct();
+            } elseif ($owner instanceof ProductOption && is_subclass_of($mappig->targetEntity, ProductOptionValue::class) && $product = $owner->getProduct()) {
+                $changedProducts[] = $product;
             }
         }
 
-        $generatedProducts = [];
-        foreach ($changedProducts as $entity) {
-            if (null === $entity || \in_array($entity, $generatedProducts, true)) {
+        $this->generateVariants($em, $uow, $changedProducts);
+        $this->updateVariantLabel($em, $uow, $changedProductOptionValues);
+    }
+
+    /**
+     * @param array<int, Product> $products
+     */
+    public function generateVariants(EntityManagerInterface $em, UnitOfWork $uow, array $products): void
+    {
+        $generated = [];
+        foreach ($products as $entity) {
+            if (\in_array($entity, $generated, true)) {
                 continue;
             }
 
@@ -60,13 +77,40 @@ class ProductListener
 
             $choiceValues = array_map(fn (ProductVariantChoice $item) => $item->value, $choices);
             foreach ($entity->getVariants() as $variant) {
-                if (!\in_array($variant->getCode(), $choiceValues)) {
+                if (!\in_array($variant->getValue(), $choiceValues)) {
                     $em->remove($variant);
                 }
             }
 
             $uow->computeChangeSet($em->getClassMetadata($entity::class), $entity);
-            $generatedProducts[] = $entity;
+            $generated[] = $entity;
+        }
+    }
+
+    /**
+     * @param array<int, ProductOptionValue> $productOptionValues
+     */
+    public function updateVariantLabel(EntityManagerInterface $em, UnitOfWork $uow, array $productOptionValues): void
+    {
+        $updated = [];
+        foreach ($productOptionValues as $entity) {
+            foreach ($entity->getVariants() as $variant) {
+                if (\in_array($variant, $updated, true)) {
+                    continue;
+                }
+
+                $choice = new ProductVariantChoice($variant->getOptionValues()->toArray());
+                $this->logger->info('Updated product variant label.', [
+                    'old' => $variant->getLabel(),
+                    'new' => $choice->label,
+                ]);
+
+                $label = new \ReflectionProperty($variant, 'label');
+                $label->setValue($variant, $choice->label);
+
+                $uow->computeChangeSet($em->getClassMetadata($variant::class), $variant);
+                $updated[] = $variant;
+            }
         }
     }
 }

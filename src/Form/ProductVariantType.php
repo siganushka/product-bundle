@@ -64,7 +64,7 @@ class ProductVariantType extends AbstractType
     public function onPreSetData(FormEvent $event): void
     {
         $data = $event->getData();
-        if ($data instanceof ProductVariant && $data->getCode()) {
+        if ($data instanceof ProductVariant && $data->getValue()) {
             $form = $event->getForm();
             $label = $form->getConfig()->getOption('label');
 

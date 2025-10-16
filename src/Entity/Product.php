@@ -13,7 +13,6 @@ use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
-use Siganushka\ProductBundle\Model\CombinedOptionValueCollection;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
@@ -124,14 +123,17 @@ class Product implements ResourceInterface, TimestampableInterface
 
     public function addVariant(ProductVariant $variant): static
     {
-        $fn = fn ($_, ProductVariant $item) => $item->getCode() === $variant->getCode();
-
-        if (!$this->variants->exists($fn)) {
+        if (!$this->hasVariant($variant)) {
             $this->variants[] = $variant;
             $variant->setProduct($this);
         }
 
         return $this;
+    }
+
+    public function hasVariant(ProductVariant $variant): bool
+    {
+        return $this->variants->exists(fn ($_, ProductVariant $item) => $item->getValue() === $variant->getValue());
     }
 
     public function removeVariant(ProductVariant $variant): static
@@ -165,29 +167,6 @@ class Product implements ResourceInterface, TimestampableInterface
         $cartesianProduct = new CartesianProduct($set);
         $asArray = $cartesianProduct->asArray();
 
-        return array_map(fn (array $combinedOptionValues) => new ProductVariantChoice(...$combinedOptionValues), $asArray);
-    }
-
-    /**
-     * @return array<int, CombinedOptionValueCollection>
-     */
-    public function generateCombinedOptionValues(): array
-    {
-        if ($this->options->isEmpty()) {
-            return [new CombinedOptionValueCollection()];
-        }
-
-        $set = [];
-        foreach ($this->options as $option) {
-            $values = $option->getValues();
-            if ($values->count()) {
-                $set[] = $values;
-            }
-        }
-
-        $cartesianProduct = new CartesianProduct($set);
-        $asArray = $cartesianProduct->asArray();
-
-        return array_map(fn (array $combinedOptionValues) => new CombinedOptionValueCollection(...$combinedOptionValues), $asArray);
+        return array_map(fn (array $combinedOptionValues) => new ProductVariantChoice($combinedOptionValues), $asArray);
     }
 }

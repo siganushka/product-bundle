@@ -4,26 +4,28 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 
-final class ProductVariantChoice
+/**
+ * @extends ArrayCollection<array-key, ProductOptionValue>
+ */
+final class ProductVariantChoice extends ArrayCollection
 {
     /**
-     * Generated unique value for combined option values.
+     * Generated unique choice value for combined option values.
      */
     public readonly ?string $value;
 
     /**
-     * Generated label for combined option values.
+     * Generated choice label for combined option values.
      */
     public readonly ?string $label;
 
     /**
-     * @var ProductOptionValue[]
+     * @param array<array-key, ProductOptionValue> $combinedOptionValues
      */
-    public readonly array $combinedOptionValues;
-
-    public function __construct(ProductOptionValue ...$combinedOptionValues)
+    public function __construct(array $combinedOptionValues = [])
     {
         $codes = $texts = [];
         foreach ($combinedOptionValues as $optionValue) {
@@ -37,6 +39,11 @@ final class ProductVariantChoice
         $this->value = \count($codes) ? implode('-', $codes) : null;
         $this->label = \count($texts) ? implode('/', $texts) : null;
 
-        $this->combinedOptionValues = $combinedOptionValues;
+        parent::__construct($combinedOptionValues);
+    }
+
+    public static function create(ProductOptionValue ...$combinedOptionValues): static
+    {
+        return new static($combinedOptionValues);
     }
 }
