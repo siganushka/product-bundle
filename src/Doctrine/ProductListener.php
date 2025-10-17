@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
+use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
@@ -22,21 +23,19 @@ class ProductListener
     {
     }
 
-    public function __invoke(OnFlushEventArgs $event): void
+    public function onFlush(OnFlushEventArgs $event): void
     {
         $em = $event->getObjectManager();
         $uow = $em->getUnitOfWork();
 
-        $changedProducts = $changedProductOptionValues = [];
+        /** @var \SplObjectStorage<Product, null> */
+        $changedProducts = new \SplObjectStorage();
+        /** @var \SplObjectStorage<ProductVariant, null> */
+        $changedProductVariants = new \SplObjectStorage();
+
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
             if ($entity instanceof Product) {
-                $changedProducts[] = $entity;
-            }
-        }
-
-        foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof ProductOptionValue && \array_key_exists('text', $uow->getEntityChangeSet($entity))) {
-                $changedProductOptionValues[] = $entity;
+                $changedProducts->attach($entity);
             }
         }
 
@@ -44,27 +43,30 @@ class ProductListener
             $owner = $collection->getOwner();
             $mappig = $collection->getMapping();
             if ($owner instanceof Product && is_subclass_of($mappig->targetEntity, ProductOption::class)) {
-                $changedProducts[] = $owner;
-            } elseif ($owner instanceof ProductOption && is_subclass_of($mappig->targetEntity, ProductOptionValue::class) && $product = $owner->getProduct()) {
-                $changedProducts[] = $product;
+                $changedProducts->attach($owner);
+            } elseif ($owner instanceof ProductOption && is_subclass_of($mappig->targetEntity, ProductOptionValue::class) && $owner->getProduct()) {
+                $changedProducts->attach($owner->getProduct());
             }
         }
 
-        $this->generateVariants($em, $uow, $changedProducts);
-        $this->updateVariantLabel($em, $uow, $changedProductOptionValues);
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            if ($entity instanceof ProductOptionValue && \array_key_exists('text', $uow->getEntityChangeSet($entity))) {
+                foreach ($entity->getVariants() as $variant) {
+                    $changedProductVariants->attach($variant);
+                }
+            }
+        }
+
+        $this->generateProductVariants($em, $uow, $changedProducts);
+        $this->updateProductVariants($em, $uow, $changedProductVariants);
     }
 
     /**
-     * @param array<int, Product> $products
+     * @param \SplObjectStorage<Product, null> $changedProducts
      */
-    public function generateVariants(EntityManagerInterface $em, UnitOfWork $uow, array $products): void
+    public function generateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $changedProducts): void
     {
-        $generated = [];
-        foreach ($products as $entity) {
-            if (\in_array($entity, $generated, true)) {
-                continue;
-            }
-
+        foreach ($changedProducts as $entity) {
             $choices = $entity->generateChoices();
             $this->logger->info('Generated product variant choices.', [
                 'product' => $entity->getName(),
@@ -83,34 +85,25 @@ class ProductListener
             }
 
             $uow->computeChangeSet($em->getClassMetadata($entity::class), $entity);
-            $generated[] = $entity;
         }
     }
 
     /**
-     * @param array<int, ProductOptionValue> $productOptionValues
+     * @param \SplObjectStorage<ProductVariant, null> $changedProductVariants
      */
-    public function updateVariantLabel(EntityManagerInterface $em, UnitOfWork $uow, array $productOptionValues): void
+    public function updateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $changedProductVariants): void
     {
-        $updated = [];
-        foreach ($productOptionValues as $entity) {
-            foreach ($entity->getVariants() as $variant) {
-                if (\in_array($variant, $updated, true)) {
-                    continue;
-                }
+        foreach ($changedProductVariants as $entity) {
+            $choice = new ProductVariantChoice($entity->getOptionValues()->toArray());
+            $this->logger->info('Updated product variant label.', [
+                'old' => $entity->getLabel(),
+                'new' => $choice->label,
+            ]);
 
-                $choice = new ProductVariantChoice($variant->getOptionValues()->toArray());
-                $this->logger->info('Updated product variant label.', [
-                    'old' => $variant->getLabel(),
-                    'new' => $choice->label,
-                ]);
+            $label = new \ReflectionProperty($entity, 'label');
+            $label->setValue($entity, $choice->label);
 
-                $label = new \ReflectionProperty($variant, 'label');
-                $label->setValue($variant, $choice->label);
-
-                $uow->computeChangeSet($em->getClassMetadata($variant::class), $variant);
-                $updated[] = $variant;
-            }
+            $uow->computeChangeSet($em->getClassMetadata($entity::class), $entity);
         }
     }
 }

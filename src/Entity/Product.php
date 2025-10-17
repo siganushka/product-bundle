@@ -123,17 +123,12 @@ class Product implements ResourceInterface, TimestampableInterface
 
     public function addVariant(ProductVariant $variant): static
     {
-        if (!$this->containsVariant($variant)) {
+        if (!$this->variants->exists(fn ($_, ProductVariant $item) => $item->getValue() === $variant->getValue())) {
             $this->variants[] = $variant;
             $variant->setProduct($this);
         }
 
         return $this;
-    }
-
-    public function containsVariant(ProductVariant $variant): bool
-    {
-        return $this->variants->exists(fn ($_, ProductVariant $item) => $item->getValue() === $variant->getValue());
     }
 
     public function removeVariant(ProductVariant $variant): static
