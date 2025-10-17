@@ -18,4 +18,5 @@ return [
     'product_variant.choice' => 'Choice',
     'product_variant.price' => 'Price',
     'product_variant.inventory' => 'Inventory',
+    'product_variant.img' => 'Image',
 ];

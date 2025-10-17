@@ -12,6 +12,7 @@ use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
+use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
@@ -38,6 +39,9 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
 
     #[ORM\Column(nullable: true)]
     protected ?int $inventory = null;
+
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    protected ?Media $img = null;
 
     /**
      * @var Collection<int, ProductOptionValue>
@@ -107,6 +111,18 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     public function setInventory(?int $inventory): static
     {
         $this->inventory = $inventory;
+
+        return $this;
+    }
+
+    public function getImg(): ?Media
+    {
+        return $this->img;
+    }
+
+    public function setImg(?Media $img): static
+    {
+        $this->img = $img;
 
         return $this;
     }

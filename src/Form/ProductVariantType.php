@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
+use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
@@ -67,11 +68,19 @@ class ProductVariantType extends AbstractType
             $form = $event->getForm();
             $label = $form->getConfig()->getOption('label');
 
-            $form->add('label', TextType::class, [
-                'label' => 'product_variant.choice',
-                'disabled' => true,
-                'priority' => 1,
-            ])
+            $form
+                ->add('img', MediaType::class, [
+                    'label' => 'product_variant.img',
+                    'rule' => 'product_img',
+                    'priority' => 2,
+                    'style' => false === $label ? 'width: 38px; height: 38px' : null,
+                    'row_attr' => false === $label ? ['style' => 'width: 0'] : [],
+                ])
+                ->add('label', TextType::class, [
+                    'label' => 'product_variant.choice',
+                    'disabled' => true,
+                    'priority' => 1,
+                ])
                 ->add('enabled', CheckboxType::class, [
                     'label' => false === $label ? false : 'generic.enable',
                     'row_attr' => false === $label ? ['class' => 'w-0 pt-2'] : [],
