@@ -1,0 +1,21 @@
+Siganushka\ProductBundle\Entity\Product:
+    attributes:
+        options:
+            groups: ['item', 'collection']
+        variants:
+            groups: ['item', 'collection']
+
+Siganushka\ProductBundle\Entity\ProductOption:
+    attributes:
+        values:
+            groups: ['item', 'collection']
+
+Siganushka\ProductBundle\Entity\ProductOptionValue:
+    attributes:
+        img:
+            groups: ['item', 'collection']
+
+Siganushka\ProductBundle\Entity\ProductVariant:
+    attributes:
+        img:
+            groups: ['item', 'collection']
