@@ -37,8 +37,8 @@ class ProductVariantType extends AbstractType
                     new GreaterThanOrEqual(0),
                 ],
             ])
-            ->add('inventory', IntegerType::class, [
-                'label' => 'product_variant.inventory',
+            ->add('stock', IntegerType::class, [
+                'label' => 'product_variant.stock',
                 'row_attr' => false === $options['label'] ? ['class' => 'col-2'] : [],
                 'constraints' => new GreaterThanOrEqual(0),
             ])

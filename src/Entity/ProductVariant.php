@@ -38,7 +38,7 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     protected ?int $price = null;
 
     #[ORM\Column(nullable: true)]
-    protected ?int $inventory = null;
+    protected ?int $stock = null;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
     protected ?Media $img = null;
@@ -103,14 +103,14 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return $this;
     }
 
-    public function getInventory(): ?int
+    public function getStock(): ?int
     {
-        return $this->inventory;
+        return $this->stock;
     }
 
-    public function setInventory(?int $inventory): static
+    public function setStock(?int $stock): static
     {
-        $this->inventory = $inventory;
+        $this->stock = $stock;
 
         return $this;
     }
@@ -150,7 +150,7 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
      */
     public function isOutOfStock(): bool
     {
-        return null !== $this->inventory && $this->inventory <= 0;
+        return null !== $this->stock && $this->stock <= 0;
     }
 
     /**
