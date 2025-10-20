@@ -13,14 +13,14 @@ use Siganushka\ProductBundle\Entity\ProductOptionValue;
 final class ProductVariantChoice extends ArrayCollection
 {
     /**
-     * Generated unique choice value for combined option values.
+     * Generated unique code for combined option values.
      */
-    public readonly ?string $value;
+    public readonly ?string $code;
 
     /**
-     * Generated choice label for combined option values.
+     * Generated name for combined option values.
      */
-    public readonly ?string $label;
+    public readonly ?string $name;
 
     /**
      * @param array<array-key, ProductOptionValue> $combinedOptionValues
@@ -33,11 +33,11 @@ final class ProductVariantChoice extends ArrayCollection
             $texts[] = $optionValue->getText() ?? '-';
         }
 
-        // [important] Generate unique choice value from sorted code
+        // [important] Generated unique code by sorted
         sort($codes);
 
-        $this->value = \count($codes) ? implode('-', $codes) : null;
-        $this->label = \count($texts) ? implode('/', $texts) : null;
+        $this->code = \count($codes) ? implode('-', $codes) : null;
+        $this->name = \count($texts) ? implode('/', $texts) : null;
 
         parent::__construct($combinedOptionValues);
     }

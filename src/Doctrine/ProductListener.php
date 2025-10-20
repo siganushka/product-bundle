@@ -70,16 +70,16 @@ class ProductListener
             $choices = $entity->generateChoices();
             $this->logger->info('Generated product variant choices.', [
                 'product' => $entity->getName(),
-                'choices' => array_map(fn (ProductVariantChoice $item) => $item->label, $choices),
+                'choices' => array_map(fn (ProductVariantChoice $item) => $item->name, $choices),
             ]);
 
             foreach ($choices as $choice) {
                 $entity->addVariant($this->repository->createNew($choice)->setEnabled(false));
             }
 
-            $choiceValues = array_map(fn (ProductVariantChoice $item) => $item->value, $choices);
+            $codes = array_map(fn (ProductVariantChoice $item) => $item->code, $choices);
             foreach ($entity->getVariants() as $variant) {
-                if (!\in_array($variant->getValue(), $choiceValues)) {
+                if (!\in_array($variant->getCode(), $codes)) {
                     $em->remove($variant);
                 }
             }
@@ -94,14 +94,18 @@ class ProductListener
     public function updateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $changedProductVariants): void
     {
         foreach ($changedProductVariants as $entity) {
-            $choice = new ProductVariantChoice($entity->getOptionValues()->toArray());
-            $this->logger->info('Updated product variant label.', [
-                'old' => $entity->getLabel(),
-                'new' => $choice->label,
+            $choice = $entity->getOptionValues();
+            if (!$choice instanceof ProductVariantChoice) {
+                $choice = new ProductVariantChoice($choice->toArray());
+            }
+
+            $this->logger->info('Updated product variant name.', [
+                'old' => $entity->getName(),
+                'new' => $choice->name,
             ]);
 
-            $label = new \ReflectionProperty($entity, 'label');
-            $label->setValue($entity, $choice->label);
+            $ref = new \ReflectionProperty($entity, 'name');
+            $ref->setValue($entity, $choice->name);
 
             $uow->computeChangeSet($em->getClassMetadata($entity::class), $entity);
         }

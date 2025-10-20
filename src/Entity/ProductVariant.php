@@ -17,7 +17,7 @@ use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 #[ORM\Entity(repositoryClass: ProductVariantRepository::class)]
-#[ORM\UniqueConstraint(columns: ['product_id', 'value'])]
+#[ORM\UniqueConstraint(columns: ['product_id', 'code'])]
 class ProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface
 {
     use EnableTrait;
@@ -29,10 +29,10 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     protected ?Product $product = null;
 
     #[ORM\Column(nullable: true, updatable: false)]
-    protected ?string $value = null;
+    protected ?string $code = null;
 
     #[ORM\Column(nullable: true)]
-    protected ?string $label = null;
+    protected ?string $name = null;
 
     #[ORM\Column(nullable: true)]
     protected ?int $price = null;
@@ -54,8 +54,8 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     {
         $choice ??= new ProductVariantChoice();
 
-        $this->value = $choice->value;
-        $this->label = $choice->label;
+        $this->code = $choice->code;
+        $this->name = $choice->name;
         $this->optionValues = $choice;
     }
 
@@ -71,24 +71,24 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return $this;
     }
 
-    public function getValue(): ?string
+    public function getCode(): ?string
     {
-        return $this->value;
+        return $this->code;
     }
 
-    public function setValue(?string $value): static
+    public function setCode(?string $code): static
     {
-        throw new \BadMethodCallException('The value cannot be modified anymore.');
+        throw new \BadMethodCallException('The code cannot be modified anymore.');
     }
 
-    public function getLabel(): ?string
+    public function getName(): ?string
     {
-        return $this->label;
+        return $this->name;
     }
 
-    public function setLabel(?string $label): static
+    public function setName(?string $name): static
     {
-        throw new \BadMethodCallException('The label cannot be modified anymore.');
+        throw new \BadMethodCallException('The name cannot be modified anymore.');
     }
 
     public function getPrice(): ?int
@@ -151,22 +151,5 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     public function isOutOfStock(): bool
     {
         return null !== $this->stock && $this->stock <= 0;
-    }
-
-    /**
-     * Returns the variant name.
-     */
-    public function getName(): ?string
-    {
-        if (null === $this->product) {
-            return $this->label;
-        }
-
-        $productName = $this->product->getName();
-        if (\is_string($productName) && \is_string($this->label)) {
-            return \sprintf('%s【%s】', $productName, $this->label);
-        }
-
-        return $productName;
     }
 }

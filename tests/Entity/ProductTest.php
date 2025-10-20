@@ -17,8 +17,8 @@ class ProductTest extends TestCase
 
         $choices = $entity->generateChoices();
         static::assertCount(1, $choices);
-        static::assertNull($choices[0]->value);
-        static::assertNull($choices[0]->label);
+        static::assertNull($choices[0]->code);
+        static::assertNull($choices[0]->name);
 
         $option1 = new ProductOption('foo');
         $option1->addValue(new ProductOptionValue('f1', 'foo-1'));
@@ -34,17 +34,17 @@ class ProductTest extends TestCase
 
         $choices = $entity->generateChoices();
         static::assertCount(6, $choices);
-        static::assertSame('b1-f1', $choices[0]->value);
-        static::assertSame('b2-f1', $choices[1]->value);
-        static::assertSame('b3-f1', $choices[2]->value);
-        static::assertSame('b1-f2', $choices[3]->value);
-        static::assertSame('b2-f2', $choices[4]->value);
-        static::assertSame('b3-f2', $choices[5]->value);
-        static::assertSame('foo-1/bar-1', $choices[0]->label);
-        static::assertSame('foo-1/bar-2', $choices[1]->label);
-        static::assertSame('foo-1/bar-3', $choices[2]->label);
-        static::assertSame('foo-2/bar-1', $choices[3]->label);
-        static::assertSame('foo-2/bar-2', $choices[4]->label);
-        static::assertSame('foo-2/bar-3', $choices[5]->label);
+        static::assertSame('b1-f1', $choices[0]->code);
+        static::assertSame('b2-f1', $choices[1]->code);
+        static::assertSame('b3-f1', $choices[2]->code);
+        static::assertSame('b1-f2', $choices[3]->code);
+        static::assertSame('b2-f2', $choices[4]->code);
+        static::assertSame('b3-f2', $choices[5]->code);
+        static::assertSame('foo-1/bar-1', $choices[0]->name);
+        static::assertSame('foo-1/bar-2', $choices[1]->name);
+        static::assertSame('foo-1/bar-3', $choices[2]->name);
+        static::assertSame('foo-2/bar-1', $choices[3]->name);
+        static::assertSame('foo-2/bar-2', $choices[4]->name);
+        static::assertSame('foo-2/bar-3', $choices[5]->name);
     }
 }
