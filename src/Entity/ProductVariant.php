@@ -12,17 +12,20 @@ use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
+use Siganushka\Contracts\Doctrine\VersionableInterface;
+use Siganushka\Contracts\Doctrine\VersionableTrait;
 use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 #[ORM\Entity(repositoryClass: ProductVariantRepository::class)]
 #[ORM\UniqueConstraint(columns: ['product_id', 'code'])]
-class ProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface
+class ProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface, VersionableInterface
 {
     use EnableTrait;
     use ResourceTrait;
     use TimestampableTrait;
+    use VersionableTrait;
 
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'variants')]
     #[ORM\JoinColumn(nullable: false)]

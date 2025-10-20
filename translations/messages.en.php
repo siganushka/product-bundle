@@ -15,7 +15,7 @@ return [
     'product_option_value.text' => 'Text',
     'product_option_value.img' => 'Image',
 
-    'product_variant.choice' => 'Choice',
+    'product_variant.name' => 'Name',
     'product_variant.price' => 'Price',
     'product_variant.stock' => 'Stock',
     'product_variant.img' => 'Image',

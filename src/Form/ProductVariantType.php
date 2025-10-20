@@ -8,12 +8,13 @@ use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -42,6 +43,12 @@ class ProductVariantType extends AbstractType
                 'row_attr' => false === $options['label'] ? ['class' => 'col-2'] : [],
                 'constraints' => new GreaterThanOrEqual(0),
             ])
+            ->add('enabled', CheckboxType::class, [
+                'label' => false === $options['label'] ? false : 'generic.enable',
+                'row_attr' => false === $options['label'] ? ['class' => 'w-0 pt-2'] : [],
+                'priority' => false === $options['label'] ? 8 : -8,
+            ])
+            ->add('version', HiddenType::class)
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, $this->onPreSetData(...));
@@ -61,7 +68,7 @@ class ProductVariantType extends AbstractType
         ]);
     }
 
-    public function onPreSetData(FormEvent $event): void
+    public function onPreSetData(PreSetDataEvent $event): void
     {
         $data = $event->getData();
         if ($data instanceof ProductVariant && $data->getCode()) {
@@ -76,15 +83,10 @@ class ProductVariantType extends AbstractType
                     'style' => false === $label ? 'width: 38px; height: 38px' : null,
                     'row_attr' => false === $label ? ['style' => 'width: 0'] : [],
                 ])
-                ->add('label', TextType::class, [
-                    'label' => 'product_variant.choice',
+                ->add('name', TextType::class, [
+                    'label' => 'product_variant.name',
                     'disabled' => true,
                     'priority' => 1,
-                ])
-                ->add('enabled', CheckboxType::class, [
-                    'label' => false === $label ? false : 'generic.enable',
-                    'row_attr' => false === $label ? ['class' => 'w-0 pt-2'] : [],
-                    'priority' => false === $label ? 8 : -8,
                 ])
             ;
         }
