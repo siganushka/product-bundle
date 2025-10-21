@@ -6,7 +6,7 @@ namespace Siganushka\ProductBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Siganushka\GenericBundle\Dto\PageQueryDto;
+use Siganushka\ProductBundle\Dto\ProductFilterDto;
 use Siganushka\ProductBundle\Form\ProductType;
 use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
@@ -24,9 +24,9 @@ class ProductController extends AbstractController
     }
 
     #[Route('/products', methods: 'GET')]
-    public function getCollection(PaginatorInterface $paginator, #[MapQueryString] PageQueryDto $dto): Response
+    public function getCollection(PaginatorInterface $paginator, #[MapQueryString] ProductFilterDto $dto): Response
     {
-        $queryBuilder = $this->productRepository->createQueryBuilderWithOrderBy('p');
+        $queryBuilder = $this->productRepository->createQueryBuilderByFilter('p', $dto);
         $pagination = $paginator->paginate($queryBuilder, $dto->page, $dto->size);
 
         return $this->json($pagination, context: [
