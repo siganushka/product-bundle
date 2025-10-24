@@ -105,7 +105,9 @@ class ProductListener
             ]);
 
             $ref = new \ReflectionProperty($entity, 'name');
+            $ref->setAccessible(true);
             $ref->setValue($entity, $choice->name);
+            $ref->setAccessible(false);
 
             $uow->computeChangeSet($em->getClassMetadata($entity::class), $entity);
         }
