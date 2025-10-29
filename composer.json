@@ -18,9 +18,9 @@
         "siganushka/doctrine-contracts": "dev-main",
         "siganushka/generic-bundle": "dev-main",
         "siganushka/media-bundle": "dev-main",
-        "symfony/form": "^6.4|^7.0",
-        "symfony/framework-bundle": "^6.4|^7.0",
-        "symfony/validator": "^6.4|^7.0"
+        "symfony/form": "^6.4|^7.0|^8.0",
+        "symfony/framework-bundle": "^6.4|^7.0|^8.0",
+        "symfony/validator": "^6.4|^7.0|^8.0"
     },
     "require-dev": {
         "symfony/ux-autocomplete": "^2.10"
