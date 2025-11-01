@@ -22,4 +22,18 @@ class ProductOptionTest extends TestCase
         $entity->addValue(new ProductOptionValue('bar'));
         static::assertCount(1, $entity->getValues());
     }
+
+    public function testClone(): void
+    {
+        $po = new ProductOption();
+        $po->addValue(new ProductOptionValue(null, 'foo'));
+        $po->addValue(new ProductOptionValue(null, 'bar'));
+        $po->addValue(new ProductOptionValue(null, 'baz'));
+
+        $po2 = clone $po;
+        static::assertNotSame($po->getValues(), $po2->getValues());
+        static::assertNotSame($po->getValues()[0], $po2->getValues()[0]);
+        static::assertNotSame($po->getValues()[1], $po2->getValues()[1]);
+        static::assertNotSame($po->getValues()[2], $po2->getValues()[2]);
+    }
 }
