@@ -18,6 +18,11 @@ use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
+/**
+ * @template TProduct of Product = Product
+ * @template TMedia of Media = Media
+ * @template TOptionValue of ProductOptionValue = ProductOptionValue
+ */
 #[ORM\Entity(repositoryClass: ProductVariantRepository::class)]
 #[ORM\UniqueConstraint(columns: ['product_id', 'code'])]
 class ProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface, VersionableInterface
@@ -27,6 +32,9 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     use TimestampableTrait;
     use VersionableTrait;
 
+    /**
+     * @var TProduct|null
+     */
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'variants')]
     #[ORM\JoinColumn(nullable: false)]
     protected ?Product $product = null;
@@ -43,11 +51,14 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     #[ORM\Column(nullable: true)]
     protected ?int $stock = null;
 
+    /**
+     * @var TMedia|null
+     */
     #[ORM\ManyToOne(targetEntity: Media::class)]
     protected ?Media $img = null;
 
     /**
-     * @var Collection<int, ProductOptionValue>
+     * @var Collection<int, TOptionValue>|ProductVariantChoice
      */
     #[ORM\ManyToMany(targetEntity: ProductOptionValue::class, inversedBy: 'variants')]
     #[ORM\JoinTable('product_variant_value')]
@@ -62,11 +73,17 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         $this->optionValues = $choice;
     }
 
+    /**
+     * @return TProduct|null
+     */
     public function getProduct(): ?Product
     {
         return $this->product;
     }
 
+    /**
+     * @param TProduct|null $product
+     */
     public function setProduct(?Product $product): static
     {
         $this->product = $product;
@@ -118,11 +135,17 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return $this;
     }
 
+    /**
+     * @return TMedia|null
+     */
     public function getImg(): ?Media
     {
         return $this->img;
     }
 
+    /**
+     * @param TMedia|null $img
+     */
     public function setImg(?Media $img): static
     {
         $this->img = $img;
@@ -131,18 +154,24 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     }
 
     /**
-     * @return Collection<int, ProductOptionValue>
+     * @return Collection<int, TOptionValue>|ProductVariantChoice
      */
     public function getOptionValues(): Collection
     {
         return $this->optionValues;
     }
 
+    /**
+     * @param TOptionValue $optionValue
+     */
     public function addOptionValue(ProductOptionValue $optionValue): static
     {
         throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
     }
 
+    /**
+     * @param TOptionValue $optionValue
+     */
     public function removeOptionValue(ProductOptionValue $optionValue): static
     {
         throw new \BadMethodCallException('The optionValues cannot be modified anymore.');

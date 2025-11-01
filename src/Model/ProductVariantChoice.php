@@ -8,7 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 
 /**
- * @extends ArrayCollection<array-key, ProductOptionValue>
+ * @template TProductOptionValue of ProductOptionValue = ProductOptionValue
+ * @extends ArrayCollection<array-key, TProductOptionValue>
  */
 final class ProductVariantChoice extends ArrayCollection
 {
@@ -23,7 +24,7 @@ final class ProductVariantChoice extends ArrayCollection
     public readonly ?string $name;
 
     /**
-     * @param array<array-key, ProductOptionValue> $combinedOptionValues
+     * @param array<array-key, TProductOptionValue> $combinedOptionValues
      */
     public function __construct(array $combinedOptionValues = [])
     {
@@ -42,6 +43,9 @@ final class ProductVariantChoice extends ArrayCollection
         parent::__construct($combinedOptionValues);
     }
 
+    /**
+     * @param TProductOptionValue ...$combinedOptionValues
+     */
     public static function create(ProductOptionValue ...$combinedOptionValues): static
     {
         return new static($combinedOptionValues);

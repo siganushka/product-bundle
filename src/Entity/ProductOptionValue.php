@@ -14,6 +14,11 @@ use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 
+/**
+ * @template TOption of ProductOption = ProductOption
+ * @template TVariant of ProductVariant = ProductVariant
+ * @template TMedia of Media = Media
+ */
 #[ORM\Entity(repositoryClass: ProductOptionValueRepository::class)]
 #[ORM\UniqueConstraint(columns: ['option_id', 'code'])]
 class ProductOptionValue implements ResourceInterface, TimestampableInterface
@@ -21,6 +26,9 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     use ResourceTrait;
     use TimestampableTrait;
 
+    /**
+     * @var TOption|null
+     */
     #[ORM\ManyToOne(targetEntity: ProductOption::class, inversedBy: 'values')]
     #[ORM\JoinColumn(nullable: false)]
     protected ?ProductOption $option = null;
@@ -31,15 +39,21 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     #[ORM\Column]
     protected ?string $text = null;
 
+    /**
+     * @var TMedia|null
+     */
     #[ORM\ManyToOne(targetEntity: Media::class)]
     protected ?Media $img = null;
 
     /**
-     * @var Collection<int, ProductVariant>
+     * @var Collection<int, TVariant>
      */
     #[ORM\ManyToMany(targetEntity: ProductVariant::class, mappedBy: 'optionValues', cascade: ['all'])]
     protected Collection $variants;
 
+    /**
+     * @param TMedia|null $img
+     */
     public function __construct(?string $code = null, ?string $text = null, ?Media $img = null)
     {
         $this->code = $code ?? mb_substr(md5(uniqid()), 0, 7);
@@ -48,11 +62,17 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         $this->variants = new ArrayCollection();
     }
 
+    /**
+     * @return TOption|null
+     */
     public function getOption(): ?ProductOption
     {
         return $this->option;
     }
 
+    /**
+     * @param TOption|null $option
+     */
     public function setOption(?ProductOption $option): static
     {
         $this->option = $option;
@@ -82,11 +102,17 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
+    /**
+     * @return TMedia|null
+     */
     public function getImg(): ?Media
     {
         return $this->img;
     }
 
+    /**
+     * @param TMedia|null $img
+     */
     public function setImg(?Media $img): static
     {
         $this->img = $img;
@@ -95,18 +121,24 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * @return Collection<int, ProductVariant>
+     * @return Collection<int, TVariant>
      */
     public function getVariants(): Collection
     {
         return $this->variants;
     }
 
+    /**
+     * @param TVariant $variant
+     */
     public function addVariant(ProductVariant $variant): static
     {
         throw new \BadMethodCallException('The variants cannot be modified anymore.');
     }
 
+    /**
+     * @param TVariant $variant
+     */
     public function removeVariant(ProductVariant $variant): static
     {
         throw new \BadMethodCallException('The variants cannot be modified anymore.');

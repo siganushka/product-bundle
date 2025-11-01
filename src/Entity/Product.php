@@ -16,6 +16,11 @@ use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
+/**
+ * @template TMedia of Media = Media
+ * @template TOption of ProductOption = ProductOption
+ * @template TVariant of ProductVariant = ProductVariant
+ */
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 class Product implements ResourceInterface, TimestampableInterface
 {
@@ -28,15 +33,22 @@ class Product implements ResourceInterface, TimestampableInterface
     #[ORM\Column(nullable: true)]
     protected ?string $description = null;
 
+    /**
+     * @var TMedia|null
+     */
     #[ORM\ManyToOne(targetEntity: Media::class)]
     protected ?Media $img = null;
 
-    /** @var Collection<int, ProductOption> */
+    /**
+     * @var Collection<int, TOption>
+     */
     #[ORM\OneToMany(targetEntity: ProductOption::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
     #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
     protected Collection $options;
 
-    /** @var Collection<int, ProductVariant> */
+    /**
+     * @var Collection<int, TVariant>
+     */
     #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
     #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
     protected Collection $variants;
@@ -72,11 +84,17 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
+    /**
+     * @return TMedia|null
+     */
     public function getImg(): ?Media
     {
         return $this->img;
     }
 
+    /**
+     * @param TMedia|null $img
+     */
     public function setImg(?Media $img): static
     {
         $this->img = $img;
@@ -85,13 +103,16 @@ class Product implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * @return Collection<int, ProductOption>
+     * @return Collection<int, TOption>
      */
     public function getOptions(): Collection
     {
         return $this->options;
     }
 
+    /**
+     * @param TOption $option
+     */
     public function addOption(ProductOption $option): static
     {
         if (!$this->options->contains($option)) {
@@ -102,6 +123,9 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
+    /**
+     * @param TOption $option
+     */
     public function removeOption(ProductOption $option): static
     {
         if ($this->options->removeElement($option)) {
@@ -114,13 +138,16 @@ class Product implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * @return Collection<int, ProductVariant>
+     * @return Collection<int, TVariant>
      */
     public function getVariants(): Collection
     {
         return $this->variants;
     }
 
+    /**
+     * @param TVariant $variant
+     */
     public function addVariant(ProductVariant $variant): static
     {
         if (!$this->variants->exists(fn ($_, ProductVariant $item) => $item->getCode() === $variant->getCode())) {
@@ -131,6 +158,9 @@ class Product implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
+    /**
+     * @param TVariant $variant
+     */
     public function removeVariant(ProductVariant $variant): static
     {
         if ($this->variants->removeElement($variant)) {

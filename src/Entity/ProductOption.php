@@ -13,12 +13,19 @@ use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 
+/**
+ * @template TProduct of Product = Product
+ * @template TValue of ProductOptionValue = ProductOptionValue
+ */
 #[ORM\Entity(repositoryClass: ProductOptionRepository::class)]
 class ProductOption implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
     use TimestampableTrait;
 
+    /**
+     * @var TProduct|null
+     */
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'options')]
     #[ORM\JoinColumn(nullable: false)]
     protected ?Product $product = null;
@@ -26,7 +33,9 @@ class ProductOption implements ResourceInterface, TimestampableInterface
     #[ORM\Column]
     protected ?string $name = null;
 
-    /** @var Collection<int, ProductOptionValue> */
+    /**
+     * @var Collection<int, TValue>
+     */
     #[ORM\OneToMany(targetEntity: ProductOptionValue::class, mappedBy: 'option', cascade: ['all'], orphanRemoval: true)]
     #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
     protected Collection $values;
@@ -37,11 +46,17 @@ class ProductOption implements ResourceInterface, TimestampableInterface
         $this->values = new ArrayCollection();
     }
 
+    /**
+     * @return TProduct|null
+     */
     public function getProduct(): ?Product
     {
         return $this->product;
     }
 
+    /**
+     * @param TProduct|null $product
+     */
     public function setProduct(?Product $product): static
     {
         $this->product = $product;
@@ -62,13 +77,16 @@ class ProductOption implements ResourceInterface, TimestampableInterface
     }
 
     /**
-     * @return Collection<int, ProductOptionValue>
+     * @return Collection<int, TValue>
      */
     public function getValues(): Collection
     {
         return $this->values;
     }
 
+    /**
+     * @param TValue $value
+     */
     public function addValue(ProductOptionValue $value): static
     {
         if (!$this->values->contains($value)) {
@@ -79,6 +97,9 @@ class ProductOption implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
+    /**
+     * @param TValue $value
+     */
     public function removeValue(ProductOptionValue $value): static
     {
         if ($this->values->removeElement($value)) {
@@ -88,18 +109,5 @@ class ProductOption implements ResourceInterface, TimestampableInterface
         }
 
         return $this;
-    }
-
-    /**
-     * @see https://www.doctrine-project.org/projects/doctrine-orm/en/2.13/cookbook/implementing-wakeup-or-clone.html
-     */
-    public function __clone()
-    {
-        $previousValues = $this->values;
-
-        $this->values = new ArrayCollection();
-        $previousValues->map(fn (ProductOptionValue $value) => $this->addValue(clone $value));
-
-        unset($previousValues);
     }
 }
