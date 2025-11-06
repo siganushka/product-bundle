@@ -36,10 +36,9 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
      * @var TProduct|null
      */
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'variants')]
-    #[ORM\JoinColumn(nullable: false)]
     protected ?Product $product = null;
 
-    #[ORM\Column(nullable: true, updatable: false)]
+    #[ORM\Column(nullable: true)]
     protected ?string $code = null;
 
     #[ORM\Column(nullable: true)]

@@ -30,10 +30,9 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
      * @var TOption|null
      */
     #[ORM\ManyToOne(targetEntity: ProductOption::class, inversedBy: 'values')]
-    #[ORM\JoinColumn(nullable: false)]
     protected ?ProductOption $option = null;
 
-    #[ORM\Column(updatable: false)]
+    #[ORM\Column]
     protected ?string $code = null;
 
     #[ORM\Column]

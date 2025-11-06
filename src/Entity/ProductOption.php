@@ -27,7 +27,6 @@ class ProductOption implements ResourceInterface, TimestampableInterface
      * @var TProduct|null
      */
     #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'options')]
-    #[ORM\JoinColumn(nullable: false)]
     protected ?Product $product = null;
 
     #[ORM\Column]
