@@ -42,11 +42,13 @@ class ProductVariantType extends AbstractType
                 'label' => 'product_variant.stock',
                 'row_attr' => false === $options['label'] ? ['class' => 'col-2'] : [],
                 'constraints' => new GreaterThanOrEqual(0),
+                'required' => false,
             ])
             ->add('enabled', CheckboxType::class, [
                 'label' => false === $options['label'] ? false : 'generic.enable',
                 'row_attr' => false === $options['label'] ? ['class' => 'w-0 pt-2'] : [],
                 'priority' => false === $options['label'] ? 8 : -8,
+                'required' => false,
             ])
             ->add('version', HiddenType::class)
         ;
@@ -79,9 +81,10 @@ class ProductVariantType extends AbstractType
                 ->add('img', MediaType::class, [
                     'label' => 'product_variant.img',
                     'rule' => 'product_img',
-                    'priority' => 2,
                     'style' => false === $label ? 'width: 38px; height: 38px' : null,
                     'row_attr' => false === $label ? ['style' => 'width: 0'] : [],
+                    'priority' => 2,
+                    'required' => false,
                 ])
                 ->add('name', TextType::class, [
                     'label' => 'product_variant.name',
