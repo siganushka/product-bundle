@@ -57,12 +57,15 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     protected ?Media $img = null;
 
     /**
-     * @var Collection<int, TOptionValue>|ProductVariantChoice
+     * @var Collection<int, TOptionValue>|ProductVariantChoice<TOptionValue>
      */
     #[ORM\ManyToMany(targetEntity: ProductOptionValue::class, inversedBy: 'variants')]
     #[ORM\JoinTable('product_variant_value')]
     protected Collection $optionValues;
 
+    /**
+     * @param ProductVariantChoice<TOptionValue>|null $choice
+     */
     public function __construct(?ProductVariantChoice $choice = null)
     {
         $choice ??= new ProductVariantChoice();
