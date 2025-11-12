@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests\Entity;
 
 use PHPUnit\Framework\TestCase;
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
+use Siganushka\ProductBundle\Tests\Fixtures\FooProductOptionValue;
 
 class ProductOptionValueTest extends TestCase
 {
     public function testAll(): void
     {
-        $entity = new ProductOptionValue(text: 'foo');
+        $entity = new FooProductOptionValue(text: 'foo');
         static::assertNotNull($entity->getCode());
         static::assertSame('foo', $entity->getText());
 
-        $entity = new ProductOptionValue('test', 'bar');
+        $entity = new FooProductOptionValue('test', 'bar');
         static::assertSame('test', $entity->getCode());
         static::assertSame('bar', $entity->getText());
     }

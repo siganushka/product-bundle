@@ -6,6 +6,9 @@ namespace Siganushka\ProductBundle\Tests\Fixtures;
 
 use Siganushka\ProductBundle\Entity\ProductVariant;
 
+/**
+ * @extends ProductVariant<FooProduct, FooMedia, FooProductOptionValue>
+ */
 class FooProductVariant extends ProductVariant
 {
 }

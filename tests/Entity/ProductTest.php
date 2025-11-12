@@ -5,29 +5,29 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests\Entity;
 
 use PHPUnit\Framework\TestCase;
-use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Entity\ProductOption;
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
+use Siganushka\ProductBundle\Tests\Fixtures\FooProduct;
+use Siganushka\ProductBundle\Tests\Fixtures\FooProductOption;
+use Siganushka\ProductBundle\Tests\Fixtures\FooProductOptionValue;
 
 class ProductTest extends TestCase
 {
     public function testGenerateChoices(): void
     {
-        $entity = new Product();
+        $entity = new FooProduct();
 
         $choices = $entity->generateChoices();
         static::assertCount(1, $choices);
         static::assertNull($choices[0]->code);
         static::assertNull($choices[0]->name);
 
-        $option1 = new ProductOption('foo');
-        $option1->addValue(new ProductOptionValue('f1', 'foo-1'));
-        $option1->addValue(new ProductOptionValue('f2', 'foo-2'));
+        $option1 = new FooProductOption('foo');
+        $option1->addValue(new FooProductOptionValue('f1', 'foo-1'));
+        $option1->addValue(new FooProductOptionValue('f2', 'foo-2'));
 
-        $option2 = new ProductOption('bar');
-        $option2->addValue(new ProductOptionValue('b1', 'bar-1'));
-        $option2->addValue(new ProductOptionValue('b2', 'bar-2'));
-        $option2->addValue(new ProductOptionValue('b3', 'bar-3'));
+        $option2 = new FooProductOption('bar');
+        $option2->addValue(new FooProductOptionValue('b1', 'bar-1'));
+        $option2->addValue(new FooProductOptionValue('b2', 'bar-2'));
+        $option2->addValue(new FooProductOptionValue('b3', 'bar-3'));
 
         $entity->addOption($option1);
         $entity->addOption($option2);

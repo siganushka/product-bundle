@@ -5,30 +5,30 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests\Entity;
 
 use PHPUnit\Framework\TestCase;
-use Siganushka\ProductBundle\Entity\ProductOption;
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
+use Siganushka\ProductBundle\Tests\Fixtures\FooProductOption;
+use Siganushka\ProductBundle\Tests\Fixtures\FooProductOptionValue;
 
 class ProductOptionTest extends TestCase
 {
     public function testAll(): void
     {
-        $entity = new ProductOption();
+        $entity = new FooProductOption();
         static::assertNull($entity->getName());
         static::assertCount(0, $entity->getValues());
 
         $entity->setName('foo');
         static::assertSame('foo', $entity->getName());
 
-        $entity->addValue(new ProductOptionValue('bar'));
+        $entity->addValue(new FooProductOptionValue('bar'));
         static::assertCount(1, $entity->getValues());
     }
 
     public function testClone(): void
     {
-        $po = new ProductOption();
-        $po->addValue(new ProductOptionValue(null, 'foo'));
-        $po->addValue(new ProductOptionValue(null, 'bar'));
-        $po->addValue(new ProductOptionValue(null, 'baz'));
+        $po = new FooProductOption();
+        $po->addValue(new FooProductOptionValue(null, 'foo'));
+        $po->addValue(new FooProductOptionValue(null, 'bar'));
+        $po->addValue(new FooProductOptionValue(null, 'baz'));
 
         $po2 = clone $po;
         static::assertNotSame($po->getValues(), $po2->getValues());
