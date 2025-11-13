@@ -6,7 +6,7 @@ namespace Siganushka\ProductBundle\Repository;
 
 use Doctrine\ORM\QueryBuilder;
 use Siganushka\GenericBundle\Repository\GenericEntityRepository;
-use Siganushka\ProductBundle\Dto\ProductFilterDto;
+use Siganushka\ProductBundle\Dto\ProductQueryDto;
 use Siganushka\ProductBundle\Entity\Product;
 
 /**
@@ -16,7 +16,7 @@ use Siganushka\ProductBundle\Entity\Product;
  */
 class ProductRepository extends GenericEntityRepository
 {
-    public function createQueryBuilderByFilter(string $alias, ProductFilterDto $dto): QueryBuilder
+    public function createQueryBuilderByDto(string $alias, ProductQueryDto $dto): QueryBuilder
     {
         $queryBuilder = $this->createQueryBuilderWithOrderBy($alias);
 

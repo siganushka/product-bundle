@@ -7,10 +7,12 @@ namespace Siganushka\ProductBundle\Dto;
 use Siganushka\GenericBundle\Dto\DateRangeDtoTrait;
 use Siganushka\GenericBundle\Dto\PageQueryDtoTrait;
 
-class ProductFilterDto
+class ProductQueryDto
 {
     use DateRangeDtoTrait;
     use PageQueryDtoTrait;
 
-    public ?string $name = null;
+    public function __construct(public ?string $name = null)
+    {
+    }
 }
