@@ -44,12 +44,6 @@ class ProductVariantType extends AbstractType
                 'constraints' => new GreaterThanOrEqual(0),
                 'required' => false,
             ])
-            ->add('enabled', CheckboxType::class, [
-                'label' => false === $options['label'] ? false : 'generic.enable',
-                'row_attr' => false === $options['label'] ? ['class' => 'w-0 pt-2'] : [],
-                'priority' => false === $options['label'] ? 8 : -8,
-                'required' => false,
-            ])
             ->add('version', HiddenType::class)
         ;
 
@@ -72,26 +66,35 @@ class ProductVariantType extends AbstractType
 
     public function onPreSetData(PreSetDataEvent $event): void
     {
+        /** @var ProductVariant|null */
         $data = $event->getData();
-        if ($data instanceof ProductVariant && $data->getCode()) {
-            $form = $event->getForm();
-            $label = $form->getConfig()->getOption('label');
-
-            $form
-                ->add('img', MediaType::class, [
-                    'label' => 'product_variant.img',
-                    'rule' => 'product_img',
-                    'style' => false === $label ? 'width: 38px; height: 38px' : null,
-                    'row_attr' => false === $label ? ['style' => 'width: 0'] : [],
-                    'priority' => 2,
-                    'required' => false,
-                ])
-                ->add('name', TextType::class, [
-                    'label' => 'product_variant.name',
-                    'disabled' => true,
-                    'priority' => 1,
-                ])
-            ;
+        if (null === $data || null === $data->getCode()) {
+            return;
         }
+
+        $form = $event->getForm();
+        $label = $form->getConfig()->getOption('label');
+
+        $form
+            ->add('img', MediaType::class, [
+                'label' => 'product_variant.img',
+                'rule' => 'product_img',
+                'style' => false === $label ? 'width: 38px; height: 38px' : null,
+                'row_attr' => false === $label ? ['style' => 'width: 0'] : [],
+                'priority' => 2,
+                'required' => false,
+            ])
+            ->add('name', TextType::class, [
+                'label' => 'product_variant.name',
+                'disabled' => true,
+                'priority' => 1,
+            ])
+            ->add('enabled', CheckboxType::class, [
+                'label' => false === $label ? false : 'generic.enable',
+                'row_attr' => false === $label ? ['class' => 'w-0 pt-2'] : [],
+                'priority' => false === $label ? 8 : -8,
+                'required' => false,
+            ])
+        ;
     }
 }
