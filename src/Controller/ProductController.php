@@ -102,7 +102,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('/products/{id<\d+>}/variants', methods: 'GET')]
-    public function getItemVariants(int $id): Response
+    public function getVariants(int $id): Response
     {
         $entity = $this->productRepository->find($id)
             ?? throw $this->createNotFoundException();
@@ -113,7 +113,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('/products/{id<\d+>}/variants', methods: ['PUT', 'PATCH'])]
-    public function putItemVariants(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    public function putVariants(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->productRepository->find($id)
             ?? throw $this->createNotFoundException();

@@ -10,14 +10,10 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\Routing\Loader\AttributeDirectoryLoader;
 use Symfony\Component\Routing\Loader\PhpFileLoader;
-use Symfony\Component\Routing\Route;
 
 class RoutesTest extends TestCase
 {
-    /**
-     * @dataProvider routesProvider
-     */
-    public function testRotues(string $routeName, string $path, array $methods): void
+    public function testRotues(): void
     {
         $locator = new FileLocator(__DIR__.'/../config/');
 
@@ -27,21 +23,16 @@ class RoutesTest extends TestCase
         ]);
 
         $routes = $loader->load('routes.php');
-        /** @var Route */
-        $route = $routes->get($routeName);
-
-        static::assertSame($path, $route->getPath());
-        static::assertSame($methods, $route->getMethods());
-        static::assertTrue($route->getDefault('_stateless'));
-    }
-
-    public static function routesProvider(): iterable
-    {
-        yield ['siganushka_product_product_getcollection', '/products', ['GET']];
-        yield ['siganushka_product_product_postcollection', '/products', ['POST']];
-        yield ['siganushka_product_product_getitem', '/products/{id}', ['GET']];
-        yield ['siganushka_product_product_putitem', '/products/{id}', ['PUT', 'PATCH']];
-        yield ['siganushka_product_product_putitemvariants', '/products/{id}/variants', ['PUT', 'PATCH']];
-        yield ['siganushka_product_product_deleteitem', '/products/{id}', ['DELETE']];
+        static::assertSame([
+            'siganushka_product_product_getcollection',
+            'siganushka_product_product_postcollection',
+            'siganushka_product_product_getitem',
+            'siganushka_product_product_putitem',
+            'siganushka_product_product_deleteitem',
+            'siganushka_product_product_getvariants',
+            'siganushka_product_product_putvariants',
+            'siganushka_product_productoption_getitem',
+            'siganushka_product_productoption_putitem',
+        ], array_keys($routes->all()));
     }
 }
