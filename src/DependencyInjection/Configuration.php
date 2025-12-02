@@ -12,7 +12,6 @@ use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -25,10 +24,12 @@ class Configuration implements ConfigurationInterface
         'product_variant_class' => [ProductVariant::class, ProductVariantRepository::class],
     ];
 
+    /**
+     * @return TreeBuilder<'array'>
+     */
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('siganushka_product');
-        /** @var ArrayNodeDefinition */
         $rootNode = $treeBuilder->getRootNode();
 
         foreach (static::$resourceMapping as $configName => [$entityClass]) {

@@ -63,6 +63,7 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
         $this->expectExceptionMessage('Expected an array or Traversable.');
 
         $transformer = $this->createTransformer(',');
+        /* @phpstan-ignore argument.type */
         $transformer->transform('   ');
     }
 
@@ -71,6 +72,7 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
         $this->expectException(\TypeError::class);
 
         $transformer = $this->createTransformer(',');
+        /* @phpstan-ignore argument.type */
         $transformer->transform([new \stdClass()]);
     }
 
@@ -92,6 +94,7 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
         $this->expectExceptionMessage('Expected a string.');
 
         $transformer = $this->createTransformer(',');
+        /* @phpstan-ignore argument.type */
         static::assertSame([], $transformer->reverseTransform([]));
     }
 

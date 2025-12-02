@@ -12,7 +12,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 use function Symfony\Component\String\u;
 
 /**
- * @implements DataTransformerInterface<mixed, mixed>
+ * @implements DataTransformerInterface<iterable<array-key, ProductOptionValue>, string>
  */
 class ProductOptionValuesToStringTransformer implements DataTransformerInterface
 {
@@ -35,6 +35,7 @@ class ProductOptionValuesToStringTransformer implements DataTransformerInterface
             $value = iterator_to_array($value);
         }
 
+        /* @phpstan-ignore function.alreadyNarrowedType */
         if (!\is_array($value)) {
             throw new TransformationFailedException('Expected an array or Traversable.');
         }
@@ -42,8 +43,12 @@ class ProductOptionValuesToStringTransformer implements DataTransformerInterface
         return implode($this->separator, array_map(fn (ProductOptionValue $item) => $item->getText(), $value));
     }
 
+    /**
+     * @return array<int, ProductOptionValue>
+     */
     public function reverseTransform(mixed $value): array
     {
+        /* @phpstan-ignore function.alreadyNarrowedType, booleanAnd.alwaysFalse */
         if (null !== $value && !\is_string($value)) {
             throw new TransformationFailedException('Expected a string.');
         }
