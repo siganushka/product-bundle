@@ -21,7 +21,7 @@ class ProductOptionValuesToStringTransformer implements DataTransformerInterface
      */
     public function __construct(
         private readonly ProductOptionValueRepository $repository,
-        private readonly string $separator)
+        private readonly string $separator = ',')
     {
     }
 

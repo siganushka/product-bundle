@@ -21,7 +21,7 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
             new ProductOptionValue('3', 'CCC'),
         ];
 
-        $transformer = $this->createTransformer(',');
+        $transformer = $this->createTransformer();
         static::assertSame('AAA,BBB,CCC', $transformer->transform($values));
         static::assertSame('AAA,BBB,CCC', $transformer->transform(new ArrayCollection($values)));
     }
@@ -47,13 +47,13 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
 
     public function testTansformNull(): void
     {
-        $transformer = $this->createTransformer(',');
+        $transformer = $this->createTransformer();
         static::assertNull($transformer->transform(null));
     }
 
     public function testTansformEmptyArray(): void
     {
-        $transformer = $this->createTransformer(',');
+        $transformer = $this->createTransformer();
         static::assertSame('', $transformer->transform([]));
     }
 
@@ -62,7 +62,7 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
         $this->expectException(TransformationFailedException::class);
         $this->expectExceptionMessage('Expected an array or Traversable.');
 
-        $transformer = $this->createTransformer(',');
+        $transformer = $this->createTransformer();
         /* @phpstan-ignore argument.type */
         $transformer->transform('   ');
     }
@@ -71,20 +71,20 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
     {
         $this->expectException(\TypeError::class);
 
-        $transformer = $this->createTransformer(',');
+        $transformer = $this->createTransformer();
         /* @phpstan-ignore argument.type */
         $transformer->transform([new \stdClass()]);
     }
 
     public function testReverseTransformNull(): void
     {
-        $transformer = $this->createTransformer(',');
+        $transformer = $this->createTransformer();
         static::assertSame([], $transformer->reverseTransform(null));
     }
 
     public function testReverseTransformEmptyString(): void
     {
-        $transformer = $this->createTransformer(',');
+        $transformer = $this->createTransformer();
         static::assertSame([], $transformer->reverseTransform('    '));
     }
 
@@ -93,7 +93,7 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
         $this->expectException(TransformationFailedException::class);
         $this->expectExceptionMessage('Expected a string.');
 
-        $transformer = $this->createTransformer(',');
+        $transformer = $this->createTransformer();
         /* @phpstan-ignore argument.type */
         static::assertSame([], $transformer->reverseTransform([]));
     }
@@ -101,7 +101,7 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
     /**
      * @param non-empty-string $separator
      */
-    private function createTransformer(string $separator): ProductOptionValuesToStringTransformer
+    private function createTransformer(string $separator = ','): ProductOptionValuesToStringTransformer
     {
         $repository = $this->createMock(ProductOptionValueRepository::class);
         $repository->expects(static::any())

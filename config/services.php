@@ -17,11 +17,10 @@ return static function (ContainerConfigurator $container): void {
     $services->load($ref->getNamespaceName().'\\', '../src/')
         ->exclude([
             '../src/DependencyInjection/',
+            '../src/Dto/',
             '../src/Entity/',
             '../src/Event/',
-            '../src/Form/DataTransformer',
             '../src/Model/',
-            '../src/Exception/',
             '../src/SiganushkaProductBundle.php',
         ]);
 };
