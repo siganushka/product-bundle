@@ -23,11 +23,11 @@ class ProductVariantAutocompleteField extends AbstractType
     {
         $choiceLabel = function (ProductVariant $variant): ?string {
             $productName = $variant->getProduct()?->getName();
-            if (\is_string($productName)) {
-                return \sprintf('%s【%s】', $productName, $variant->getName());
+            if ($variantName = $variant->getName()) {
+                return \sprintf('%s【%s】', $productName, $variantName);
             }
 
-            return $variant->getName();
+            return $productName;
         };
 
         $resolver->setDefaults([
