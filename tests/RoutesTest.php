@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Routing\AttributeRouteControllerLoader;
+use Siganushka\ProductBundle\Controller\ProductController;
+use Siganushka\ProductBundle\Controller\ProductOptionController;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Config\Loader\LoaderResolver;
-use Symfony\Component\Routing\Loader\AttributeDirectoryLoader;
 use Symfony\Component\Routing\Loader\PhpFileLoader;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
@@ -19,29 +18,16 @@ class RoutesTest extends TestCase
 
     protected function setUp(): void
     {
-        $locator = new FileLocator(__DIR__.'/../config/');
-
-        new LoaderResolver([
-            $loader = new PhpFileLoader($locator),
-            new AttributeDirectoryLoader($locator, new AttributeRouteControllerLoader()),
-        ]);
-
+        $loader = new PhpFileLoader(new FileLocator(__DIR__.'/../config/'));
         $this->routes = $loader->load('routes.php');
     }
 
     public function testAll(): void
     {
-        static::assertSame([
-            'siganushka_product_product_getcollection',
-            'siganushka_product_product_postcollection',
-            'siganushka_product_product_getitem',
-            'siganushka_product_product_putitem',
-            'siganushka_product_product_deleteitem',
-            'siganushka_product_product_getvariants',
-            'siganushka_product_product_putvariants',
-            'siganushka_product_productoption_getitem',
-            'siganushka_product_productoption_putitem',
-        ], array_keys($this->routes->all()));
+        $routes = iterator_to_array(self::routesProvider());
+        $routeNames = array_map(fn (array $route) => $route[0], $routes);
+
+        static::assertSame($routeNames, array_keys($this->routes->all()));
     }
 
     /**
@@ -59,14 +45,15 @@ class RoutesTest extends TestCase
 
     public static function routesProvider(): iterable
     {
-        yield ['siganushka_product_product_getcollection', '/products', ['GET']];
-        yield ['siganushka_product_product_postcollection', '/products', ['POST']];
-        yield ['siganushka_product_product_getitem', '/products/{id}', ['GET']];
-        yield ['siganushka_product_product_putitem', '/products/{id}', ['PUT', 'PATCH']];
-        yield ['siganushka_product_product_deleteitem', '/products/{id}', ['DELETE']];
-        yield ['siganushka_product_product_getvariants', '/products/{id}/variants', ['GET']];
-        yield ['siganushka_product_product_putvariants', '/products/{id}/variants', ['PUT', 'PATCH']];
-        yield ['siganushka_product_productoption_getitem', '/product-options/{id}', ['GET']];
-        yield ['siganushka_product_productoption_putitem', '/product-options/{id}', ['PUT', 'PATCH']];
+        yield ['siganushka_product_getcollection', '/products', ['GET'], [ProductController::class, 'getCollection']];
+        yield ['siganushka_product_postcollection', '/products', ['POST'], [ProductController::class, 'postCollection']];
+        yield ['siganushka_product_getitem', '/products/{id}', ['GET'], [ProductController::class, 'getItem']];
+        yield ['siganushka_product_putitem', '/products/{id}', ['PUT', 'PATCH'], [ProductController::class, 'putItem']];
+        yield ['siganushka_product_deleteitem', '/products/{id}', ['DELETE'], [ProductController::class, 'deleteItem']];
+        yield ['siganushka_product_getvariants', '/products/{id}/variants', ['GET'], [ProductController::class, 'getVariants']];
+        yield ['siganushka_product_putvariants', '/products/{id}/variants', ['PUT', 'PATCH'], [ProductController::class, 'putVariants']];
+
+        yield ['siganushka_productoption_getitem', '/product-options/{id}', ['GET'], [ProductOptionController::class, 'getItem']];
+        yield ['siganushka_productoption_putitem', '/product-options/{id}', ['PUT', 'PATCH'], [ProductOptionController::class, 'putItem']];
     }
 }

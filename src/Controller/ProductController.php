@@ -14,7 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
-use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class ProductController extends AbstractController
@@ -23,7 +22,6 @@ class ProductController extends AbstractController
     {
     }
 
-    #[Route('/products', methods: 'GET')]
     public function getCollection(PaginatorInterface $paginator, #[MapQueryString] ProductQueryDto $dto): Response
     {
         $queryBuilder = $this->productRepository->createQueryBuilderByDto('p', $dto);
@@ -34,7 +32,6 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/products', methods: 'POST')]
     public function postCollection(Request $request, EntityManagerInterface $entityManager): Response
     {
         // @see https://www.php.net/manual/en/filter.constants.php#constant.filter-validate-bool
@@ -57,7 +54,6 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/products/{id<\d+>}', methods: 'GET')]
     public function getItem(int $id): Response
     {
         $entity = $this->productRepository->find($id)
@@ -68,7 +64,6 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/products/{id<\d+>}', methods: ['PUT', 'PATCH'])]
     public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->productRepository->find($id)
@@ -88,7 +83,6 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/products/{id<\d+>}', methods: 'DELETE')]
     public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->productRepository->find($id)
@@ -101,7 +95,6 @@ class ProductController extends AbstractController
         return new Response(status: Response::HTTP_NO_CONTENT);
     }
 
-    #[Route('/products/{id<\d+>}/variants', methods: 'GET')]
     public function getVariants(int $id): Response
     {
         $entity = $this->productRepository->find($id)
@@ -112,7 +105,6 @@ class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/products/{id<\d+>}/variants', methods: ['PUT', 'PATCH'])]
     public function putVariants(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->productRepository->find($id)

@@ -10,7 +10,6 @@ use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class ProductOptionController extends AbstractController
@@ -19,7 +18,6 @@ class ProductOptionController extends AbstractController
     {
     }
 
-    #[Route('/product-options/{id<\d+>}', methods: 'GET')]
     public function getItem(int $id): Response
     {
         $entity = $this->productOptionRepository->find($id)
@@ -30,7 +28,6 @@ class ProductOptionController extends AbstractController
         ]);
     }
 
-    #[Route('/product-options/{id<\d+>}', methods: ['PUT', 'PATCH'])]
     public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
     {
         $entity = $this->productOptionRepository->find($id)
