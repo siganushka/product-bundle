@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Siganushka\ProductBundle\Controller\ProductController;
 use Siganushka\ProductBundle\Controller\ProductOptionController;
@@ -30,9 +31,7 @@ class RoutesTest extends TestCase
         static::assertSame($routeNames, array_keys($this->routes->all()));
     }
 
-    /**
-     * @dataProvider routesProvider
-     */
+    #[DataProvider('routesProvider')]
     public function testRotues(string $routeName, string $path, array $methods): void
     {
         /** @var Route */
