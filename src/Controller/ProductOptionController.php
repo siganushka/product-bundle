@@ -34,7 +34,7 @@ class ProductOptionController extends AbstractController
             ?? throw $this->createNotFoundException();
 
         $form = $this->createForm(ProductOptionType::class, $entity);
-        $form->submit($request->request->all(), !$request->isMethod('PATCH'));
+        $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
             return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);

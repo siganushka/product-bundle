@@ -40,7 +40,7 @@ class ProductController extends AbstractController
         $entity = $this->productRepository->createNew();
 
         $form = $this->createForm(ProductType::class, $entity, compact('combinable'));
-        $form->submit($request->request->all());
+        $form->submit($request->getPayload()->all());
 
         if (!$form->isValid()) {
             return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -70,7 +70,7 @@ class ProductController extends AbstractController
             ?? throw $this->createNotFoundException();
 
         $form = $this->createForm(ProductType::class, $entity);
-        $form->submit($request->request->all(), !$request->isMethod('PATCH'));
+        $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
             return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -91,7 +91,6 @@ class ProductController extends AbstractController
         $entityManager->remove($entity);
         $entityManager->flush();
 
-        // 204 No Content
         return new Response(status: Response::HTTP_NO_CONTENT);
     }
 
@@ -111,7 +110,7 @@ class ProductController extends AbstractController
             ?? throw $this->createNotFoundException();
 
         $form = $this->createForm(ProductVariantCollectionType::class, $entity);
-        $form->submit($request->request->all(), !$request->isMethod('PATCH'));
+        $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
             return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
