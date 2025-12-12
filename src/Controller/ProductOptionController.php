@@ -10,7 +10,6 @@ use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class ProductOptionController extends AbstractController
 {
@@ -24,7 +23,7 @@ class ProductOptionController extends AbstractController
             ?? throw $this->createNotFoundException();
 
         return $this->json($entity, context: [
-            AbstractNormalizer::GROUPS => ['item'],
+            'groups' => ['product_option:item'],
         ]);
     }
 
@@ -43,7 +42,7 @@ class ProductOptionController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity, context: [
-            AbstractNormalizer::GROUPS => ['item'],
+            'groups' => ['product_option:item'],
         ]);
     }
 }

@@ -14,7 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class ProductController extends AbstractController
 {
@@ -28,7 +27,7 @@ class ProductController extends AbstractController
         $pagination = $paginator->paginate($queryBuilder, $dto->page, $dto->size);
 
         return $this->json($pagination, context: [
-            AbstractNormalizer::GROUPS => ['collection'],
+            'groups' => ['product:collection'],
         ]);
     }
 
@@ -50,7 +49,7 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity, Response::HTTP_CREATED, context: [
-            AbstractNormalizer::GROUPS => ['item'],
+            'groups' => ['product:item'],
         ]);
     }
 
@@ -60,7 +59,7 @@ class ProductController extends AbstractController
             ?? throw $this->createNotFoundException();
 
         return $this->json($entity, context: [
-            AbstractNormalizer::GROUPS => ['item'],
+            'groups' => ['product:item'],
         ]);
     }
 
@@ -79,7 +78,7 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity, context: [
-            AbstractNormalizer::GROUPS => ['item'],
+            'groups' => ['product:item'],
         ]);
     }
 
@@ -100,7 +99,7 @@ class ProductController extends AbstractController
             ?? throw $this->createNotFoundException();
 
         return $this->json($entity->getVariants(), context: [
-            AbstractNormalizer::GROUPS => ['collection'],
+            'groups' => ['product_variant:collection'],
         ]);
     }
 
@@ -119,7 +118,7 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity->getVariants(), context: [
-            AbstractNormalizer::GROUPS => ['collection'],
+            'groups' => ['product_variant:collection'],
         ]);
     }
 }
