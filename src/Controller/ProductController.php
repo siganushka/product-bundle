@@ -24,7 +24,7 @@ class ProductController extends AbstractController
     public function getCollection(PaginatorInterface $paginator, #[MapQueryString] ProductQueryDto $dto): Response
     {
         $queryBuilder = $this->productRepository->createQueryBuilderByDto('p', $dto);
-        $pagination = $paginator->paginate($queryBuilder, $dto->page, $dto->size);
+        $pagination = $paginator->paginate($queryBuilder);
 
         return $this->json($pagination, context: [
             'groups' => ['product:collection'],
