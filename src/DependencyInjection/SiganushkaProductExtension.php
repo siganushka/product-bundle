@@ -58,9 +58,9 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
                     'constraint_options' => [
                         'mimeTypes' => ['image/png', 'image/jpeg', 'image/webp'],
                         'maxSize' => '2M',
-                        'maxRatio' => 1,
-                        'minRatio' => 1,
                         'minWidth' => 100,
+                        'minRatio' => 1,
+                        'maxRatio' => 1,
                     ],
                     'resize' => class_exists(\Imagick::class) ? 800 : false,
                     'optimize' => class_exists(OptimizerChainFactory::class) ? 85 : false,
