@@ -30,9 +30,6 @@ class Product implements ResourceInterface, TimestampableInterface
     #[ORM\Column]
     protected ?string $name = null;
 
-    #[ORM\Column(nullable: true)]
-    protected ?string $description = null;
-
     /**
      * @var TMedia|null
      */
@@ -68,18 +65,6 @@ class Product implements ResourceInterface, TimestampableInterface
     public function setName(?string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(?string $description): static
-    {
-        $this->description = $description;
 
         return $this;
     }

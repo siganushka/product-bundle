@@ -5,7 +5,6 @@ declare(strict_types=1);
 return [
     'product.name' => '商品名称',
     'product.img' => '商品封面',
-    'product.description' => '商品简介',
     'product.options' => '商品选项',
     'product.variants' => '库存',
 

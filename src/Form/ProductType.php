@@ -12,14 +12,12 @@ use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Unique;
 
@@ -40,10 +38,6 @@ class ProductType extends AbstractType
             ->add('name', TextType::class, [
                 'label' => 'product.name',
                 'constraints' => new NotBlank(),
-            ])
-            ->add('description', TextareaType::class, [
-                'label' => 'product.description',
-                'constraints' => new Length(max: 100),
             ])
         ;
 
