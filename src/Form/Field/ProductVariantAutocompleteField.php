@@ -36,7 +36,7 @@ class ProductVariantAutocompleteField extends AbstractType
             'query_builder' => fn (ProductVariantRepository $er) => $er->createQueryBuilderByEnabled('entity'),
             'max_results' => 20,
             'tom_select_options' => ['maxOptions' => 100],
-            'searchable_fields' => ['product.name', 'choice1.text', 'choice2.text', 'choice3.text'],
+            'searchable_fields' => ['product.name', 'name'],
         ]);
     }
 
