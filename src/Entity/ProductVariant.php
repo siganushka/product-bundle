@@ -178,12 +178,4 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     {
         throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
     }
-
-    /**
-     * Returns whether the variant is out of stock.
-     */
-    public function isOutOfStock(): bool
-    {
-        return null !== $this->stock && $this->stock <= 0;
-    }
 }
