@@ -7,7 +7,6 @@ namespace Siganushka\ProductBundle\Doctrine;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\UnitOfWork;
-use Psr\Log\LoggerInterface;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
@@ -17,9 +16,7 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 class ProductListener
 {
-    public function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly ProductVariantRepository $repository)
+    public function __construct(private readonly ProductVariantRepository $repository)
     {
     }
 
@@ -68,11 +65,6 @@ class ProductListener
     {
         foreach ($changedProducts as $entity) {
             $choices = $entity->generateChoices();
-            $this->logger->info('Generated product variant choices.', [
-                'product' => $entity->getName(),
-                'choices' => array_map(fn (ProductVariantChoice $item) => $item->name, $choices),
-            ]);
-
             foreach ($choices as $choice) {
                 $entity->addVariant($this->repository->createNew($choice)->setEnabled(false));
             }
@@ -98,11 +90,6 @@ class ProductListener
             if (!$choice instanceof ProductVariantChoice) {
                 $choice = new ProductVariantChoice($choice->toArray());
             }
-
-            $this->logger->info('Updated product variant name.', [
-                'old' => $entity->getName(),
-                'new' => $choice->name,
-            ]);
 
             $ref = new \ReflectionProperty($entity, 'name');
             $ref->setValue($entity, $choice->name);
