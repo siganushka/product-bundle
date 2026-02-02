@@ -33,7 +33,7 @@ class ProductOptionValuesTextType extends AbstractType
         $resolver->setDefaults([
             'delimiter' => ',',
             'autocomplete' => true,
-            'tom_select_options' => fn (Options $options) => [
+            'tom_select_options' => static fn (Options $options) => [
                 'create' => true,
                 'createOnBlur' => true,
                 'duplicates' => true,
@@ -42,7 +42,7 @@ class ProductOptionValuesTextType extends AbstractType
         ]);
 
         $resolver->setAllowedTypes('delimiter', 'string');
-        $resolver->setNormalizer('delimiter', fn (Options $options, string $delimiter) => trim($delimiter));
+        $resolver->setNormalizer('delimiter', static fn (Options $options, string $delimiter) => trim($delimiter));
     }
 
     public function getParent(): string

@@ -32,15 +32,14 @@ class ProductVariantType extends AbstractType
         $builder
             ->add('price', MoneyType::class, [
                 'label' => 'product_variant.price',
-                'row_attr' => false === $options['label'] ? ['class' => 'col-4'] : [],
                 'constraints' => [
                     new NotBlank(groups: ['PriceRequired']),
                     new GreaterThanOrEqual(0),
                 ],
+                'required' => false,
             ])
             ->add('stock', IntegerType::class, [
                 'label' => 'product_variant.stock',
-                'row_attr' => false === $options['label'] ? ['class' => 'col-2'] : [],
                 'constraints' => new GreaterThanOrEqual(0),
                 'required' => false,
             ])
@@ -54,7 +53,7 @@ class ProductVariantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => $this->repository->getClassName(),
-            'validation_groups' => function (FormInterface $form) {
+            'validation_groups' => static function (FormInterface $form) {
                 $data = $form->getData();
 
                 return $data instanceof ProductVariant && $data->isEnabled()
@@ -80,19 +79,20 @@ class ProductVariantType extends AbstractType
                 'label' => 'product_variant.img',
                 'rule' => 'product_img',
                 'style' => false === $label ? 'width: 38px; height: 38px' : null,
-                'row_attr' => false === $label ? ['style' => 'width: 0'] : [],
-                'priority' => 2,
+                'row_attr' => false === $label ? ['class' => 'w-0'] : [],
+                'priority' => 20,
                 'required' => false,
             ])
             ->add('name', TextType::class, [
                 'label' => 'product_variant.name',
                 'disabled' => true,
-                'priority' => 1,
+                'priority' => 10,
             ])
             ->add('enabled', CheckboxType::class, [
                 'label' => false === $label ? false : 'generic.enable',
-                'row_attr' => false === $label ? ['class' => 'w-0 pt-2'] : [],
-                'priority' => false === $label ? 8 : -8,
+                'label_attr' => ['class' => 'checkbox-switch'],
+                'row_attr' => false === $label ? ['class' => 'w-0 align-middle'] : [],
+                'priority' => false === $label ? 30 : -30,
                 'required' => false,
             ])
         ;

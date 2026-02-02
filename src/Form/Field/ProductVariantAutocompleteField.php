@@ -21,7 +21,7 @@ class ProductVariantAutocompleteField extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $choiceLabel = function (ProductVariant $variant): ?string {
+        $choiceLabel = static function (ProductVariant $variant): ?string {
             $productName = $variant->getProduct()?->getName();
             if ($variantName = $variant->getName()) {
                 return \sprintf('%s【%s】', $productName, $variantName);
@@ -33,7 +33,7 @@ class ProductVariantAutocompleteField extends AbstractType
         $resolver->setDefaults([
             'class' => $this->repository->getClassName(),
             'choice_label' => ChoiceList::label($this, $choiceLabel),
-            'query_builder' => fn (ProductVariantRepository $er) => $er->createQueryBuilderByEnabled('entity'),
+            'query_builder' => static fn (ProductVariantRepository $er) => $er->createQueryBuilderByEnabled('entity'),
             'max_results' => 20,
             'tom_select_options' => ['maxOptions' => 100],
             'searchable_fields' => ['product.name', 'name'],

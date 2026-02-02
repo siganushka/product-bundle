@@ -31,15 +31,15 @@ class ProductOptionType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'product_option.name',
-                // Attributes when embedded in a collection
-                'row_attr' => false === $options['label'] ? ['class' => 'col-3'] : [],
+                'row_attr' => false === $options['label'] ? ['class' => 'w-25'] : [],
                 'constraints' => new NotBlank(),
             ])
             ->add('values', $type, [
                 'label' => 'product_option.values',
+                'row_attr' => false === $options['label'] ? ['class' => 'w-75'] : [],
                 'constraints' => [
                     new Count(min: 1),
-                    new Unique(normalizer: fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value)),
+                    new Unique(normalizer: static fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value)),
                 ],
             ])
         ;

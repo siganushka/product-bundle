@@ -69,7 +69,7 @@ class ProductListener
                 $entity->addVariant($this->repository->createNew($choice)->setEnabled(false));
             }
 
-            $codes = array_map(fn (ProductVariantChoice $item) => $item->code, $choices);
+            $codes = array_map(static fn (ProductVariantChoice $item) => $item->code, $choices);
             foreach ($entity->getVariants() as $variant) {
                 if (!\in_array($variant->getCode(), $codes)) {
                     $em->remove($variant);

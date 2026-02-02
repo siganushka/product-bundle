@@ -49,7 +49,7 @@ class ProductType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $combinable = function (Options $options) {
+        $combinable = static function (Options $options) {
             $data = $options['data'] ?? null;
             if ($data instanceof Product) {
                 return !$data->getOptions()->isEmpty();
@@ -68,8 +68,7 @@ class ProductType extends AbstractType
     {
         $event->getForm()->add('variants', ProductVariantType::class, [
             'property_path' => 'variants[0]',
-            // You need to manually set the association here
-            'setter' => fn (Product &$product, ProductVariant $variant) => $product->addVariant($variant),
+            'setter' => static fn (Product &$product, ProductVariant $variant) => $product->addVariant($variant),
             'error_bubbling' => false,
         ]);
     }
@@ -90,7 +89,7 @@ class ProductType extends AbstractType
             'by_reference' => false,
             'constraints' => [
                 new Count(min: 1, max: 3),
-                new Unique(normalizer: fn (ProductOption $option) => $option->getName() ?? spl_object_hash($option)),
+                new Unique(normalizer: static fn (ProductOption $option) => $option->getName() ?? spl_object_hash($option)),
             ],
         ]);
     }

@@ -24,9 +24,8 @@ class ProductOptionValueType extends AbstractType
             ->add('img', MediaType::class, [
                 'label' => 'product_option_value.img',
                 'rule' => 'product_img',
-                // Attributes when embedded in a collection
                 'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
-                'row_attr' => false === $options['label'] ? ['style' => 'width: 0'] : [],
+                'row_attr' => false === $options['label'] ? ['class' => 'w-0'] : [],
                 'required' => false,
             ])
             ->add('text', TextType::class, [

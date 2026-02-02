@@ -56,7 +56,7 @@ class ProductOptionValuesTextTypeTest extends TypeTestCase
         $repository = $this->createMock(ProductOptionValueRepository::class);
         $repository->expects(static::any())
             ->method('createNew')
-            ->willReturnCallback(fn (...$args) => new ProductOptionValue(...$args))
+            ->willReturnCallback(static fn (...$args) => new ProductOptionValue(...$args))
         ;
 
         return [
