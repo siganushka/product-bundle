@@ -1,6 +1,7 @@
 {
     "require": {
         "php-cs-fixer/shim": "^3.0",
+        "friendsoftwig/twigcs": "^6.0",
         "symfony/phpunit-bridge": "^7.4|^8.0",
         "phpstan/phpstan": "^2.0",
         "phpstan/extension-installer": "^1.4",
