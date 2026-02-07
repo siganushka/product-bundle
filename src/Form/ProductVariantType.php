@@ -18,8 +18,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProductVariantType extends AbstractType
 {
@@ -32,15 +30,10 @@ class ProductVariantType extends AbstractType
         $builder
             ->add('price', MoneyType::class, [
                 'label' => 'product_variant.price',
-                'constraints' => [
-                    new NotBlank(groups: ['PriceRequired']),
-                    new GreaterThanOrEqual(0),
-                ],
                 'required' => false,
             ])
             ->add('stock', IntegerType::class, [
                 'label' => 'product_variant.stock',
-                'constraints' => new GreaterThanOrEqual(0),
                 'required' => false,
             ])
             ->add('version', HiddenType::class)

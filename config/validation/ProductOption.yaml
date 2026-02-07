@@ -1,0 +1,7 @@
+Siganushka\ProductBundle\Entity\ProductOption:
+    properties:
+        name:
+            - NotBlank: ~
+        values:
+            - Count: { min: 1 }
+            - Unique: { normalizer: 'Siganushka\ProductBundle\Form\ProductOptionValueType::normalize' }

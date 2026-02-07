@@ -19,7 +19,7 @@ class ProductOptionValuesTextListener implements EventSubscriberInterface
     public function onSubmit(SubmitEvent $event): void
     {
         /** @var array<int, ProductOptionValue> */
-        $previousData = $event->getForm()->getData() ?? [];
+        $previousData = $event->getForm()->getNormData() ?? [];
         /** @var array<int, ProductOptionValue> */
         $newData = $event->getData();
 
