@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\MediaBundle\Form\Type\MediaType;
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProductOptionValueType extends AbstractType
 {
@@ -30,6 +30,7 @@ class ProductOptionValueType extends AbstractType
             ])
             ->add('text', TextType::class, [
                 'label' => 'product_option_value.text',
+                'constraints' => new NotBlank(),
             ])
         ;
     }
@@ -39,10 +40,5 @@ class ProductOptionValueType extends AbstractType
         $resolver->setDefaults([
             'data_class' => $this->repository->getClassName(),
         ]);
-    }
-
-    public static function normalize(ProductOptionValue $item): string
-    {
-        return $item->getText() ?? spl_object_hash($item);
     }
 }

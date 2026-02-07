@@ -1,7 +1,0 @@
-Siganushka\ProductBundle\Entity\ProductVariant:
-    properties:
-        price:
-            - NotBlank: { groups: [PriceRequired] }
-            - GreaterThanOrEqual: 0
-        stock:
-            - GreaterThanOrEqual: 0

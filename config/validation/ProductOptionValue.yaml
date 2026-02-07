@@ -1,4 +1,0 @@
-Siganushka\ProductBundle\Entity\ProductOptionValue:
-    properties:
-        text:
-            - NotBlank: ~
