@@ -10,7 +10,6 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -43,7 +42,6 @@ class ProductVariantType extends AbstractType
                 'constraints' => new GreaterThanOrEqual(0),
                 'required' => false,
             ])
-            ->add('version', HiddenType::class)
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, $this->onPreSetData(...));
