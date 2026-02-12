@@ -12,8 +12,6 @@ Siganushka\ProductBundle\Entity\ProductVariant:
             groups: ['product_variant:collection', 'product:item', 'product:collection']
         img:
             groups: ['product_variant:collection', 'product:item', 'product:collection']
-        outOfStock:
-            groups: ['product_variant:collection', 'product:item', 'product:collection']
         enabled:
             groups: ['product_variant:collection', 'product:item', 'product:collection']
         createdAt:
