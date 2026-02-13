@@ -142,4 +142,9 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     {
         throw new \BadMethodCallException('The variants cannot be modified anymore.');
     }
+
+    public function getVariantsCount(): int
+    {
+        return $this->variants->filter(static fn (ProductVariant $item) => $item->isEnabled())->count();
+    }
 }
