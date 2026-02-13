@@ -75,9 +75,8 @@ class ProductType extends AbstractType
 
     public function addOptionsField(PreSetDataEvent $event): void
     {
-        /** @var Product */
         $data = $event->getData();
-        $persisted = null !== $data->getId();
+        $persisted = $data instanceof Product && null !== $data->getId();
 
         $event->getForm()->add('options', CollectionType::class, [
             'label' => 'product.options',
