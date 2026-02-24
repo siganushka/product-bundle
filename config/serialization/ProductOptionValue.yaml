@@ -8,6 +8,8 @@ Siganushka\ProductBundle\Entity\ProductOptionValue:
             groups: ['product_option:item', 'product:item', 'product:collection']
         img:
             groups: ['product_option:item', 'product:item', 'product:collection']
+        variantsCount:
+            groups: ['product_option:item', 'product:item', 'product:collection']
         createdAt:
             groups: ['product_option:item', 'product:item', 'product:collection']
         updatedAt:
