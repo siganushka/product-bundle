@@ -49,7 +49,7 @@ class ProductOptionType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => $this->repository->getClassName(),
-            'simple' => false,
+            'simple' => true,
         ]);
     }
 }

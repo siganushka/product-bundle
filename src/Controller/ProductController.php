@@ -13,6 +13,7 @@ use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 
 class ProductController extends AbstractController
@@ -31,11 +32,8 @@ class ProductController extends AbstractController
         ]);
     }
 
-    public function postCollection(Request $request, EntityManagerInterface $entityManager): Response
+    public function postCollection(Request $request, EntityManagerInterface $entityManager, #[MapQueryParameter] bool $combinable = false): Response
     {
-        // @see https://www.php.net/manual/en/filter.constants.php#constant.filter-validate-bool
-        $combinable = $request->query->getBoolean('combinable', false);
-
         $entity = $this->productRepository->createNew();
 
         $form = $this->createForm(ProductType::class, $entity, compact('combinable'));
