@@ -24,12 +24,12 @@ class ProductRepository extends GenericEntityRepository
             $queryBuilder->andWhere(\sprintf('%s.name LIKE :name', $alias))->setParameter('name', '%'.$dto->name.'%');
         }
 
-        if ($dto->startAt) {
-            $queryBuilder->andWhere(\sprintf('%s.createdAt >= :startAt', $alias))->setParameter('startAt', $dto->startAt);
+        if ($dto->created?->startAt) {
+            $queryBuilder->andWhere(\sprintf('%s.createdAt >= :startAt', $alias))->setParameter('startAt', $dto->created->startAt);
         }
 
-        if ($dto->endAt) {
-            $queryBuilder->andWhere(\sprintf('%s.createdAt <= :endAt', $alias))->setParameter('endAt', $dto->endAt);
+        if ($dto->created?->endAt) {
+            $queryBuilder->andWhere(\sprintf('%s.createdAt <= :endAt', $alias))->setParameter('endAt', $dto->created->endAt);
         }
 
         return $queryBuilder;
