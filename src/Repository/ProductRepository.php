@@ -19,7 +19,7 @@ class ProductRepository extends GenericEntityRepository
 {
     public function createQueryBuilderByDto(string $alias, ProductQueryDto $dto): QueryBuilder
     {
-        $criteria = Criteria::create();
+        $criteria = Criteria::create(true);
 
         if ($dto->name) {
             $criteria->andWhere(Criteria::expr()->contains('name', $dto->name));
