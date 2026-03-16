@@ -49,19 +49,19 @@ class ProductType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $combinable = static function (Options $options) {
+        $resolver->setDefaults([
+            'data_class' => $this->repository->getClassName(),
+            'combinable' => false,
+        ]);
+
+        $resolver->setNormalizer('combinable', static function (Options $options, bool $combinable) {
             $data = $options['data'] ?? null;
-            if ($data instanceof Product) {
+            if ($data instanceof Product && null !== $data->getId()) {
                 return !$data->getOptions()->isEmpty();
             }
 
-            return false;
-        };
-
-        $resolver->setDefaults([
-            'data_class' => $this->repository->getClassName(),
-            'combinable' => $combinable,
-        ]);
+            return $combinable;
+        });
     }
 
     public function addVariantField(PreSetDataEvent $event): void
