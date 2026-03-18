@@ -39,6 +39,10 @@ class ProductType extends AbstractType
                 'label' => 'product.name',
                 'constraints' => new NotBlank(),
             ])
+            ->add('summary', TextType::class, [
+                'label' => 'product.summary',
+                'required' => false,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, $options['combinable']

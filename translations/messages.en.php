@@ -3,8 +3,9 @@
 declare(strict_types=1);
 
 return [
-    'product.name' => 'Product Name',
     'product.img' => 'Prodcut Image',
+    'product.name' => 'Product Name',
+    'product.summary' => 'Product Summary',
     'product.options' => 'Prodcut Options',
     'product.variants' => 'Variants',
 

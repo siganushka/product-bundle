@@ -35,7 +35,7 @@ class ProductVariantType extends AbstractType
                     new NotBlank(groups: ['PriceRequired']),
                     new GreaterThanOrEqual(0),
                 ],
-                'required' => false,
+                'required' => false !== $options['label'],
             ])
             ->add('stock', IntegerType::class, [
                 'label' => 'product_variant.stock',
@@ -83,8 +83,9 @@ class ProductVariantType extends AbstractType
             ])
             ->add('name', TextType::class, [
                 'label' => 'product_variant.name',
-                'disabled' => true,
                 'priority' => 10,
+                'required' => false,
+                'disabled' => true,
             ])
             ->add('enabled', CheckboxType::class, [
                 'label' => false === $label ? false : 'generic.enable',
