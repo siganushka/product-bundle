@@ -4,6 +4,8 @@ Siganushka\ProductBundle\Entity\Product:
             groups: ['product:item', 'product:collection']
         name:
             groups: ['product:item', 'product:collection']
+        summary:
+            groups: ['product:item', 'product:collection']
         img:
             groups: ['product:item', 'product:collection']
         options:
