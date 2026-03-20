@@ -62,7 +62,7 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
                         'minRatio' => 1,
                         'maxRatio' => 1,
                     ],
-                    'resize' => class_exists(\Imagick::class) ? 800 : false,
+                    'resize' => class_exists(\Imagick::class) ? 1080 : false,
                     'optimize' => class_exists(OptimizerChainFactory::class) ? 85 : false,
                 ],
             ],
