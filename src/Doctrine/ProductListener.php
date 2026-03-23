@@ -22,17 +22,17 @@ class ProductListener
 
     public function onFlush(OnFlushEventArgs $event): void
     {
+        /** @var \SplObjectStorage<Product, null> */
+        $collectProducts = new \SplObjectStorage();
+        /** @var \SplObjectStorage<ProductVariant, null> */
+        $collectProductVariants = new \SplObjectStorage();
+
         $em = $event->getObjectManager();
         $uow = $em->getUnitOfWork();
 
-        /** @var \SplObjectStorage<Product, null> */
-        $changedProducts = new \SplObjectStorage();
-        /** @var \SplObjectStorage<ProductVariant, null> */
-        $changedProductVariants = new \SplObjectStorage();
-
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
             if ($entity instanceof Product) {
-                $changedProducts->attach($entity);
+                $collectProducts->attach($entity);
             }
         }
 
@@ -40,36 +40,36 @@ class ProductListener
             $owner = $collection->getOwner();
             $mappig = $collection->getMapping();
             if ($owner instanceof Product && is_subclass_of($mappig->targetEntity, ProductOption::class)) {
-                $changedProducts->attach($owner);
+                $collectProducts->attach($owner);
             } elseif ($owner instanceof ProductOption && is_subclass_of($mappig->targetEntity, ProductOptionValue::class) && $owner->getProduct()) {
-                $changedProducts->attach($owner->getProduct());
+                $collectProducts->attach($owner->getProduct());
             }
         }
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if ($entity instanceof ProductOptionValue && \array_key_exists('text', $uow->getEntityChangeSet($entity))) {
                 foreach ($entity->getVariants() as $variant) {
-                    $changedProductVariants->attach($variant);
+                    $collectProductVariants->attach($variant);
                 }
             }
         }
 
-        $this->generateProductVariants($em, $uow, $changedProducts);
-        $this->updateProductVariants($em, $uow, $changedProductVariants);
+        $this->generateProductVariants($em, $uow, $collectProducts);
+        $this->updateProductVariants($em, $uow, $collectProductVariants);
     }
 
     /**
-     * @param \SplObjectStorage<Product, null> $changedProducts
+     * @param \SplObjectStorage<Product, null> $collectProducts
      */
-    public function generateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $changedProducts): void
+    public function generateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $collectProducts): void
     {
-        foreach ($changedProducts as $entity) {
-            $choices = $entity->generateChoices();
-            foreach ($choices as $choice) {
+        foreach ($collectProducts as $entity) {
+            $codes = [];
+            foreach ($entity->generateChoices() as $choice) {
+                $codes[] = $choice->code;
                 $entity->addVariant($this->repository->createNew($choice)->setEnabled(false));
             }
 
-            $codes = array_map(static fn (ProductVariantChoice $item) => $item->code, $choices);
             foreach ($entity->getVariants() as $variant) {
                 if (!\in_array($variant->getCode(), $codes)) {
                     $em->remove($variant);
@@ -81,11 +81,11 @@ class ProductListener
     }
 
     /**
-     * @param \SplObjectStorage<ProductVariant, null> $changedProductVariants
+     * @param \SplObjectStorage<ProductVariant, null> $collectProductVariants
      */
-    public function updateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $changedProductVariants): void
+    public function updateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $collectProductVariants): void
     {
-        foreach ($changedProductVariants as $entity) {
+        foreach ($collectProductVariants as $entity) {
             $choice = $entity->getOptionValues();
             if (!$choice instanceof ProductVariantChoice) {
                 $choice = new ProductVariantChoice($choice->toArray());
