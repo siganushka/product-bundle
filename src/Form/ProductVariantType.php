@@ -35,11 +35,13 @@ class ProductVariantType extends AbstractType
                     new NotBlank(groups: ['PriceRequired']),
                     new GreaterThanOrEqual(0),
                 ],
+                'row_attr' => false === $options['label'] ? ['class' => 'w-25'] : [],
                 'required' => false !== $options['label'],
             ])
             ->add('stock', IntegerType::class, [
                 'label' => 'product_variant.stock',
                 'constraints' => new GreaterThanOrEqual(0),
+                'row_attr' => false === $options['label'] ? ['class' => 'w-25'] : [],
                 'required' => false,
             ])
         ;
