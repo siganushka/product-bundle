@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
-use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
@@ -75,14 +74,6 @@ class ProductVariantType extends AbstractType
         $label = $form->getConfig()->getOption('label');
 
         $form
-            ->add('img', MediaType::class, [
-                'label' => 'product_variant.img',
-                'rule' => 'product_img',
-                'style' => false === $label ? 'width: 38px; height: 38px' : null,
-                'row_attr' => false === $label ? ['class' => 'w-0'] : [],
-                'priority' => 20,
-                'required' => false,
-            ])
             ->add('name', TextType::class, [
                 'label' => 'product_variant.name',
                 'priority' => 10,

@@ -18,5 +18,4 @@ return [
     'product_variant.name' => 'Name',
     'product_variant.price' => 'Price',
     'product_variant.stock' => 'Stock',
-    'product_variant.img' => 'Image',
 ];

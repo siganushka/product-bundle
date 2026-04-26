@@ -18,5 +18,4 @@ return [
     'product_variant.name' => '规格名称',
     'product_variant.price' => '销售单价',
     'product_variant.stock' => '库存数量',
-    'product_variant.img' => '库存图片',
 ];

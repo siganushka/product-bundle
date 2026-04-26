@@ -12,13 +12,11 @@ use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
-use Siganushka\MediaBundle\Entity\Media;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 /**
  * @template TProduct of Product = Product
- * @template TMedia of Media = Media
  * @template TOptionValue of ProductOptionValue = ProductOptionValue
  */
 #[ORM\Entity(repositoryClass: ProductVariantRepository::class)]
@@ -46,12 +44,6 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
 
     #[ORM\Column(nullable: true)]
     protected ?int $stock = null;
-
-    /**
-     * @var TMedia|null
-     */
-    #[ORM\ManyToOne(targetEntity: Media::class)]
-    protected ?Media $img = null;
 
     /**
      * @var Collection<int, TOptionValue>|ProductVariantChoice<TOptionValue>
@@ -130,24 +122,6 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     public function setStock(?int $stock): static
     {
         $this->stock = $stock;
-
-        return $this;
-    }
-
-    /**
-     * @return TMedia|null
-     */
-    public function getImg(): ?Media
-    {
-        return $this->img;
-    }
-
-    /**
-     * @param TMedia|null $img
-     */
-    public function setImg(?Media $img): static
-    {
-        $this->img = $img;
 
         return $this;
     }
