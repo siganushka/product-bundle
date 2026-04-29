@@ -84,11 +84,6 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         return $this->code;
     }
 
-    public function setCode(?string $code): static
-    {
-        throw new \BadMethodCallException('The code cannot be modified anymore.');
-    }
-
     public function getText(): ?string
     {
         return $this->text;
@@ -125,22 +120,6 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     public function getVariants(): Collection
     {
         return $this->variants;
-    }
-
-    /**
-     * @param TVariant $variant
-     */
-    public function addVariant(ProductVariant $variant): static
-    {
-        throw new \BadMethodCallException('The variants cannot be modified anymore.');
-    }
-
-    /**
-     * @param TVariant $variant
-     */
-    public function removeVariant(ProductVariant $variant): static
-    {
-        throw new \BadMethodCallException('The variants cannot be modified anymore.');
     }
 
     public function getVariantsCount(): int

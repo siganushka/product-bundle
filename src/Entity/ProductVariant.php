@@ -87,19 +87,9 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return $this->code;
     }
 
-    public function setCode(?string $code): static
-    {
-        throw new \BadMethodCallException('The code cannot be modified anymore.');
-    }
-
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    public function setName(?string $name): static
-    {
-        throw new \BadMethodCallException('The name cannot be modified anymore.');
     }
 
     public function getPrice(): ?int
@@ -132,21 +122,5 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     public function getOptionValues(): Collection
     {
         return $this->optionValues;
-    }
-
-    /**
-     * @param TOptionValue $optionValue
-     */
-    public function addOptionValue(ProductOptionValue $optionValue): static
-    {
-        throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
-    }
-
-    /**
-     * @param TOptionValue $optionValue
-     */
-    public function removeOptionValue(ProductOptionValue $optionValue): static
-    {
-        throw new \BadMethodCallException('The optionValues cannot be modified anymore.');
     }
 }
