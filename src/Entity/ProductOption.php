@@ -110,17 +110,13 @@ class ProductOption implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    /**
-     * @see https://www.doctrine-project.org/projects/doctrine-orm/en/2.13/cookbook/implementing-wakeup-or-clone.html
-     */
     public function __clone(): void
     {
-        $previousValues = $this->values;
+        $previousValues = $this->values->toArray();
 
         $this->id = null;
         $this->values = new ArrayCollection();
-        $previousValues->map(fn (ProductOptionValue $value) => $this->addValue(clone $value));
 
-        unset($previousValues);
+        array_walk($previousValues, fn (ProductOptionValue $value) => $this->addValue(clone $value));
     }
 }

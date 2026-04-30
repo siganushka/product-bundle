@@ -30,7 +30,11 @@ class ProductOptionTest extends TestCase
         $po->addValue(new FooProductOptionValue(null, 'bar'));
         $po->addValue(new FooProductOptionValue(null, 'baz'));
 
+        (new \ReflectionProperty($po, 'id'))->setValue($po, 1);
+
         $po2 = clone $po;
+
+        static::assertNull($po2->getId());
         static::assertNotSame($po->getValues(), $po2->getValues());
         static::assertNotSame($po->getValues()[0], $po2->getValues()[0]);
         static::assertNotSame($po->getValues()[1], $po2->getValues()[1]);
