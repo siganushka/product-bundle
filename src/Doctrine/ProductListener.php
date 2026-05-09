@@ -11,7 +11,6 @@ use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Entity\ProductVariant;
-use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 class ProductListener
@@ -86,13 +85,8 @@ class ProductListener
     public function updateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $collectProductVariants): void
     {
         foreach ($collectProductVariants as $entity) {
-            $choice = $entity->getOptionValues();
-            if (!$choice instanceof ProductVariantChoice) {
-                $choice = new ProductVariantChoice($choice->toArray());
-            }
-
             $ref = new \ReflectionProperty($entity, 'name');
-            $ref->setValue($entity, $choice->name);
+            $ref->setValue($entity, $entity->getChoice()->name);
 
             $uow->computeChangeSet($em->getClassMetadata($entity::class), $entity);
         }

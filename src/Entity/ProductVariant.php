@@ -46,11 +46,11 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     protected ?int $stock = null;
 
     /**
-     * @var Collection<int, TOptionValue>|ProductVariantChoice<TOptionValue>
+     * @var Collection<int, TOptionValue>
      */
     #[ORM\ManyToMany(targetEntity: ProductOptionValue::class, inversedBy: 'variants')]
     #[ORM\JoinTable('product_variant_value')]
-    protected Collection $optionValues;
+    protected Collection $choice;
 
     /**
      * @param ProductVariantChoice<TOptionValue>|null $choice
@@ -61,7 +61,7 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
 
         $this->code = $choice->code;
         $this->name = $choice->name;
-        $this->optionValues = $choice;
+        $this->choice = $choice;
     }
 
     /**
@@ -116,11 +116,12 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return $this;
     }
 
-    /**
-     * @return Collection<int, TOptionValue>|ProductVariantChoice
-     */
-    public function getOptionValues(): Collection
+    public function getChoice(): ProductVariantChoice
     {
-        return $this->optionValues;
+        if ($this->choice instanceof ProductVariantChoice) {
+            return $this->choice;
+        }
+
+        return $this->choice = new ProductVariantChoice($this->choice->toArray());
     }
 }

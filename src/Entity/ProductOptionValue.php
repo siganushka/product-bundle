@@ -47,7 +47,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     /**
      * @var Collection<int, TVariant>
      */
-    #[ORM\ManyToMany(targetEntity: ProductVariant::class, mappedBy: 'optionValues', cascade: ['all'])]
+    #[ORM\ManyToMany(targetEntity: ProductVariant::class, mappedBy: 'choice', cascade: ['all'])]
     protected Collection $variants;
 
     /**
