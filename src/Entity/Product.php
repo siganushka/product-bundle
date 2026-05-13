@@ -43,14 +43,14 @@ class Product implements ResourceInterface, TimestampableInterface
      * @var Collection<int, TOption>
      */
     #[ORM\OneToMany(targetEntity: ProductOption::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
-    #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['id' => 'ASC'])]
     protected Collection $options;
 
     /**
      * @var Collection<int, TVariant>
      */
     #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
-    #[ORM\OrderBy(['createdAt' => 'ASC', 'id' => 'ASC'])]
+    #[ORM\OrderBy(['id' => 'ASC'])]
     protected Collection $variants;
 
     public function __construct(?string $name = null)
