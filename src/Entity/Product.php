@@ -39,6 +39,12 @@ class Product implements ResourceInterface, TimestampableInterface
     #[ORM\ManyToOne(targetEntity: Media::class)]
     protected ?Media $img = null;
 
+    #[ORM\Column(nullable: true)]
+    protected ?int $lowestPrice = null;
+
+    #[ORM\Column(nullable: true)]
+    protected ?int $highestPrice = null;
+
     /**
      * @var Collection<int, TOption>
      */
@@ -98,6 +104,30 @@ class Product implements ResourceInterface, TimestampableInterface
     public function setImg(?Media $img): static
     {
         $this->img = $img;
+
+        return $this;
+    }
+
+    public function getLowestPrice(): ?int
+    {
+        return $this->lowestPrice;
+    }
+
+    public function setLowestPrice(?int $lowestPrice): static
+    {
+        $this->lowestPrice = $lowestPrice;
+
+        return $this;
+    }
+
+    public function getHighestPrice(): ?int
+    {
+        return $this->highestPrice;
+    }
+
+    public function setHighestPrice(?int $highestPrice): static
+    {
+        $this->highestPrice = $highestPrice;
 
         return $this;
     }

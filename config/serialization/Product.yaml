@@ -8,6 +8,10 @@ Siganushka\ProductBundle\Entity\Product:
             groups: ['product:item', 'product:collection']
         img:
             groups: ['product:item', 'product:collection']
+        lowestPrice:
+            groups: ['product:item', 'product:collection']
+        highestPrice:
+            groups: ['product:item', 'product:collection']
         options:
             groups: ['product:item', 'product:collection']
         variants:

@@ -22,16 +22,32 @@ class ProductListener
     public function onFlush(OnFlushEventArgs $event): void
     {
         /** @var \SplObjectStorage<Product, null> */
-        $collectProducts = new \SplObjectStorage();
+        $pendingToGenerateVariants = new \SplObjectStorage();
+        /** @var \SplObjectStorage<Product, null> */
+        $pendingToUpdatePriceRange = new \SplObjectStorage();
         /** @var \SplObjectStorage<ProductVariant, null> */
-        $collectProductVariants = new \SplObjectStorage();
+        $pendingToUpdateName = new \SplObjectStorage();
 
         $em = $event->getObjectManager();
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
             if ($entity instanceof Product) {
-                $collectProducts->attach($entity);
+                $pendingToGenerateVariants->attach($entity);
+            } elseif ($entity instanceof ProductVariant && $entity->getProduct()) {
+                $pendingToUpdatePriceRange->attach($entity->getProduct());
+            }
+        }
+
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            if ($entity instanceof ProductOptionValue && \array_key_exists('text', $uow->getEntityChangeSet($entity))) {
+                foreach ($entity->getVariants() as $variant) {
+                    $pendingToUpdateName->attach($variant);
+                }
+            }
+
+            if ($entity instanceof ProductVariant && $entity->getProduct()) {
+                $pendingToUpdatePriceRange->attach($entity->getProduct());
             }
         }
 
@@ -39,56 +55,69 @@ class ProductListener
             $owner = $collection->getOwner();
             $mappig = $collection->getMapping();
             if ($owner instanceof Product && is_subclass_of($mappig->targetEntity, ProductOption::class)) {
-                $collectProducts->attach($owner);
+                $pendingToGenerateVariants->attach($owner);
             } elseif ($owner instanceof ProductOption && is_subclass_of($mappig->targetEntity, ProductOptionValue::class) && $owner->getProduct()) {
-                $collectProducts->attach($owner->getProduct());
+                $pendingToGenerateVariants->attach($owner->getProduct());
             }
         }
 
-        foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof ProductOptionValue && \array_key_exists('text', $uow->getEntityChangeSet($entity))) {
-                foreach ($entity->getVariants() as $variant) {
-                    $collectProductVariants->attach($variant);
-                }
-            }
-        }
-
-        $this->generateProductVariants($em, $uow, $collectProducts);
-        $this->updateProductVariants($em, $uow, $collectProductVariants);
+        $this->generateProductVariants($em, $uow, $pendingToGenerateVariants);
+        $this->updateProductPriceRange($em, $uow, $pendingToUpdatePriceRange);
+        $this->updateProductVariantName($em, $uow, $pendingToUpdateName);
     }
 
     /**
-     * @param \SplObjectStorage<Product, null> $collectProducts
+     * @param \SplObjectStorage<Product, null> $products
      */
-    public function generateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $collectProducts): void
+    public function generateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $products): void
     {
-        foreach ($collectProducts as $entity) {
+        foreach ($products as $product) {
             $codes = [];
-            foreach ($entity->generateChoices() as $choice) {
+            foreach ($product->generateChoices() as $choice) {
                 $codes[] = $choice->code;
-                $entity->addVariant($this->repository->createNew($choice)->setEnabled(false));
+                $product->addVariant($this->repository->createNew($choice)->setEnabled(false));
             }
 
-            foreach ($entity->getVariants() as $variant) {
+            foreach ($product->getVariants() as $variant) {
                 if (!\in_array($variant->getCode(), $codes)) {
                     $em->remove($variant);
                 }
             }
 
-            $uow->computeChangeSet($em->getClassMetadata($entity::class), $entity);
+            $uow->computeChangeSet($em->getClassMetadata($product::class), $product);
         }
     }
 
     /**
-     * @param \SplObjectStorage<ProductVariant, null> $collectProductVariants
+     * @param \SplObjectStorage<Product, null> $products
      */
-    public function updateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $collectProductVariants): void
+    public function updateProductPriceRange(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $products): void
     {
-        foreach ($collectProductVariants as $entity) {
-            $ref = new \ReflectionProperty($entity, 'name');
-            $ref->setValue($entity, $entity->getChoice()->name);
+        foreach ($products as $product) {
+            $prices = [];
+            foreach ($product->getVariants() as $variant) {
+                if ($variant->isEnabled() && null !== $variant->getPrice()) {
+                    $prices[] = $variant->getPrice();
+                }
+            }
 
-            $uow->computeChangeSet($em->getClassMetadata($entity::class), $entity);
+            $product->setLowestPrice($prices ? min($prices) : null);
+            $product->setHighestPrice($prices ? max($prices) : null);
+
+            $uow->recomputeSingleEntityChangeSet($em->getClassMetadata($product::class), $product);
+        }
+    }
+
+    /**
+     * @param \SplObjectStorage<ProductVariant, null> $variants
+     */
+    public function updateProductVariantName(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $variants): void
+    {
+        foreach ($variants as $variant) {
+            $ref = new \ReflectionProperty($variant, 'name');
+            $ref->setValue($variant, $variant->getChoice()->name);
+
+            $uow->recomputeSingleEntityChangeSet($em->getClassMetadata($variant::class), $variant);
         }
     }
 }
