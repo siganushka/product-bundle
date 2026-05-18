@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Doctrine;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-use Doctrine\ORM\UnitOfWork;
 use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
@@ -22,32 +20,36 @@ class ProductListener
     public function onFlush(OnFlushEventArgs $event): void
     {
         /** @var \SplObjectStorage<Product, null> */
-        $pendingToGenerateVariants = new \SplObjectStorage();
+        $updateProductVariants = new \SplObjectStorage();
         /** @var \SplObjectStorage<Product, null> */
-        $pendingToUpdatePriceRange = new \SplObjectStorage();
+        $updateProductPrice = new \SplObjectStorage();
         /** @var \SplObjectStorage<ProductVariant, null> */
-        $pendingToUpdateName = new \SplObjectStorage();
+        $updateVariantName = new \SplObjectStorage();
 
         $em = $event->getObjectManager();
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
             if ($entity instanceof Product) {
-                $pendingToGenerateVariants->attach($entity);
+                $updateProductVariants->attach($entity);
             } elseif ($entity instanceof ProductVariant && $entity->getProduct()) {
-                $pendingToUpdatePriceRange->attach($entity->getProduct());
+                $updateProductPrice->attach($entity->getProduct());
             }
         }
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof ProductOptionValue && \array_key_exists('text', $uow->getEntityChangeSet($entity))) {
+            if ($entity instanceof ProductVariant && $entity->getProduct()) {
+                $updateProductPrice->attach($entity->getProduct());
+            } elseif ($entity instanceof ProductOptionValue && \array_key_exists('text', $uow->getEntityChangeSet($entity))) {
                 foreach ($entity->getVariants() as $variant) {
-                    $pendingToUpdateName->attach($variant);
+                    $updateVariantName->attach($variant);
                 }
             }
+        }
 
+        foreach ($uow->getScheduledEntityDeletions() as $entity) {
             if ($entity instanceof ProductVariant && $entity->getProduct()) {
-                $pendingToUpdatePriceRange->attach($entity->getProduct());
+                $updateProductPrice->attach($entity->getProduct());
             }
         }
 
@@ -55,69 +57,59 @@ class ProductListener
             $owner = $collection->getOwner();
             $mappig = $collection->getMapping();
             if ($owner instanceof Product && is_subclass_of($mappig->targetEntity, ProductOption::class)) {
-                $pendingToGenerateVariants->attach($owner);
+                $updateProductVariants->attach($owner);
             } elseif ($owner instanceof ProductOption && is_subclass_of($mappig->targetEntity, ProductOptionValue::class) && $owner->getProduct()) {
-                $pendingToGenerateVariants->attach($owner->getProduct());
+                $updateProductVariants->attach($owner->getProduct());
             }
         }
 
-        $this->generateProductVariants($em, $uow, $pendingToGenerateVariants);
-        $this->updateProductPriceRange($em, $uow, $pendingToUpdatePriceRange);
-        $this->updateProductVariantName($em, $uow, $pendingToUpdateName);
-    }
-
-    /**
-     * @param \SplObjectStorage<Product, null> $products
-     */
-    public function generateProductVariants(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $products): void
-    {
-        foreach ($products as $product) {
-            $codes = [];
-            foreach ($product->generateChoices() as $choice) {
-                $codes[] = $choice->code;
-                $product->addVariant($this->repository->createNew($choice)->setEnabled(false));
-            }
-
-            foreach ($product->getVariants() as $variant) {
-                if (!\in_array($variant->getCode(), $codes)) {
-                    $em->remove($variant);
-                }
-            }
-
+        foreach ($updateProductVariants as $product) {
+            $this->updateProductVariants($product);
             $uow->computeChangeSet($em->getClassMetadata($product::class), $product);
         }
-    }
 
-    /**
-     * @param \SplObjectStorage<Product, null> $products
-     */
-    public function updateProductPriceRange(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $products): void
-    {
-        foreach ($products as $product) {
-            $prices = [];
-            foreach ($product->getVariants() as $variant) {
-                if ($variant->isEnabled() && null !== $variant->getPrice()) {
-                    $prices[] = $variant->getPrice();
-                }
-            }
-
-            $product->setLowestPrice($prices ? min($prices) : null);
-            $product->setHighestPrice($prices ? max($prices) : null);
-
+        foreach ($updateProductPrice as $product) {
+            $this->updateProductPrice($product);
             $uow->recomputeSingleEntityChangeSet($em->getClassMetadata($product::class), $product);
         }
-    }
 
-    /**
-     * @param \SplObjectStorage<ProductVariant, null> $variants
-     */
-    public function updateProductVariantName(EntityManagerInterface $em, UnitOfWork $uow, \SplObjectStorage $variants): void
-    {
-        foreach ($variants as $variant) {
-            $ref = new \ReflectionProperty($variant, 'name');
-            $ref->setValue($variant, $variant->getChoice()->name);
-
+        foreach ($updateVariantName as $variant) {
+            $this->updateVariantName($variant);
             $uow->recomputeSingleEntityChangeSet($em->getClassMetadata($variant::class), $variant);
         }
+    }
+
+    public function updateProductVariants(Product $product): void
+    {
+        $codes = [];
+        foreach ($product->generateChoices() as $choice) {
+            $codes[] = $choice->code;
+            $product->addVariant($this->repository->createNew($choice)->setEnabled(false));
+        }
+
+        foreach ($product->getVariants() as $variant) {
+            if (!\in_array($variant->getCode(), $codes)) {
+                $product->removeVariant($variant);
+            }
+        }
+    }
+
+    public function updateProductPrice(Product $product): void
+    {
+        $prices = [];
+        foreach ($product->getVariants() as $variant) {
+            if ($variant->isEnabled() && null !== $variant->getPrice()) {
+                $prices[] = $variant->getPrice();
+            }
+        }
+
+        $product->setLowestPrice($prices ? min($prices) : null);
+        $product->setHighestPrice($prices ? max($prices) : null);
+    }
+
+    public function updateVariantName(ProductVariant $variant): void
+    {
+        $ref = new \ReflectionProperty($variant, 'name');
+        $ref->setValue($variant, $variant->getChoice()->name);
     }
 }
