@@ -43,6 +43,13 @@ class ProductVariantType extends AbstractType
                 'row_attr' => false === $options['label'] ? ['class' => 'w-25'] : [],
                 'required' => false,
             ])
+            ->add('enabled', CheckboxType::class, [
+                'label' => false === $options['label'] ? false : 'generic.enable',
+                'label_attr' => ['class' => 'checkbox-switch'],
+                'row_attr' => false === $options['label'] ? ['class' => 'w-0 align-middle'] : [],
+                'priority' => false === $options['label'] ? 100 : -100,
+                'required' => false,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, $this->onPreSetData(...));
@@ -64,29 +71,16 @@ class ProductVariantType extends AbstractType
 
     public function onPreSetData(PreSetDataEvent $event): void
     {
-        /** @var ProductVariant|null */
         $data = $event->getData();
-        if (null === $data || null === $data->getCode()) {
-            return;
+        if ($data instanceof ProductVariant && $data->getCode()) {
+            $event->getForm()
+                ->add('name', TextType::class, [
+                    'label' => 'product_variant.name',
+                    'priority' => 10,
+                    'required' => false,
+                    'disabled' => true,
+                ])
+            ;
         }
-
-        $form = $event->getForm();
-        $label = $form->getConfig()->getOption('label');
-
-        $form
-            ->add('name', TextType::class, [
-                'label' => 'product_variant.name',
-                'priority' => 10,
-                'required' => false,
-                'disabled' => true,
-            ])
-            ->add('enabled', CheckboxType::class, [
-                'label' => false === $label ? false : 'generic.enable',
-                'label_attr' => ['class' => 'checkbox-switch'],
-                'row_attr' => false === $label ? ['class' => 'w-0 align-middle'] : [],
-                'priority' => false === $label ? 30 : -30,
-                'required' => false,
-            ])
-        ;
     }
 }

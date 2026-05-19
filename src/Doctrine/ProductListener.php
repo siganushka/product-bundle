@@ -50,10 +50,17 @@ class ProductListener
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
             if ($entity instanceof ProductVariant && $entity->getProduct()) {
                 $updateProductPrice->attach($entity->getProduct());
+            } elseif ($entity instanceof ProductOptionValue && $product = $entity->getOption()?->getProduct()) {
+                $updateProductVariants->attach($product);
             }
         }
 
-        foreach ($uow->getScheduledCollectionUpdates() as $collection) {
+        $collections = array_merge(
+            $uow->getScheduledCollectionUpdates(),
+            $uow->getScheduledCollectionDeletions(),
+        );
+
+        foreach ($collections as $collection) {
             $owner = $collection->getOwner();
             $mappig = $collection->getMapping();
             if ($owner instanceof Product && is_subclass_of($mappig->targetEntity, ProductOption::class)) {
