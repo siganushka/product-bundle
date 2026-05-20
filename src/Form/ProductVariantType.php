@@ -35,7 +35,7 @@ class ProductVariantType extends AbstractType
                     new GreaterThanOrEqual(0),
                 ],
                 'row_attr' => false === $options['label'] ? ['class' => 'w-25'] : [],
-                'required' => false !== $options['label'],
+                'required' => false,
             ])
             ->add('stock', IntegerType::class, [
                 'label' => 'product_variant.stock',
