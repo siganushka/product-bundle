@@ -10,10 +10,10 @@ use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Event\PreSetDataEvent;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -68,7 +68,7 @@ class ProductType extends AbstractType
         });
     }
 
-    public function addVariantField(PreSetDataEvent $event): void
+    public function addVariantField(FormEvent $event): void
     {
         $event->getForm()->add('variants', ProductVariantType::class, [
             'property_path' => 'variants[0]',
@@ -77,7 +77,7 @@ class ProductType extends AbstractType
         ]);
     }
 
-    public function addOptionsField(PreSetDataEvent $event): void
+    public function addOptionsField(FormEvent $event): void
     {
         $event->getForm()->add('options', CollectionType::class, [
             'label' => 'product.options',
