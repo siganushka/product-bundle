@@ -9,6 +9,7 @@ use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 class ProductListener
@@ -116,7 +117,9 @@ class ProductListener
 
     public function updateVariantName(ProductVariant $variant): void
     {
+        $choice = new ProductVariantChoice($variant->getOptionValues()->toArray());
+
         $ref = new \ReflectionProperty($variant, 'name');
-        $ref->setValue($variant, $variant->getChoice()->name);
+        $ref->setValue($variant, $choice->name);
     }
 }

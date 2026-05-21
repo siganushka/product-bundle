@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\EnableInterface;
@@ -50,18 +51,16 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
      */
     #[ORM\ManyToMany(targetEntity: ProductOptionValue::class, inversedBy: 'variants')]
     #[ORM\JoinTable('product_variant_value')]
-    protected Collection $choice;
+    protected Collection $optionValues;
 
     /**
-     * @param ProductVariantChoice<TOptionValue>|null $choice
+     * @param ProductVariantChoice<TOptionValue> $choice
      */
-    public function __construct(?ProductVariantChoice $choice = null)
+    public function __construct(ProductVariantChoice $choice = new ProductVariantChoice())
     {
-        $choice ??= new ProductVariantChoice();
-
         $this->code = $choice->code;
         $this->name = $choice->name;
-        $this->choice = $choice;
+        $this->optionValues = new ArrayCollection($choice->combinedOptionValues);
     }
 
     /**
@@ -116,12 +115,11 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
         return $this;
     }
 
-    public function getChoice(): ProductVariantChoice
+    /**
+     * @return Collection<int, TOptionValue>
+     */
+    public function getOptionValues(): Collection
     {
-        if ($this->choice instanceof ProductVariantChoice) {
-            return $this->choice;
-        }
-
-        return $this->choice = new ProductVariantChoice($this->choice->toArray());
+        return $this->optionValues;
     }
 }

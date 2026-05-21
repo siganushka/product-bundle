@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Model;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Siganushka\ProductBundle\Entity\ProductOptionValue;
 
 /**
  * @template TProductOptionValue of ProductOptionValue = ProductOptionValue
- * @extends ArrayCollection<array-key, TProductOptionValue>
  */
-final class ProductVariantChoice extends ArrayCollection
+final class ProductVariantChoice
 {
     /**
      * Generated unique code for combined option values.
@@ -26,7 +24,7 @@ final class ProductVariantChoice extends ArrayCollection
     /**
      * @param array<array-key, TProductOptionValue> $combinedOptionValues
      */
-    public function __construct(array $combinedOptionValues = [])
+    public function __construct(public readonly array $combinedOptionValues = [])
     {
         $codes = $texts = [];
         foreach ($combinedOptionValues as $optionValue) {
@@ -34,13 +32,11 @@ final class ProductVariantChoice extends ArrayCollection
             $texts[] = $optionValue->getText() ?? '-';
         }
 
-        // [important] Generated unique code by sorted
+        // [important] Generated unique code by sorted.
         sort($codes);
 
         $this->code = \count($codes) ? implode('-', $codes) : null;
         $this->name = \count($texts) ? implode('/', $texts) : null;
-
-        parent::__construct($combinedOptionValues);
     }
 
     /**
