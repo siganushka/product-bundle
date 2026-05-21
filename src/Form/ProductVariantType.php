@@ -35,19 +35,12 @@ class ProductVariantType extends AbstractType
                     new GreaterThanOrEqual(0),
                 ],
                 'row_attr' => false === $options['label'] ? ['class' => 'w-25'] : [],
-                'required' => false,
+                'required' => false !== $options['label'],
             ])
             ->add('stock', IntegerType::class, [
                 'label' => 'product_variant.stock',
                 'constraints' => new GreaterThanOrEqual(0),
                 'row_attr' => false === $options['label'] ? ['class' => 'w-25'] : [],
-                'required' => false,
-            ])
-            ->add('enabled', CheckboxType::class, [
-                'label' => false === $options['label'] ? false : 'generic.enable',
-                'label_attr' => ['class' => 'checkbox-switch'],
-                'row_attr' => false === $options['label'] ? ['class' => 'w-0 align-middle'] : [],
-                'priority' => false === $options['label'] ? 100 : -100,
                 'required' => false,
             ])
         ;
@@ -73,12 +66,22 @@ class ProductVariantType extends AbstractType
     {
         $data = $event->getData();
         if ($data instanceof ProductVariant && $data->getCode()) {
-            $event->getForm()
+            $form = $event->getForm();
+            $label = $form->getConfig()->getOption('label');
+
+            $form
                 ->add('name', TextType::class, [
                     'label' => 'product_variant.name',
                     'priority' => 10,
                     'required' => false,
                     'disabled' => true,
+                ])
+                ->add('enabled', CheckboxType::class, [
+                    'label' => false === $label ? false : 'generic.enable',
+                    'label_attr' => ['class' => 'checkbox-switch'],
+                    'row_attr' => false === $label ? ['class' => 'w-0 align-middle'] : [],
+                    'priority' => false === $label ? 100 : -100,
+                    'required' => false,
                 ])
             ;
         }
