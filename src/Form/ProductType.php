@@ -60,6 +60,8 @@ class ProductType extends AbstractType
 
             return $combinable;
         });
+
+        $resolver->setAllowedTypes('combinable', 'bool');
     }
 
     public function addVariantField(FormBuilderInterface $builder): void

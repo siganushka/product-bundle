@@ -55,7 +55,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
      */
     public function __construct(?string $code = null, ?string $text = null, ?Media $img = null)
     {
-        $this->code = $code ?? substr(md5($text ?? uniqid()), 0, 7);
+        $this->code = $code ?? substr(uniqid(), -7);
         $this->text = $text;
         $this->img = $img;
         $this->variants = new ArrayCollection();
