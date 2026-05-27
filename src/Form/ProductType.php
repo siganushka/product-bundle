@@ -6,20 +6,16 @@ namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\MediaBundle\Form\Type\MediaType;
 use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Entity\ProductOption;
 use Siganushka\ProductBundle\Entity\ProductVariant;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Unique;
 
 class ProductType extends AbstractType
 {
@@ -45,10 +41,8 @@ class ProductType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, $options['combinable']
-            ? $this->addOptionsField(...)
-            : $this->addVariantField(...)
-        );
+        $callback = $options['combinable'] ? $this->addOptionsField(...) : $this->addVariantField(...);
+        \call_user_func($callback, $builder);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -60,7 +54,7 @@ class ProductType extends AbstractType
 
         $resolver->setNormalizer('combinable', static function (Options $options, bool $combinable) {
             $data = $options['data'] ?? null;
-            if ($data instanceof Product && null !== $data->getId()) {
+            if ($data instanceof Product && $data->getId()) {
                 return !$data->getOptions()->isEmpty();
             }
 
@@ -68,18 +62,18 @@ class ProductType extends AbstractType
         });
     }
 
-    public function addVariantField(FormEvent $event): void
+    public function addVariantField(FormBuilderInterface $builder): void
     {
-        $event->getForm()->add('variants', ProductVariantType::class, [
+        $builder->add('variants', ProductVariantType::class, [
             'property_path' => 'variants[0]',
             'setter' => static fn (Product &$product, ProductVariant $variant) => $product->addVariant($variant),
             'error_bubbling' => false,
         ]);
     }
 
-    public function addOptionsField(FormEvent $event): void
+    public function addOptionsField(FormBuilderInterface $builder): void
     {
-        $event->getForm()->add('options', CollectionType::class, [
+        $builder->add('options', CollectionType::class, [
             'label' => 'product.options',
             'entry_type' => ProductOptionType::class,
             'entry_options' => ['label' => false, 'simple' => true],
@@ -87,10 +81,7 @@ class ProductType extends AbstractType
             'allow_delete' => true,
             'error_bubbling' => false,
             'by_reference' => false,
-            'constraints' => [
-                new Count(min: 1, max: 3),
-                new Unique(normalizer: static fn (ProductOption $option) => $option->getName() ?? spl_object_hash($option)),
-            ],
+            'constraints' => new Count(min: 1),
         ]);
     }
 }
