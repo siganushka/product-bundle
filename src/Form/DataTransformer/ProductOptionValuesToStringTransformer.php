@@ -61,6 +61,6 @@ class ProductOptionValuesToStringTransformer implements DataTransformerInterface
         $texts = array_map('trim', $texts);
         $texts = array_filter($texts);
 
-        return array_map(fn (string $text) => $this->repository->createNew(null, $text), $texts);
+        return array_map(fn (string $text) => $this->repository->createNew(text: $text), $texts);
     }
 }

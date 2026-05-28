@@ -33,7 +33,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     protected ?ProductOption $option = null;
 
     #[ORM\Column]
-    protected ?string $code = null;
+    protected string $code;
 
     #[ORM\Column]
     protected ?string $text = null;
@@ -79,7 +79,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
         return $this;
     }
 
-    public function getCode(): ?string
+    public function getCode(): string
     {
         return $this->code;
     }

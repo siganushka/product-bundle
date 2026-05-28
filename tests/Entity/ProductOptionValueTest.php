@@ -12,7 +12,6 @@ class ProductOptionValueTest extends TestCase
     public function testAll(): void
     {
         $entity = new FooProductOptionValue(text: 'foo');
-        static::assertNotNull($entity->getCode());
         static::assertSame('foo', $entity->getText());
 
         $entity = new FooProductOptionValue('test', 'bar');

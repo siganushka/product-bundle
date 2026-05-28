@@ -28,11 +28,11 @@ final class ProductVariantChoice
     {
         $codes = $texts = [];
         foreach ($combinedOptionValues as $optionValue) {
-            $codes[] = $optionValue->getCode() ?? spl_object_id($optionValue);
+            $codes[] = $optionValue->getCode();
             $texts[] = $optionValue->getText() ?? '-';
         }
 
-        // [important] Generated unique code by sorted.
+        // [important] Generate sorted unique codes.
         sort($codes);
 
         $this->code = \count($codes) ? implode('-', $codes) : null;
