@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ProductType extends AbstractType
@@ -33,10 +34,14 @@ class ProductType extends AbstractType
             ])
             ->add('name', TextType::class, [
                 'label' => 'product.name',
-                'constraints' => new NotBlank(),
+                'constraints' => [
+                    new NotBlank(),
+                    new Length(max: 255),
+                ],
             ])
             ->add('summary', TextType::class, [
                 'label' => 'product.summary',
+                'constraints' => new Length(max: 255),
                 'required' => false,
             ])
         ;
