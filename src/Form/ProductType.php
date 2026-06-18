@@ -12,7 +12,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\Length;
@@ -46,8 +48,18 @@ class ProductType extends AbstractType
             ])
         ;
 
-        $callback = $options['combinable'] ? $this->addOptionsField(...) : $this->addVariantField(...);
-        \call_user_func($callback, $builder);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+            $form = $event->getForm();
+            $form->remove('variants');
+            $form->remove('options');
+
+            $data = $event->getData();
+            $combinable = $data instanceof Product && $data->getId()
+                ? \count($data->getOptions())
+                : $options['combinable'];
+
+            $combinable ? $this->addOptionsField($form) : $this->addVariantField($form);
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -57,30 +69,21 @@ class ProductType extends AbstractType
             'combinable' => false,
         ]);
 
-        $resolver->setNormalizer('combinable', static function (Options $options, bool $combinable) {
-            $data = $options['data'] ?? null;
-            if ($data instanceof Product && $data->getId()) {
-                return !$data->getOptions()->isEmpty();
-            }
-
-            return $combinable;
-        });
-
         $resolver->setAllowedTypes('combinable', 'bool');
     }
 
-    public function addVariantField(FormBuilderInterface $builder): void
+    public function addVariantField(FormInterface $form): void
     {
-        $builder->add('variants', ProductVariantType::class, [
+        $form->add('variants', ProductVariantType::class, [
             'property_path' => 'variants[0]',
             'setter' => static fn (Product &$product, ProductVariant $variant) => $product->addVariant($variant),
             'error_bubbling' => false,
         ]);
     }
 
-    public function addOptionsField(FormBuilderInterface $builder): void
+    public function addOptionsField(FormInterface $form): void
     {
-        $builder->add('options', CollectionType::class, [
+        $form->add('options', CollectionType::class, [
             'label' => 'product.options',
             'entry_type' => ProductOptionType::class,
             'entry_options' => ['label' => false, 'simple' => true],

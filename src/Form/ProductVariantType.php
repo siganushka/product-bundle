@@ -45,7 +45,12 @@ class ProductVariantType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, $this->onPreSetData(...));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+            $data = $event->getData();
+            if ($data instanceof ProductVariant && $data->getCode()) {
+                $this->addCombinableFields($event->getForm(), $options['label']);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -62,28 +67,22 @@ class ProductVariantType extends AbstractType
         ]);
     }
 
-    public function onPreSetData(FormEvent $event): void
+    public function addCombinableFields(FormInterface $form, mixed $label): void
     {
-        $data = $event->getData();
-        if ($data instanceof ProductVariant && $data->getCode()) {
-            $form = $event->getForm();
-            $label = $form->getConfig()->getOption('label');
-
-            $form
-                ->add('name', TextType::class, [
-                    'label' => 'product_variant.name',
-                    'priority' => 10,
-                    'required' => false,
-                    'disabled' => true,
-                ])
-                ->add('enabled', CheckboxType::class, [
-                    'label' => false === $label ? false : 'generic.enable',
-                    'label_attr' => ['class' => 'checkbox-switch'],
-                    'row_attr' => false === $label ? ['class' => 'w-0 align-middle'] : [],
-                    'priority' => false === $label ? 100 : -100,
-                    'required' => false,
-                ])
-            ;
-        }
+        $form
+            ->add('name', TextType::class, [
+                'label' => 'product_variant.name',
+                'priority' => 10,
+                'required' => false,
+                'disabled' => true,
+            ])
+            ->add('enabled', CheckboxType::class, [
+                'label' => false === $label ? false : 'generic.enable',
+                'label_attr' => ['class' => 'checkbox-switch'],
+                'row_attr' => false === $label ? ['class' => 'w-0 align-middle'] : [],
+                'priority' => false === $label ? 100 : -100,
+                'required' => false,
+            ])
+        ;
     }
 }
