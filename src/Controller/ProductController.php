@@ -7,6 +7,7 @@ namespace Siganushka\ProductBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Siganushka\ProductBundle\Dto\ProductQueryDto;
+use Siganushka\ProductBundle\Entity\Product;
 use Siganushka\ProductBundle\Form\ProductType;
 use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
@@ -51,21 +52,15 @@ class ProductController extends AbstractController
         ]);
     }
 
-    public function getItem(int $id): Response
+    public function getItem(Product $entity): Response
     {
-        $entity = $this->productRepository->find($id)
-            ?? throw $this->createNotFoundException();
-
         return $this->json($entity, context: [
             'groups' => ['product:item'],
         ]);
     }
 
-    public function putItem(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    public function putItem(Request $request, EntityManagerInterface $entityManager, Product $entity): Response
     {
-        $entity = $this->productRepository->find($id)
-            ?? throw $this->createNotFoundException();
-
         $form = $this->createForm(ProductType::class, $entity);
         $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
 
@@ -80,32 +75,23 @@ class ProductController extends AbstractController
         ]);
     }
 
-    public function deleteItem(EntityManagerInterface $entityManager, int $id): Response
+    public function deleteItem(EntityManagerInterface $entityManager, Product $entity): Response
     {
-        $entity = $this->productRepository->find($id)
-            ?? throw $this->createNotFoundException();
-
         $entityManager->remove($entity);
         $entityManager->flush();
 
         return new Response(status: Response::HTTP_NO_CONTENT);
     }
 
-    public function getVariants(int $id): Response
+    public function getVariants(Product $entity): Response
     {
-        $entity = $this->productRepository->find($id)
-            ?? throw $this->createNotFoundException();
-
         return $this->json($entity->getVariants(), context: [
             'groups' => ['product_variant:collection'],
         ]);
     }
 
-    public function putVariants(Request $request, EntityManagerInterface $entityManager, int $id): Response
+    public function putVariants(Request $request, EntityManagerInterface $entityManager, Product $entity): Response
     {
-        $entity = $this->productRepository->find($id)
-            ?? throw $this->createNotFoundException();
-
         $form = $this->createForm(ProductVariantCollectionType::class, $entity);
         $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
 
