@@ -33,9 +33,9 @@ class ProductRepository extends GenericEntityRepository
             $criteria->andWhere(Criteria::expr()->lte('createdAt', $dto->created->endAt));
         }
 
-        $queryBuilder = $this->createQueryBuilderWithOrderBy($alias);
-        $queryBuilder->addCriteria($criteria);
+        $qb = $this->createQueryBuilderWithOrderBy($alias);
+        $qb->addCriteria($criteria);
 
-        return $queryBuilder;
+        return $qb;
     }
 }
