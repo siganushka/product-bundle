@@ -13,8 +13,10 @@ use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Entity\Media;
+use Siganushka\MediaBundle\Serializer\Normalizer\MediaNormalizer;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductRepository;
+use Symfony\Component\Serializer\Attribute\Context;
 
 /**
  * @template TMedia of Media = Media
@@ -37,6 +39,7 @@ class Product implements ResourceInterface, TimestampableInterface
      * @var TMedia|null
      */
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[Context([MediaNormalizer::AS_REFERENCE => true])]
     protected ?Media $img = null;
 
     #[ORM\Column(nullable: true)]
