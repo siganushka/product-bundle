@@ -10,6 +10,8 @@ class ProductQueryDto
 {
     public function __construct(
         public readonly ?string $name = null,
+        public readonly ?int $lowestPrice = null,
+        public readonly ?int $highestPrice = null,
         public readonly ?DateRangeDto $created = null,
     ) {
     }

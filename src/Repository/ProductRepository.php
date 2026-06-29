@@ -25,6 +25,14 @@ class ProductRepository extends GenericEntityRepository
             $criteria->andWhere(Criteria::expr()->contains('name', $dto->name));
         }
 
+        if ($dto->lowestPrice) {
+            $criteria->andWhere(Criteria::expr()->gte('lowestPrice', $dto->lowestPrice));
+        }
+
+        if ($dto->highestPrice) {
+            $criteria->andWhere(Criteria::expr()->lte('highestPrice', $dto->highestPrice));
+        }
+
         if ($dto->created?->startAt) {
             $criteria->andWhere(Criteria::expr()->gte('createdAt', $dto->created->startAt));
         }
