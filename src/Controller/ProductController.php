@@ -29,7 +29,7 @@ class ProductController extends AbstractController
         $pagination = $paginator->paginate($qb);
 
         return $this->json($pagination, context: [
-            'groups' => ['product:collection'],
+            'groups' => ['product.collection'],
         ]);
     }
 
@@ -48,14 +48,14 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity, Response::HTTP_CREATED, context: [
-            'groups' => ['product:item'],
+            'groups' => ['product.item'],
         ]);
     }
 
     public function getItem(Product $entity): Response
     {
         return $this->json($entity, context: [
-            'groups' => ['product:item'],
+            'groups' => ['product.item'],
         ]);
     }
 
@@ -71,7 +71,7 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity, context: [
-            'groups' => ['product:item'],
+            'groups' => ['product.item'],
         ]);
     }
 
@@ -86,7 +86,7 @@ class ProductController extends AbstractController
     public function getVariants(Product $entity): Response
     {
         return $this->json($entity->getVariants(), context: [
-            'groups' => ['product_variant:collection'],
+            'groups' => ['product_variant.collection'],
         ]);
     }
 
@@ -102,7 +102,7 @@ class ProductController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity->getVariants(), context: [
-            'groups' => ['product_variant:collection'],
+            'groups' => ['product_variant.collection'],
         ]);
     }
 }

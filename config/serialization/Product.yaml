@@ -1,22 +1,22 @@
 Siganushka\ProductBundle\Entity\Product:
     attributes:
         id:
-            groups: ['product:item', 'product:collection']
+            groups: [product.item, product.collection]
         name:
-            groups: ['product:item', 'product:collection']
+            groups: [product.item, product.collection]
         summary:
-            groups: ['product:item', 'product:collection']
+            groups: [product.item, product.collection]
         img:
-            groups: ['product:item', 'product:collection']
+            groups: [product.item, product.collection]
         lowestPrice:
-            groups: ['product:item', 'product:collection']
+            groups: [product.item, product.collection]
         highestPrice:
-            groups: ['product:item', 'product:collection']
+            groups: [product.item, product.collection]
         options:
-            groups: ['product:item', 'product:collection']
+            groups: [product.item, product.collection]
         variants:
-            groups: ['product:item', 'product:collection']
+            groups: [product.item, product.collection]
         createdAt:
-            groups: ['product:item', 'product:collection']
+            groups: [product.item, product.collection]
         updatedAt:
-            groups: ['product:item', 'product:collection']
+            groups: [product.item, product.collection]

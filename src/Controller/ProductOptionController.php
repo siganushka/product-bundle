@@ -16,7 +16,7 @@ class ProductOptionController extends AbstractController
     public function getItem(ProductOption $entity): Response
     {
         return $this->json($entity, context: [
-            'groups' => ['product_option:item'],
+            'groups' => ['product_option.item'],
         ]);
     }
 
@@ -32,7 +32,7 @@ class ProductOptionController extends AbstractController
         $entityManager->flush();
 
         return $this->json($entity, context: [
-            'groups' => ['product_option:item'],
+            'groups' => ['product_option.item'],
         ]);
     }
 }
