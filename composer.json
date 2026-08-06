@@ -15,9 +15,9 @@
         "php": ">=8.2",
         "bentools/cartesian-product": "^2.0",
         "knplabs/knp-components": "^5.0",
-        "siganushka/doctrine-contracts": "dev-main",
-        "siganushka/generic-bundle": "dev-main",
-        "siganushka/media-bundle": "dev-main",
+        "siganushka/doctrine-contracts": "^1.2",
+        "siganushka/generic-bundle": "^1.2",
+        "siganushka/media-bundle": "^1.2",
         "symfony/form": "^7.4|^8.0",
         "symfony/framework-bundle": "^7.4|^8.0",
         "symfony/validator": "^7.4|^8.0"
