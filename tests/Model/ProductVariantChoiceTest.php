@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests\Model;
 
 use PHPUnit\Framework\TestCase;
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
+use Siganushka\ProductBundle\Tests\Fixtures\TestProductOptionValue;
 
 class ProductVariantChoiceTest extends TestCase
 {
@@ -17,9 +17,9 @@ class ProductVariantChoiceTest extends TestCase
         static::assertNull($choice->code);
         static::assertNull($choice->name);
 
-        $foo = new ProductOptionValue('a', 'foo');
-        $bar = new ProductOptionValue('b', 'bar');
-        $baz = new ProductOptionValue('c', 'baz');
+        $foo = new TestProductOptionValue('a', 'foo');
+        $bar = new TestProductOptionValue('b', 'bar');
+        $baz = new TestProductOptionValue('c', 'baz');
 
         $choice = new ProductVariantChoice([$foo, $bar, $baz]);
         static::assertCount(3, $choice->combinedOptionValues);

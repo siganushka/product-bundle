@@ -6,20 +6,19 @@ namespace Siganushka\ProductBundle\Tests\DependencyInjection;
 
 use PHPUnit\Framework\TestCase;
 use Siganushka\ProductBundle\DependencyInjection\Configuration;
-use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Entity\ProductOption;
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
-use Siganushka\ProductBundle\Entity\ProductVariant;
-use Siganushka\ProductBundle\Tests\Fixtures\FooProduct;
-use Siganushka\ProductBundle\Tests\Fixtures\FooProductOption;
-use Siganushka\ProductBundle\Tests\Fixtures\FooProductOptionValue;
-use Siganushka\ProductBundle\Tests\Fixtures\FooProductVariant;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Siganushka\ProductBundle\Entity\AbstractProduct;
+use Siganushka\ProductBundle\Entity\AbstractProductOption;
+use Siganushka\ProductBundle\Entity\AbstractProductOptionValue;
+use Siganushka\ProductBundle\Entity\AbstractProductVariant;
+use Siganushka\ProductBundle\Tests\Fixtures\TestProduct;
+use Siganushka\ProductBundle\Tests\Fixtures\TestProductOption;
+use Siganushka\ProductBundle\Tests\Fixtures\TestProductOptionValue;
+use Siganushka\ProductBundle\Tests\Fixtures\TestProductVariant;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 
-final class ConfigurationTest extends TestCase
+class ConfigurationTest extends TestCase
 {
     private ConfigurationInterface $configuration;
     private Processor $processor;
@@ -32,27 +31,11 @@ final class ConfigurationTest extends TestCase
 
     public function testDefaultConfig(): void
     {
-        $treeBuilder = $this->configuration->getConfigTreeBuilder();
-
-        static::assertInstanceOf(ConfigurationInterface::class, $this->configuration);
-        static::assertInstanceOf(TreeBuilder::class, $treeBuilder);
-
-        $processedConfig = $this->processor->processConfiguration($this->configuration, []);
-        static::assertSame($processedConfig, [
-            'product_class' => Product::class,
-            'product_option_class' => ProductOption::class,
-            'product_option_value_class' => ProductOptionValue::class,
-            'product_variant_class' => ProductVariant::class,
-        ]);
-    }
-
-    public function testCustomConfig(): void
-    {
         $config = [
-            'product_class' => FooProduct::class,
-            'product_option_class' => FooProductOption::class,
-            'product_option_value_class' => FooProductOptionValue::class,
-            'product_variant_class' => FooProductVariant::class,
+            'product_class' => TestProduct::class,
+            'product_option_class' => TestProductOption::class,
+            'product_option_value_class' => TestProductOptionValue::class,
+            'product_variant_class' => TestProductVariant::class,
         ];
 
         $processedConfig = $this->processor->processConfiguration($this->configuration, [$config]);
@@ -62,36 +45,60 @@ final class ConfigurationTest extends TestCase
     public function testProductClassInvalidConfigurationException(): void
     {
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage(\sprintf('The value must be instanceof %s, "stdClass" given.', Product::class));
+        $this->expectExceptionMessage(\sprintf('The value must be instanceof %s, "stdClass" given.', AbstractProduct::class));
 
-        $config = ['product_class' => \stdClass::class];
+        $config = [
+            'product_class' => \stdClass::class,
+            'product_option_class' => TestProductOption::class,
+            'product_option_value_class' => TestProductOptionValue::class,
+            'product_variant_class' => TestProductVariant::class,
+        ];
+
         $this->processor->processConfiguration($this->configuration, [$config]);
     }
 
     public function testProductOptionClassInvalidConfigurationException(): void
     {
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage(\sprintf('The value must be instanceof %s, "stdClass" given.', ProductOption::class));
+        $this->expectExceptionMessage(\sprintf('The value must be instanceof %s, "stdClass" given.', AbstractProductOption::class));
 
-        $config = ['product_option_class' => \stdClass::class];
+        $config = [
+            'product_class' => TestProduct::class,
+            'product_option_class' => \stdClass::class,
+            'product_option_value_class' => TestProductOptionValue::class,
+            'product_variant_class' => TestProductVariant::class,
+        ];
+
         $this->processor->processConfiguration($this->configuration, [$config]);
     }
 
     public function testProductOptionValueClassInvalidConfigurationException(): void
     {
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage(\sprintf('The value must be instanceof %s, "stdClass" given.', ProductOptionValue::class));
+        $this->expectExceptionMessage(\sprintf('The value must be instanceof %s, "stdClass" given.', AbstractProductOptionValue::class));
 
-        $config = ['product_option_value_class' => \stdClass::class];
+        $config = [
+            'product_class' => TestProduct::class,
+            'product_option_class' => TestProductOption::class,
+            'product_option_value_class' => \stdClass::class,
+            'product_variant_class' => TestProductVariant::class,
+        ];
+
         $this->processor->processConfiguration($this->configuration, [$config]);
     }
 
     public function testpProductVariantClassInvalidConfigurationException(): void
     {
         $this->expectException(InvalidConfigurationException::class);
-        $this->expectExceptionMessage(\sprintf('The value must be instanceof %s, "stdClass" given.', ProductVariant::class));
+        $this->expectExceptionMessage(\sprintf('The value must be instanceof %s, "stdClass" given.', AbstractProductVariant::class));
 
-        $config = ['product_variant_class' => \stdClass::class];
+        $config = [
+            'product_class' => TestProduct::class,
+            'product_option_class' => TestProductOption::class,
+            'product_option_value_class' => TestProductOptionValue::class,
+            'product_variant_class' => \stdClass::class,
+        ];
+
         $this->processor->processConfiguration($this->configuration, [$config]);
     }
 }

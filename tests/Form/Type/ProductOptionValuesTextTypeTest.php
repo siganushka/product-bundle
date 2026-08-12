@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests\Form\Type;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
 use Siganushka\ProductBundle\Form\Type\ProductOptionValuesTextType;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
+use Siganushka\ProductBundle\Tests\Fixtures\TestProductOptionValue;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 class ProductOptionValuesTextTypeTest extends TypeTestCase
@@ -15,9 +15,9 @@ class ProductOptionValuesTextTypeTest extends TypeTestCase
     public function testAll(): void
     {
         $data = [
-            new ProductOptionValue('1', 'AAA'),
-            new ProductOptionValue('2', 'BBB'),
-            new ProductOptionValue('3', 'CCC'),
+            new TestProductOptionValue('1', 'AAA'),
+            new TestProductOptionValue('2', 'BBB'),
+            new TestProductOptionValue('3', 'CCC'),
         ];
 
         $form = $this->factory->create(ProductOptionValuesTextType::class, $data, ['data_class' => null]);
@@ -25,7 +25,7 @@ class ProductOptionValuesTextTypeTest extends TypeTestCase
 
         $form = $this->factory->create(ProductOptionValuesTextType::class, new ArrayCollection($data), ['data_class' => null]);
 
-        /** @var ArrayCollection<int, ProductOptionValue> */
+        /** @var ArrayCollection<int, TestProductOptionValue> */
         $formData = $form->getData();
         static::assertSame($data, $formData->toArray());
 
@@ -34,13 +34,13 @@ class ProductOptionValuesTextTypeTest extends TypeTestCase
 
         $form->submit('CCC,BBB,EEE');
 
-        /** @var array<int, ProductOptionValue> */
+        /** @var array<int, TestProductOptionValue> */
         $data = $form->getData();
 
         static::assertCount(3, $data);
-        static::assertInstanceOf(ProductOptionValue::class, $data[0]);
-        static::assertInstanceOf(ProductOptionValue::class, $data[1]);
-        static::assertInstanceOf(ProductOptionValue::class, $data[2]);
+        static::assertInstanceOf(TestProductOptionValue::class, $data[0]);
+        static::assertInstanceOf(TestProductOptionValue::class, $data[1]);
+        static::assertInstanceOf(TestProductOptionValue::class, $data[2]);
         static::assertSame('3', $data[0]->getCode());
         static::assertSame('2', $data[1]->getCode());
     }
@@ -54,9 +54,8 @@ class ProductOptionValuesTextTypeTest extends TypeTestCase
     protected function getTypes(): array
     {
         $repository = $this->createMock(ProductOptionValueRepository::class);
-        $repository->expects(static::any())
-            ->method('createNew')
-            ->willReturnCallback(static fn (...$args) => new ProductOptionValue(...$args))
+        $repository->method('createNew')
+            ->willReturnCallback(static fn (...$args) => new TestProductOptionValue(...$args))
         ;
 
         return [

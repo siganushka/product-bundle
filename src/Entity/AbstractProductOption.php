@@ -14,11 +14,11 @@ use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 
 /**
- * @template TProduct of Product = Product
- * @template TValue of ProductOptionValue = ProductOptionValue
+ * @template TProduct of AbstractProduct = AbstractProduct
+ * @template TValue of AbstractProductOptionValue = AbstractProductOptionValue
  */
-#[ORM\Entity(repositoryClass: ProductOptionRepository::class)]
-class ProductOption implements ResourceInterface, TimestampableInterface
+#[ORM\MappedSuperclass(repositoryClass: ProductOptionRepository::class)]
+abstract class AbstractProductOption implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
     use TimestampableTrait;
@@ -26,8 +26,8 @@ class ProductOption implements ResourceInterface, TimestampableInterface
     /**
      * @var TProduct|null
      */
-    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'options')]
-    protected ?Product $product = null;
+    #[ORM\ManyToOne(inversedBy: 'options')]
+    protected ?AbstractProduct $product = null;
 
     #[ORM\Column]
     protected ?string $name = null;
@@ -35,7 +35,7 @@ class ProductOption implements ResourceInterface, TimestampableInterface
     /**
      * @var Collection<int, TValue>
      */
-    #[ORM\OneToMany(targetEntity: ProductOptionValue::class, mappedBy: 'option', cascade: ['all'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: AbstractProductOptionValue::class, mappedBy: 'option', cascade: ['all'], orphanRemoval: true)]
     #[ORM\OrderBy(['id' => 'ASC'])]
     protected Collection $values;
 
@@ -48,7 +48,7 @@ class ProductOption implements ResourceInterface, TimestampableInterface
     /**
      * @return TProduct|null
      */
-    public function getProduct(): ?Product
+    public function getProduct(): ?AbstractProduct
     {
         return $this->product;
     }
@@ -56,7 +56,7 @@ class ProductOption implements ResourceInterface, TimestampableInterface
     /**
      * @param TProduct|null $product
      */
-    public function setProduct(?Product $product): static
+    public function setProduct(?AbstractProduct $product): static
     {
         $this->product = $product;
 
@@ -86,7 +86,7 @@ class ProductOption implements ResourceInterface, TimestampableInterface
     /**
      * @param TValue $value
      */
-    public function addValue(ProductOptionValue $value): static
+    public function addValue(AbstractProductOptionValue $value): static
     {
         if (!$this->values->contains($value)) {
             $this->values[] = $value;
@@ -99,7 +99,7 @@ class ProductOption implements ResourceInterface, TimestampableInterface
     /**
      * @param TValue $value
      */
-    public function removeValue(ProductOptionValue $value): static
+    public function removeValue(AbstractProductOptionValue $value): static
     {
         if ($this->values->removeElement($value)) {
             if ($value->getOption() === $this) {
@@ -117,6 +117,6 @@ class ProductOption implements ResourceInterface, TimestampableInterface
         $this->id = null;
         $this->values = new ArrayCollection();
 
-        array_walk($previousValues, fn (ProductOptionValue $value) => $this->addValue(clone $value));
+        array_walk($previousValues, fn (AbstractProductOptionValue $value) => $this->addValue(clone $value));
     }
 }

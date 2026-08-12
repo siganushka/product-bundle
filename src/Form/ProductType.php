@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\MediaBundle\Form\Type\MediaType;
-use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Entity\AbstractProduct;
+use Siganushka\ProductBundle\Entity\AbstractProductVariant;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -54,7 +54,7 @@ class ProductType extends AbstractType
             $form->remove('options');
 
             $data = $event->getData();
-            $combinable = $data instanceof Product && $data->getId()
+            $combinable = $data instanceof AbstractProduct && $data->getId()
                 ? \count($data->getOptions())
                 : $options['combinable'];
 
@@ -76,7 +76,7 @@ class ProductType extends AbstractType
     {
         $form->add('variants', ProductVariantType::class, [
             'property_path' => 'variants[0]',
-            'setter' => static fn (Product &$product, ProductVariant $variant) => $product->addVariant($variant),
+            'setter' => static fn (AbstractProduct &$product, AbstractProductVariant $variant) => $product->addVariant($variant),
             'error_bubbling' => false,
         ]);
     }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Tests\Fixtures;
 
-use Siganushka\MediaBundle\Entity\Media;
+use Siganushka\MediaBundle\Entity\AbstractMedia;
 
-class FooMedia extends Media
+class TestMedia extends AbstractMedia
 {
 }

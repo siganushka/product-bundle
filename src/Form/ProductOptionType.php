@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
+use Siganushka\ProductBundle\Entity\AbstractProductOptionValue;
 use Siganushka\ProductBundle\Form\Type\ProductOptionValuesCollectionType;
 use Siganushka\ProductBundle\Form\Type\ProductOptionValuesTextType;
 use Siganushka\ProductBundle\Repository\ProductOptionRepository;
@@ -39,7 +39,7 @@ class ProductOptionType extends AbstractType
                 'row_attr' => false === $options['label'] ? ['class' => 'w-75'] : [],
                 'constraints' => [
                     new Count(min: 1),
-                    new Unique(normalizer: static fn (ProductOptionValue $value) => $value->getText() ?? spl_object_hash($value)),
+                    new Unique(normalizer: static fn (AbstractProductOptionValue $value) => $value->getText() ?? spl_object_hash($value)),
                 ],
             ])
         ;

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Model;
 
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
+use Siganushka\ProductBundle\Entity\AbstractProductOptionValue;
 
 /**
- * @template TProductOptionValue of ProductOptionValue = ProductOptionValue
+ * @template TProductOptionValue of AbstractProductOptionValue = AbstractProductOptionValue
  */
 final class ProductVariantChoice
 {
@@ -42,7 +42,7 @@ final class ProductVariantChoice
     /**
      * @param TProductOptionValue ...$combinedOptionValues
      */
-    public static function create(ProductOptionValue ...$combinedOptionValues): static
+    public static function create(AbstractProductOptionValue ...$combinedOptionValues): static
     {
         return new static($combinedOptionValues);
     }

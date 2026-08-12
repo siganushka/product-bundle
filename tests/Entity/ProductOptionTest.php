@@ -5,30 +5,30 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests\Entity;
 
 use PHPUnit\Framework\TestCase;
-use Siganushka\ProductBundle\Tests\Fixtures\FooProductOption;
-use Siganushka\ProductBundle\Tests\Fixtures\FooProductOptionValue;
+use Siganushka\ProductBundle\Tests\Fixtures\TestProductOption;
+use Siganushka\ProductBundle\Tests\Fixtures\TestProductOptionValue;
 
 class ProductOptionTest extends TestCase
 {
     public function testAll(): void
     {
-        $entity = new FooProductOption();
+        $entity = new TestProductOption();
         static::assertNull($entity->getName());
         static::assertCount(0, $entity->getValues());
 
         $entity->setName('foo');
         static::assertSame('foo', $entity->getName());
 
-        $entity->addValue(new FooProductOptionValue(text: 'bar'));
+        $entity->addValue(new TestProductOptionValue(text: 'bar'));
         static::assertCount(1, $entity->getValues());
     }
 
     public function testClone(): void
     {
-        $po = new FooProductOption();
-        $po->addValue(new FooProductOptionValue(text: 'foo'));
-        $po->addValue(new FooProductOptionValue(text: 'bar'));
-        $po->addValue(new FooProductOptionValue(text: 'baz'));
+        $po = new TestProductOption();
+        $po->addValue(new TestProductOptionValue(text: 'foo'));
+        $po->addValue(new TestProductOptionValue(text: 'bar'));
+        $po->addValue(new TestProductOptionValue(text: 'baz'));
 
         (new \ReflectionProperty($po, 'id'))->setValue($po, 1);
 

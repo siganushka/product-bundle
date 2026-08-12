@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Doctrine;
 
 use Doctrine\ORM\Event\OnFlushEventArgs;
-use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Entity\ProductOption;
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
-use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Entity\AbstractProduct;
+use Siganushka\ProductBundle\Entity\AbstractProductOption;
+use Siganushka\ProductBundle\Entity\AbstractProductOptionValue;
+use Siganushka\ProductBundle\Entity\AbstractProductVariant;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
@@ -20,28 +20,28 @@ class ProductListener
 
     public function onFlush(OnFlushEventArgs $event): void
     {
-        /** @var \SplObjectStorage<Product, null> */
+        /** @var \SplObjectStorage<AbstractProduct, null> */
         $updateProductVariants = new \SplObjectStorage();
-        /** @var \SplObjectStorage<Product, null> */
+        /** @var \SplObjectStorage<AbstractProduct, null> */
         $updateProductPrice = new \SplObjectStorage();
-        /** @var \SplObjectStorage<ProductVariant, null> */
+        /** @var \SplObjectStorage<AbstractProductVariant, null> */
         $updateVariantName = new \SplObjectStorage();
 
         $em = $event->getObjectManager();
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
-            if ($entity instanceof Product) {
+            if ($entity instanceof AbstractProduct) {
                 $updateProductVariants->attach($entity);
-            } elseif ($entity instanceof ProductVariant && $entity->getProduct()) {
+            } elseif ($entity instanceof AbstractProductVariant && $entity->getProduct()) {
                 $updateProductPrice->attach($entity->getProduct());
             }
         }
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if ($entity instanceof ProductVariant && $entity->getProduct()) {
+            if ($entity instanceof AbstractProductVariant && $entity->getProduct()) {
                 $updateProductPrice->attach($entity->getProduct());
-            } elseif ($entity instanceof ProductOptionValue && \array_key_exists('text', $uow->getEntityChangeSet($entity))) {
+            } elseif ($entity instanceof AbstractProductOptionValue && \array_key_exists('text', $uow->getEntityChangeSet($entity))) {
                 foreach ($entity->getVariants() as $variant) {
                     $updateVariantName->attach($variant);
                 }
@@ -49,9 +49,9 @@ class ProductListener
         }
 
         foreach ($uow->getScheduledEntityDeletions() as $entity) {
-            if ($entity instanceof ProductVariant && $entity->getProduct()) {
+            if ($entity instanceof AbstractProductVariant && $entity->getProduct()) {
                 $updateProductPrice->attach($entity->getProduct());
-            } elseif ($entity instanceof ProductOptionValue && $product = $entity->getOption()?->getProduct()) {
+            } elseif ($entity instanceof AbstractProductOptionValue && $product = $entity->getOption()?->getProduct()) {
                 $updateProductVariants->attach($product);
             }
         }
@@ -64,9 +64,9 @@ class ProductListener
         foreach ($collections as $collection) {
             $owner = $collection->getOwner();
             $mappig = $collection->getMapping();
-            if ($owner instanceof Product && is_subclass_of($mappig->targetEntity, ProductOption::class)) {
+            if ($owner instanceof AbstractProduct && is_subclass_of($mappig->targetEntity, AbstractProductOption::class)) {
                 $updateProductVariants->attach($owner);
-            } elseif ($owner instanceof ProductOption && is_subclass_of($mappig->targetEntity, ProductOptionValue::class) && $owner->getProduct()) {
+            } elseif ($owner instanceof AbstractProductOption && is_subclass_of($mappig->targetEntity, AbstractProductOptionValue::class) && $owner->getProduct()) {
                 $updateProductVariants->attach($owner->getProduct());
             }
         }
@@ -87,7 +87,7 @@ class ProductListener
         }
     }
 
-    public function updateProductVariants(Product $product): void
+    public function updateProductVariants(AbstractProduct $product): void
     {
         $codes = [];
         foreach ($product->generateChoices() as $choice) {
@@ -102,7 +102,7 @@ class ProductListener
         }
     }
 
-    public function updateProductPrice(Product $product): void
+    public function updateProductPrice(AbstractProduct $product): void
     {
         $prices = [];
         foreach ($product->getVariants() as $variant) {
@@ -115,7 +115,7 @@ class ProductListener
         $product->setHighestPrice($prices ? max($prices) : null);
     }
 
-    public function updateVariantName(ProductVariant $variant): void
+    public function updateVariantName(AbstractProductVariant $variant): void
     {
         $choice = new ProductVariantChoice($variant->getOptionValues()->toArray());
 

@@ -8,10 +8,10 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\QueryBuilder;
 use Siganushka\GenericBundle\Repository\GenericEntityRepository;
 use Siganushka\ProductBundle\Dto\ProductQueryDto;
-use Siganushka\ProductBundle\Entity\Product;
+use Siganushka\ProductBundle\Entity\AbstractProduct;
 
 /**
- * @template T of Product = Product
+ * @template T of AbstractProduct = AbstractProduct
  *
  * @extends GenericEntityRepository<T>
  */

@@ -6,10 +6,10 @@ namespace Siganushka\ProductBundle\Repository;
 
 use Doctrine\ORM\QueryBuilder;
 use Siganushka\GenericBundle\Repository\GenericEntityRepository;
-use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Entity\AbstractProductVariant;
 
 /**
- * @template T of ProductVariant = ProductVariant
+ * @template T of AbstractProductVariant = AbstractProductVariant
  *
  * @extends GenericEntityRepository<T>
  */

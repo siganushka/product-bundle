@@ -11,17 +11,17 @@ use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
-use Siganushka\MediaBundle\Entity\Media;
+use Siganushka\MediaBundle\Model\MediaInterface;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 
 /**
- * @template TOption of ProductOption = ProductOption
- * @template TVariant of ProductVariant = ProductVariant
- * @template TMedia of Media = Media
+ * @template TOption of AbstractProductOption = AbstractProductOption
+ * @template TVariant of AbstractProductVariant = AbstractProductVariant
+ * @template TMedia of MediaInterface = MediaInterface
  */
-#[ORM\Entity(repositoryClass: ProductOptionValueRepository::class)]
+#[ORM\MappedSuperclass(repositoryClass: ProductOptionValueRepository::class)]
 #[ORM\UniqueConstraint(columns: ['option_id', 'code'])]
-class ProductOptionValue implements ResourceInterface, TimestampableInterface
+abstract class AbstractProductOptionValue implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
     use TimestampableTrait;
@@ -29,8 +29,8 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     /**
      * @var TOption|null
      */
-    #[ORM\ManyToOne(targetEntity: ProductOption::class, inversedBy: 'values')]
-    protected ?ProductOption $option = null;
+    #[ORM\ManyToOne(inversedBy: 'values')]
+    protected ?AbstractProductOption $option = null;
 
     #[ORM\Column]
     protected string $code;
@@ -41,19 +41,19 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     /**
      * @var TMedia|null
      */
-    #[ORM\ManyToOne(targetEntity: Media::class)]
-    protected ?Media $img = null;
+    #[ORM\ManyToOne]
+    protected ?MediaInterface $img = null;
 
     /**
      * @var Collection<int, TVariant>
      */
-    #[ORM\ManyToMany(targetEntity: ProductVariant::class, mappedBy: 'optionValues', cascade: ['all'])]
+    #[ORM\ManyToMany(targetEntity: AbstractProductVariant::class, mappedBy: 'optionValues', cascade: ['all'])]
     protected Collection $variants;
 
     /**
      * @param TMedia|null $img
      */
-    public function __construct(?string $code = null, ?string $text = null, ?Media $img = null)
+    public function __construct(?string $code = null, ?string $text = null, ?MediaInterface $img = null)
     {
         $this->code = $code ?? substr(uniqid(), -8);
         $this->text = $text;
@@ -64,7 +64,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     /**
      * @return TOption|null
      */
-    public function getOption(): ?ProductOption
+    public function getOption(): ?AbstractProductOption
     {
         return $this->option;
     }
@@ -72,7 +72,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     /**
      * @param TOption|null $option
      */
-    public function setOption(?ProductOption $option): static
+    public function setOption(?AbstractProductOption $option): static
     {
         $this->option = $option;
 
@@ -99,7 +99,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     /**
      * @return TMedia|null
      */
-    public function getImg(): ?Media
+    public function getImg(): ?MediaInterface
     {
         return $this->img;
     }
@@ -107,7 +107,7 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
     /**
      * @param TMedia|null $img
      */
-    public function setImg(?Media $img): static
+    public function setImg(?MediaInterface $img): static
     {
         $this->img = $img;
 
@@ -124,6 +124,6 @@ class ProductOptionValue implements ResourceInterface, TimestampableInterface
 
     public function getVariantsCount(): int
     {
-        return $this->variants->filter(static fn (ProductVariant $item) => $item->isEnabled())->count();
+        return $this->variants->filter(static fn (AbstractProductVariant $item) => $item->isEnabled())->count();
     }
 }

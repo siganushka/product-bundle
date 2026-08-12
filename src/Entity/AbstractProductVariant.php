@@ -17,12 +17,12 @@ use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
 /**
- * @template TProduct of Product = Product
- * @template TOptionValue of ProductOptionValue = ProductOptionValue
+ * @template TProduct of AbstractProduct = AbstractProduct
+ * @template TOptionValue of AbstractProductOptionValue = AbstractProductOptionValue
  */
-#[ORM\Entity(repositoryClass: ProductVariantRepository::class)]
+#[ORM\MappedSuperclass(repositoryClass: ProductVariantRepository::class)]
 #[ORM\UniqueConstraint(columns: ['product_id', 'code'])]
-class ProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface
+abstract class AbstractProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface
 {
     use EnableTrait;
     use ResourceTrait;
@@ -31,8 +31,8 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     /**
      * @var TProduct|null
      */
-    #[ORM\ManyToOne(targetEntity: Product::class, inversedBy: 'variants')]
-    protected ?Product $product = null;
+    #[ORM\ManyToOne(inversedBy: 'variants')]
+    protected ?AbstractProduct $product = null;
 
     #[ORM\Column(nullable: true)]
     protected ?string $code = null;
@@ -49,8 +49,10 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     /**
      * @var Collection<int, TOptionValue>
      */
-    #[ORM\ManyToMany(targetEntity: ProductOptionValue::class, inversedBy: 'variants')]
-    #[ORM\JoinTable('product_variant_value')]
+    #[ORM\ManyToMany(targetEntity: AbstractProductOptionValue::class, inversedBy: 'variants')]
+    #[ORM\JoinTable(name: 'product_variant_value')]
+    #[ORM\JoinColumn(name: 'product_variant_id', onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(name: 'product_option_value_id', onDelete: 'CASCADE')]
     protected Collection $optionValues;
 
     /**
@@ -66,7 +68,7 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     /**
      * @return TProduct|null
      */
-    public function getProduct(): ?Product
+    public function getProduct(): ?AbstractProduct
     {
         return $this->product;
     }
@@ -74,7 +76,7 @@ class ProductVariant implements ResourceInterface, EnableInterface, Timestampabl
     /**
      * @param TProduct|null $product
      */
-    public function setProduct(?Product $product): static
+    public function setProduct(?AbstractProduct $product): static
     {
         $this->product = $product;
 

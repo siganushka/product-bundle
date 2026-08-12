@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form\DataTransformer;
 
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
+use Siganushka\ProductBundle\Entity\AbstractProductOptionValue;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
@@ -12,7 +12,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 use function Symfony\Component\String\u;
 
 /**
- * @implements DataTransformerInterface<iterable<array-key, ProductOptionValue>, string>
+ * @implements DataTransformerInterface<iterable<array-key, AbstractProductOptionValue>, string>
  */
 class ProductOptionValuesToStringTransformer implements DataTransformerInterface
 {
@@ -40,11 +40,11 @@ class ProductOptionValuesToStringTransformer implements DataTransformerInterface
             throw new TransformationFailedException('Expected an array or Traversable.');
         }
 
-        return implode($this->separator, array_map(static fn (ProductOptionValue $item) => $item->getText(), $value));
+        return implode($this->separator, array_map(static fn (AbstractProductOptionValue $item) => $item->getText(), $value));
     }
 
     /**
-     * @return array<int, ProductOptionValue>
+     * @return array<int, AbstractProductOptionValue>
      */
     public function reverseTransform(mixed $value): array
     {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form\Field;
 
-use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Entity\AbstractProductVariant;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
@@ -21,7 +21,7 @@ class ProductVariantAutocompleteField extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $choiceLabel = static function (ProductVariant $variant): ?string {
+        $choiceLabel = static function (AbstractProductVariant $variant): ?string {
             $productName = $variant->getProduct()?->getName();
             if ($variantName = $variant->getName()) {
                 return \sprintf('%s [%s]', $productName, $variantName);

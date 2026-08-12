@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\DependencyInjection;
 
-use Siganushka\ProductBundle\Entity\Product;
-use Siganushka\ProductBundle\Entity\ProductOption;
-use Siganushka\ProductBundle\Entity\ProductOptionValue;
-use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Entity\AbstractProduct;
+use Siganushka\ProductBundle\Entity\AbstractProductOption;
+use Siganushka\ProductBundle\Entity\AbstractProductOptionValue;
+use Siganushka\ProductBundle\Entity\AbstractProductVariant;
 use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Siganushka\ProductBundle\Repository\ProductRepository;
@@ -17,11 +17,11 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public static array $resourceMapping = [
-        'product_class' => [Product::class, ProductRepository::class],
-        'product_option_class' => [ProductOption::class, ProductOptionRepository::class],
-        'product_option_value_class' => [ProductOptionValue::class, ProductOptionValueRepository::class],
-        'product_variant_class' => [ProductVariant::class, ProductVariantRepository::class],
+    public const RESOURCE_MAPPING = [
+        'product_class' => [AbstractProduct::class, ProductRepository::class],
+        'product_option_class' => [AbstractProductOption::class, ProductOptionRepository::class],
+        'product_option_value_class' => [AbstractProductOptionValue::class, ProductOptionValueRepository::class],
+        'product_variant_class' => [AbstractProductVariant::class, ProductVariantRepository::class],
     ];
 
     /**
@@ -32,13 +32,14 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder('siganushka_product');
         $rootNode = $treeBuilder->getRootNode();
 
-        foreach (static::$resourceMapping as $configName => [$entityClass]) {
+        foreach (self::RESOURCE_MAPPING as $configName => [$interface]) {
             $rootNode->children()
                 ->scalarNode($configName)
-                    ->defaultValue($entityClass)
+                    ->isRequired()
+                    ->cannotBeEmpty()
                     ->validate()
-                        ->ifTrue(static fn (mixed $v): bool => \is_string($v) && !is_a($v, $entityClass, true))
-                        ->thenInvalid('The value must be instanceof '.$entityClass.', %s given.')
+                        ->ifTrue(static fn (mixed $v): bool => \is_string($v) && !is_subclass_of($v, $interface, true))
+                        ->thenInvalid('The value must be instanceof '.$interface.', %s given.')
                     ->end()
                 ->end()
             ;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Form;
 
-use Siganushka\ProductBundle\Entity\ProductVariant;
+use Siganushka\ProductBundle\Entity\AbstractProductVariant;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -47,7 +47,7 @@ class ProductVariantType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $data = $event->getData();
-            if ($data instanceof ProductVariant && $data->getCode()) {
+            if ($data instanceof AbstractProductVariant && $data->getCode()) {
                 $this->addCombinableFields($event->getForm(), $options['label']);
             }
         });
@@ -60,7 +60,7 @@ class ProductVariantType extends AbstractType
             'validation_groups' => static function (FormInterface $form) {
                 $data = $form->getData();
 
-                return $data instanceof ProductVariant && $data->isEnabled()
+                return $data instanceof AbstractProductVariant && $data->isEnabled()
                     ? ['Default', 'PriceRequired']
                     : ['Default'];
             },

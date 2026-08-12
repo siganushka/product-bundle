@@ -12,17 +12,17 @@ use Siganushka\Contracts\Doctrine\ResourceInterface;
 use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
-use Siganushka\MediaBundle\Entity\Media;
+use Siganushka\MediaBundle\Model\MediaInterface;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
 /**
- * @template TMedia of Media = Media
- * @template TOption of ProductOption = ProductOption
- * @template TVariant of ProductVariant = ProductVariant
+ * @template TMedia of MediaInterface = MediaInterface
+ * @template TOption of AbstractProductOption = AbstractProductOption
+ * @template TVariant of AbstractProductVariant = AbstractProductVariant
  */
-#[ORM\Entity(repositoryClass: ProductRepository::class)]
-class Product implements ResourceInterface, TimestampableInterface
+#[ORM\MappedSuperclass(repositoryClass: ProductRepository::class)]
+abstract class AbstractProduct implements ResourceInterface, TimestampableInterface
 {
     use ResourceTrait;
     use TimestampableTrait;
@@ -36,8 +36,8 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @var TMedia|null
      */
-    #[ORM\ManyToOne(targetEntity: Media::class)]
-    protected ?Media $img = null;
+    #[ORM\ManyToOne]
+    protected ?MediaInterface $img = null;
 
     #[ORM\Column(nullable: true)]
     protected ?int $lowestPrice = null;
@@ -48,14 +48,14 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @var Collection<int, TOption>
      */
-    #[ORM\OneToMany(targetEntity: ProductOption::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: AbstractProductOption::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
     #[ORM\OrderBy(['id' => 'ASC'])]
     protected Collection $options;
 
     /**
      * @var Collection<int, TVariant>
      */
-    #[ORM\OneToMany(targetEntity: ProductVariant::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: AbstractProductVariant::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
     #[ORM\OrderBy(['id' => 'ASC'])]
     protected Collection $variants;
 
@@ -93,7 +93,7 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @return TMedia|null
      */
-    public function getImg(): ?Media
+    public function getImg(): ?MediaInterface
     {
         return $this->img;
     }
@@ -101,7 +101,7 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @param TMedia|null $img
      */
-    public function setImg(?Media $img): static
+    public function setImg(?MediaInterface $img): static
     {
         $this->img = $img;
 
@@ -143,7 +143,7 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @param TOption $option
      */
-    public function addOption(ProductOption $option): static
+    public function addOption(AbstractProductOption $option): static
     {
         if (!$this->options->contains($option)) {
             $this->options[] = $option;
@@ -156,7 +156,7 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @param TOption $option
      */
-    public function removeOption(ProductOption $option): static
+    public function removeOption(AbstractProductOption $option): static
     {
         if ($this->options->removeElement($option)) {
             if ($option->getProduct() === $this) {
@@ -178,9 +178,9 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @param TVariant $variant
      */
-    public function addVariant(ProductVariant $variant): static
+    public function addVariant(AbstractProductVariant $variant): static
     {
-        if (!$this->variants->exists(static fn ($_, ProductVariant $item) => $item->getCode() === $variant->getCode())) {
+        if (!$this->variants->exists(static fn ($_, AbstractProductVariant $item) => $item->getCode() === $variant->getCode())) {
             $this->variants[] = $variant;
             $variant->setProduct($this);
         }
@@ -191,7 +191,7 @@ class Product implements ResourceInterface, TimestampableInterface
     /**
      * @param TVariant $variant
      */
-    public function removeVariant(ProductVariant $variant): static
+    public function removeVariant(AbstractProductVariant $variant): static
     {
         if ($this->variants->removeElement($variant)) {
             if ($variant->getProduct() === $this) {

@@ -7,7 +7,7 @@ namespace Siganushka\ProductBundle\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Siganushka\ProductBundle\Dto\ProductQueryDto;
-use Siganushka\ProductBundle\Entity\Product;
+use Siganushka\ProductBundle\Entity\AbstractProduct;
 use Siganushka\ProductBundle\Form\ProductType;
 use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
@@ -52,14 +52,14 @@ class ProductController extends AbstractController
         ]);
     }
 
-    public function getItem(Product $entity): Response
+    public function getItem(AbstractProduct $entity): Response
     {
         return $this->json($entity, context: [
             'groups' => ['product.item'],
         ]);
     }
 
-    public function putItem(Request $request, EntityManagerInterface $entityManager, Product $entity): Response
+    public function putItem(Request $request, EntityManagerInterface $entityManager, AbstractProduct $entity): Response
     {
         $form = $this->createForm(ProductType::class, $entity);
         $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
@@ -75,7 +75,7 @@ class ProductController extends AbstractController
         ]);
     }
 
-    public function deleteItem(EntityManagerInterface $entityManager, Product $entity): Response
+    public function deleteItem(EntityManagerInterface $entityManager, AbstractProduct $entity): Response
     {
         $entityManager->remove($entity);
         $entityManager->flush();
@@ -83,14 +83,14 @@ class ProductController extends AbstractController
         return new Response(status: Response::HTTP_NO_CONTENT);
     }
 
-    public function getVariants(Product $entity): Response
+    public function getVariants(AbstractProduct $entity): Response
     {
         return $this->json($entity->getVariants(), context: [
             'groups' => ['product_variant.collection'],
         ]);
     }
 
-    public function putVariants(Request $request, EntityManagerInterface $entityManager, Product $entity): Response
+    public function putVariants(Request $request, EntityManagerInterface $entityManager, AbstractProduct $entity): Response
     {
         $form = $this->createForm(ProductVariantCollectionType::class, $entity);
         $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));

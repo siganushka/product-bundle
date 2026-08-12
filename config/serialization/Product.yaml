@@ -1,4 +1,4 @@
-Siganushka\ProductBundle\Entity\Product:
+Siganushka\ProductBundle\Entity\AbstractProduct:
     attributes:
         id:
             groups: [product.item, product.collection]
