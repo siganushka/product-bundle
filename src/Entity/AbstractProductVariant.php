@@ -22,6 +22,7 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
  */
 #[ORM\MappedSuperclass(repositoryClass: ProductVariantRepository::class)]
 #[ORM\UniqueConstraint(columns: ['product_id', 'code'])]
+#[ORM\HasLifecycleCallbacks]
 abstract class AbstractProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface
 {
     use EnableTrait;
@@ -53,6 +54,7 @@ abstract class AbstractProductVariant implements ResourceInterface, EnableInterf
     #[ORM\JoinTable(name: 'product_variant_value')]
     #[ORM\JoinColumn(name: 'product_variant_id', onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(name: 'product_option_value_id', onDelete: 'CASCADE')]
+    #[ORM\OrderBy(['option' => 'ASC', 'id' => 'ASC'])]
     protected Collection $optionValues;
 
     /**
@@ -88,9 +90,17 @@ abstract class AbstractProductVariant implements ResourceInterface, EnableInterf
         return $this->code;
     }
 
+    #[ORM\PreFlush]
     public function getName(): ?string
     {
-        return $this->name;
+        return $this->name ??= ProductVariantChoice::create(...$this->optionValues)->name;
+    }
+
+    public function resetName(): static
+    {
+        $this->name = null;
+
+        return $this;
     }
 
     public function getPrice(): ?int

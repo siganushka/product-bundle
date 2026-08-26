@@ -92,6 +92,9 @@ abstract class AbstractProductOptionValue implements ResourceInterface, Timestam
     public function setName(?string $name): static
     {
         $this->name = $name;
+        foreach ($this->variants as $variant) {
+            $variant->resetName();
+        }
 
         return $this;
     }
