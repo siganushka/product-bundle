@@ -19,16 +19,16 @@ class ProductOptionTest extends TestCase
         $entity->setName('foo');
         static::assertSame('foo', $entity->getName());
 
-        $entity->addValue(new TestProductOptionValue(text: 'bar'));
+        $entity->addValue(new TestProductOptionValue(name: 'bar'));
         static::assertCount(1, $entity->getValues());
     }
 
     public function testClone(): void
     {
         $po = new TestProductOption();
-        $po->addValue(new TestProductOptionValue(text: 'foo'));
-        $po->addValue(new TestProductOptionValue(text: 'bar'));
-        $po->addValue(new TestProductOptionValue(text: 'baz'));
+        $po->addValue(new TestProductOptionValue(name: 'foo'));
+        $po->addValue(new TestProductOptionValue(name: 'bar'));
+        $po->addValue(new TestProductOptionValue(name: 'baz'));
 
         (new \ReflectionProperty($po, 'id'))->setValue($po, 1);
 

@@ -11,11 +11,11 @@ class ProductOptionValueTest extends TestCase
 {
     public function testAll(): void
     {
-        $entity = new TestProductOptionValue(text: 'foo');
-        static::assertSame('foo', $entity->getText());
+        $entity = new TestProductOptionValue(name: 'foo');
+        static::assertSame('foo', $entity->getName());
 
-        $entity = new TestProductOptionValue(code: 'test', text: 'bar');
+        $entity = new TestProductOptionValue(code: 'test', name: 'bar');
         static::assertSame('test', $entity->getCode());
-        static::assertSame('bar', $entity->getText());
+        static::assertSame('bar', $entity->getName());
     }
 }

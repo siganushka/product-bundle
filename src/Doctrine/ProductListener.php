@@ -41,7 +41,7 @@ class ProductListener
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
             if ($entity instanceof AbstractProductVariant && $entity->getProduct()) {
                 $updateProductPrice->attach($entity->getProduct());
-            } elseif ($entity instanceof AbstractProductOptionValue && \array_key_exists('text', $uow->getEntityChangeSet($entity))) {
+            } elseif ($entity instanceof AbstractProductOptionValue && \array_key_exists('name', $uow->getEntityChangeSet($entity))) {
                 foreach ($entity->getVariants() as $variant) {
                     $updateVariantName->attach($variant);
                 }

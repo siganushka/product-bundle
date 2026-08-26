@@ -39,7 +39,7 @@ class ProductOptionType extends AbstractType
                 'row_attr' => false === $options['label'] ? ['class' => 'w-75'] : [],
                 'constraints' => [
                     new Count(min: 1),
-                    new Unique(normalizer: static fn (AbstractProductOptionValue $value) => $value->getText() ?? spl_object_hash($value)),
+                    new Unique(normalizer: static fn (AbstractProductOptionValue $value) => $value->getName() ?? spl_object_hash($value)),
                 ],
             ])
         ;

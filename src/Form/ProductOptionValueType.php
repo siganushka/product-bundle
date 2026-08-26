@@ -30,8 +30,8 @@ class ProductOptionValueType extends AbstractType
                 'row_attr' => false === $options['label'] ? ['class' => 'w-0'] : [],
                 'required' => false,
             ])
-            ->add('text', TextType::class, [
-                'label' => 'product_option_value.text',
+            ->add('name', TextType::class, [
+                'label' => 'product_option_value.name',
                 'constraints' => [
                     new NotBlank(),
                     new Regex('/'.preg_quote(ProductOptionValuesTextType::VALUES_DELIMITER).'/', match: false),

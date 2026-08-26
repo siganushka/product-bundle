@@ -12,7 +12,7 @@ return [
     'product_option.name' => 'Name',
     'product_option.values' => 'Values',
 
-    'product_option_value.text' => 'Text',
+    'product_option_value.name' => 'Text',
     'product_option_value.img' => 'Image',
 
     'product_variant.name' => 'Name',

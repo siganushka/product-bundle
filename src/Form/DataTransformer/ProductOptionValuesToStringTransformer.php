@@ -40,7 +40,7 @@ class ProductOptionValuesToStringTransformer implements DataTransformerInterface
             throw new TransformationFailedException('Expected an array or Traversable.');
         }
 
-        return implode($this->separator, array_map(static fn (AbstractProductOptionValue $item) => $item->getText(), $value));
+        return implode($this->separator, array_map(static fn (AbstractProductOptionValue $item) => $item->getName(), $value));
     }
 
     /**
@@ -57,10 +57,10 @@ class ProductOptionValuesToStringTransformer implements DataTransformerInterface
             return [];
         }
 
-        $texts = explode($this->separator, $value);
-        $texts = array_map('trim', $texts);
-        $texts = array_filter($texts);
+        $names = explode($this->separator, $value);
+        $names = array_map('trim', $names);
+        $names = array_filter($names);
 
-        return array_map(fn (string $text) => $this->repository->createNew(text: $text), $texts);
+        return array_map(fn (string $name) => $this->repository->createNew(name: $name), $names);
     }
 }

@@ -25,7 +25,7 @@ class ProductOptionValuesTextListener implements EventSubscriberInterface
 
         foreach ($newData as $key => $value) {
             foreach ($previousData as $previousValue) {
-                if ($previousValue->getText() === $value->getText()) {
+                if ($previousValue->getName() === $value->getName()) {
                     $newData[$key] = $previousValue;
                     break;
                 }

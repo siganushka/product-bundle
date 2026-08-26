@@ -33,16 +33,16 @@ class ProductOptionValuesToStringTransformerTest extends TestCase
         $values = $transformer->reverseTransform('a,b,c');
         static::assertCount(1, $values);
         static::assertInstanceOf(TestProductOptionValue::class, $values[0]);
-        static::assertSame('a,b,c', $values[0]->getText());
+        static::assertSame('a,b,c', $values[0]->getName());
 
         $values = $transformer->reverseTransform('a          / b / c/  ');
         static::assertCount(3, $values);
         static::assertInstanceOf(TestProductOptionValue::class, $values[0]);
         static::assertInstanceOf(TestProductOptionValue::class, $values[1]);
         static::assertInstanceOf(TestProductOptionValue::class, $values[2]);
-        static::assertSame('a', $values[0]->getText());
-        static::assertSame('b', $values[1]->getText());
-        static::assertSame('c', $values[2]->getText());
+        static::assertSame('a', $values[0]->getName());
+        static::assertSame('b', $values[1]->getName());
+        static::assertSame('c', $values[2]->getName());
     }
 
     public function testTansformNull(): void

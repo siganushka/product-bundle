@@ -26,17 +26,17 @@ final class ProductVariantChoice
      */
     public function __construct(public readonly array $combinedOptionValues = [])
     {
-        $codes = $texts = [];
+        $codes = $names = [];
         foreach ($combinedOptionValues as $optionValue) {
             $codes[] = $optionValue->getCode();
-            $texts[] = $optionValue->getText() ?? '-';
+            $names[] = $optionValue->getName() ?? '-';
         }
 
         // [important] Generate sorted unique codes.
         sort($codes);
 
         $this->code = \count($codes) ? implode('-', $codes) : null;
-        $this->name = \count($texts) ? implode('/', $texts) : null;
+        $this->name = \count($names) ? implode('/', $names) : null;
     }
 
     /**

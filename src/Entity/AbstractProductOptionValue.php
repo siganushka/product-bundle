@@ -36,7 +36,7 @@ abstract class AbstractProductOptionValue implements ResourceInterface, Timestam
     protected string $code;
 
     #[ORM\Column]
-    protected ?string $text = null;
+    protected ?string $name = null;
 
     /**
      * @var TMedia|null
@@ -53,10 +53,10 @@ abstract class AbstractProductOptionValue implements ResourceInterface, Timestam
     /**
      * @param TMedia|null $img
      */
-    public function __construct(?string $code = null, ?string $text = null, ?MediaInterface $img = null)
+    public function __construct(?string $code = null, ?string $name = null, ?MediaInterface $img = null)
     {
         $this->code = $code ?? substr(uniqid(), -8);
-        $this->text = $text;
+        $this->name = $name;
         $this->img = $img;
         $this->variants = new ArrayCollection();
     }
@@ -84,14 +84,14 @@ abstract class AbstractProductOptionValue implements ResourceInterface, Timestam
         return $this->code;
     }
 
-    public function getText(): ?string
+    public function getName(): ?string
     {
-        return $this->text;
+        return $this->name;
     }
 
-    public function setText(?string $text): static
+    public function setName(?string $name): static
     {
-        $this->text = $text;
+        $this->name = $name;
 
         return $this;
     }
