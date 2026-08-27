@@ -21,7 +21,6 @@ class ProductVariantCollectionType extends AbstractType
         $builder
             ->add('variants', CollectionType::class, [
                 'label' => false,
-                'row_attr' => ['class' => 'm-0'],
                 'entry_type' => ProductVariantType::class,
                 'entry_options' => ['label' => false],
                 'allow_add' => false,
