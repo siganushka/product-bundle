@@ -33,6 +33,7 @@ class ProductOptionType extends AbstractType
                 'label' => 'product_option.name',
                 'row_attr' => false === $options['label'] ? ['class' => 'w-25'] : [],
                 'constraints' => new NotBlank(),
+                'priority' => 0,
             ])
             ->add('values', $type, [
                 'label' => 'product_option.values',
@@ -41,6 +42,7 @@ class ProductOptionType extends AbstractType
                     new Count(min: 1),
                     new Unique(normalizer: static fn (AbstractProductOptionValue $value) => $value->getName() ?? spl_object_hash($value)),
                 ],
+                'priority' => -10,
             ])
         ;
     }

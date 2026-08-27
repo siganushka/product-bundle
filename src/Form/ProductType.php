@@ -33,6 +33,7 @@ class ProductType extends AbstractType
                 'label' => 'product.img',
                 'rule' => 'product_img',
                 'constraints' => new NotBlank(),
+                'priority' => 0,
             ])
             ->add('name', TextType::class, [
                 'label' => 'product.name',
@@ -40,10 +41,12 @@ class ProductType extends AbstractType
                     new NotBlank(),
                     new Length(max: 255),
                 ],
+                'priority' => -10,
             ])
             ->add('summary', TextType::class, [
                 'label' => 'product.summary',
                 'constraints' => new Length(max: 255),
+                'priority' => -20,
                 'required' => false,
             ])
         ;
@@ -78,6 +81,7 @@ class ProductType extends AbstractType
             'property_path' => 'variants[0]',
             'setter' => static fn (AbstractProduct &$product, AbstractProductVariant $variant) => $product->addVariant($variant),
             'error_bubbling' => false,
+            'priority' => -30,
         ]);
     }
 
@@ -92,6 +96,7 @@ class ProductType extends AbstractType
             'error_bubbling' => false,
             'by_reference' => false,
             'constraints' => new Count(min: 1),
+            'priority' => -30,
         ]);
     }
 }

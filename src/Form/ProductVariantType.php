@@ -36,12 +36,14 @@ class ProductVariantType extends AbstractType
                 ],
                 'row_attr' => false === $options['label'] ? ['class' => 'w-25'] : [],
                 'required' => false !== $options['label'],
+                'priority' => -10,
             ])
             ->add('stock', IntegerType::class, [
                 'label' => 'product_variant.stock',
                 'constraints' => new GreaterThanOrEqual(0),
                 'row_attr' => false === $options['label'] ? ['class' => 'w-25'] : [],
                 'required' => false,
+                'priority' => -20,
             ])
         ;
 
@@ -72,7 +74,7 @@ class ProductVariantType extends AbstractType
         $form
             ->add('name', TextType::class, [
                 'label' => 'product_variant.name',
-                'priority' => 10,
+                'priority' => 0,
                 'required' => false,
                 'disabled' => true,
             ])

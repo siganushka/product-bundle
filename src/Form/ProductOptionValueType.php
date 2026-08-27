@@ -28,6 +28,7 @@ class ProductOptionValueType extends AbstractType
                 'rule' => 'product_img',
                 'style' => false === $options['label'] ? 'width: 38px; height: 38px' : null,
                 'row_attr' => false === $options['label'] ? ['class' => 'w-0'] : [],
+                'priority' => 0,
                 'required' => false,
             ])
             ->add('name', TextType::class, [
@@ -36,6 +37,7 @@ class ProductOptionValueType extends AbstractType
                     new NotBlank(),
                     new Regex('/'.preg_quote(ProductOptionValuesTextType::VALUES_DELIMITER).'/', match: false),
                 ],
+                'priority' => -10,
             ])
         ;
     }
