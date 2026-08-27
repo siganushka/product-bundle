@@ -66,7 +66,7 @@ class ProductVariantGenerateListener
             foreach ($product->getVariants() as $variant) {
                 if (!\in_array($variant->getCode(), $codes)) {
                     $product->removeVariant($variant);
-                    $uow->scheduleForDelete($variant);
+                    $em->remove($variant);
                 }
             }
 
