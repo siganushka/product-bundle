@@ -65,6 +65,9 @@ abstract class AbstractProductVariant implements ResourceInterface, EnableInterf
         $this->code = $choice->code;
         $this->name = $choice->name;
         $this->optionValues = new ArrayCollection($choice->combinedOptionValues);
+
+        // Mark as false by default.
+        $this->enabled = false;
     }
 
     /**
