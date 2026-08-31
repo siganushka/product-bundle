@@ -12,7 +12,7 @@ use Siganushka\ProductBundle\Entity\AbstractProductOptionValue;
 use Siganushka\ProductBundle\Entity\AbstractProductVariant;
 use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 
-class ProductVariantGenerateListener
+class ProductVariantUpdateListener
 {
     public function __construct(private readonly ProductVariantRepository $repository)
     {
@@ -60,7 +60,7 @@ class ProductVariantGenerateListener
             $codes = [];
             foreach ($product->generateChoices() as $choice) {
                 $codes[] = $choice->code;
-                $product->addVariant($variant = $this->repository->createNew($choice));
+                $product->addVariant($variant = $this->repository->createNew($choice)->setEnabled(false));
             }
 
             foreach ($product->getVariants() as $variant) {

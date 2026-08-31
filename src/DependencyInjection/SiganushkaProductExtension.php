@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\DependencyInjection;
 
 use Doctrine\ORM\Events;
-use Siganushka\ProductBundle\Doctrine\ProductVariantGenerateListener;
+use Siganushka\ProductBundle\Doctrine\ProductVariantUpdateListener;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -29,7 +29,7 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
             $repositoryClass->setArgument('$entityClass', $config[$configName]);
         }
 
-        $container->findDefinition(ProductVariantGenerateListener::class)
+        $container->findDefinition(ProductVariantUpdateListener::class)
             ->addTag('doctrine.event_listener', ['event' => Events::onFlush])
         ;
     }
