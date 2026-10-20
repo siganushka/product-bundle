@@ -8,8 +8,6 @@ use BenTools\CartesianProduct\CartesianProduct;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Siganushka\Contracts\Doctrine\ResourceInterface;
-use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Model\MediaInterface;
@@ -22,10 +20,14 @@ use Siganushka\ProductBundle\Repository\ProductRepository;
  * @template TVariant of AbstractProductVariant = AbstractProductVariant
  */
 #[ORM\MappedSuperclass(repositoryClass: ProductRepository::class)]
-abstract class AbstractProduct implements ResourceInterface, TimestampableInterface
+abstract class AbstractProduct implements TimestampableInterface
 {
-    use ResourceTrait;
     use TimestampableTrait;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    protected ?int $id = null;
 
     #[ORM\Column]
     protected ?string $name = null;
@@ -64,6 +66,11 @@ abstract class AbstractProduct implements ResourceInterface, TimestampableInterf
         $this->name = $name;
         $this->options = new ArrayCollection();
         $this->variants = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getName(): ?string

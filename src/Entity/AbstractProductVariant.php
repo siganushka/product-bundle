@@ -9,8 +9,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\EnableInterface;
 use Siganushka\Contracts\Doctrine\EnableTrait;
-use Siganushka\Contracts\Doctrine\ResourceInterface;
-use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
@@ -23,11 +21,15 @@ use Siganushka\ProductBundle\Repository\ProductVariantRepository;
 #[ORM\MappedSuperclass(repositoryClass: ProductVariantRepository::class)]
 #[ORM\UniqueConstraint(columns: ['product_id', 'code'])]
 #[ORM\HasLifecycleCallbacks]
-abstract class AbstractProductVariant implements ResourceInterface, EnableInterface, TimestampableInterface
+abstract class AbstractProductVariant implements EnableInterface, TimestampableInterface
 {
     use EnableTrait;
-    use ResourceTrait;
     use TimestampableTrait;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    protected ?int $id = null;
 
     /**
      * @var TProduct|null
@@ -65,6 +67,11 @@ abstract class AbstractProductVariant implements ResourceInterface, EnableInterf
         $this->code = $choice->code;
         $this->name = $choice->name;
         $this->optionValues = new ArrayCollection($choice->combinedOptionValues);
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     /**

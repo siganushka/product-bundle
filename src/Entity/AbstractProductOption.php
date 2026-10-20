@@ -7,8 +7,6 @@ namespace Siganushka\ProductBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Siganushka\Contracts\Doctrine\ResourceInterface;
-use Siganushka\Contracts\Doctrine\ResourceTrait;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\ProductBundle\Repository\ProductOptionRepository;
@@ -18,10 +16,14 @@ use Siganushka\ProductBundle\Repository\ProductOptionRepository;
  * @template TValue of AbstractProductOptionValue = AbstractProductOptionValue
  */
 #[ORM\MappedSuperclass(repositoryClass: ProductOptionRepository::class)]
-abstract class AbstractProductOption implements ResourceInterface, TimestampableInterface
+abstract class AbstractProductOption implements TimestampableInterface
 {
-    use ResourceTrait;
     use TimestampableTrait;
+
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    protected ?int $id = null;
 
     /**
      * @var TProduct|null
@@ -43,6 +45,11 @@ abstract class AbstractProductOption implements ResourceInterface, Timestampable
     {
         $this->name = $name;
         $this->values = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     /**
