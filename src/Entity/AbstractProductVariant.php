@@ -28,7 +28,7 @@ abstract class AbstractProductVariant implements EnableInterface, TimestampableI
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(options: ['unsigned' => true])]
     protected ?int $id = null;
 
     /**
