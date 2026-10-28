@@ -8,6 +8,8 @@ return [
     'product.summary' => 'Product Summary',
     'product.options' => 'Prodcut Options',
     'product.variants' => 'Variants',
+    'product.min_limit' => 'Min Limit',
+    'product.max_limit' => 'Max Limit',
 
     'product_option.name' => 'Name',
     'product_option.values' => 'Values',

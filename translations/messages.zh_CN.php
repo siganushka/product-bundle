@@ -8,6 +8,8 @@ return [
     'product.summary' => '商品简介',
     'product.options' => '商品选项',
     'product.variants' => '库存',
+    'product.min_limit' => '最小购买数量',
+    'product.max_limit' => '最大购买数量',
 
     'product_option.name' => '选项名称',
     'product_option.values' => '选项值',

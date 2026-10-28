@@ -12,6 +12,10 @@ Siganushka\ProductBundle\Entity\AbstractProduct:
             groups: [product.item, product.collection]
         highestPrice:
             groups: [product.item, product.collection]
+        minLimit:
+            groups: [product.item, product.collection]
+        maxLimit:
+            groups: [product.item, product.collection]
         options:
             groups: [product.item, product.collection]
         variants:

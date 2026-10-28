@@ -10,6 +10,7 @@ use Siganushka\ProductBundle\Entity\AbstractProductVariant;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -17,6 +18,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -48,6 +50,18 @@ class ProductType extends AbstractType
                 'constraints' => new Length(max: 255),
                 'priority' => -20,
                 'required' => false,
+            ])
+            ->add('minLimit', IntegerType::class, [
+                'label' => 'product.min_limit',
+                'constraints' => new GreaterThanOrEqual(1),
+                'required' => false,
+                'priority' => -40,
+            ])
+            ->add('maxLimit', IntegerType::class, [
+                'label' => 'product.max_limit',
+                'constraints' => new GreaterThanOrEqual(propertyPath: 'parent.all[minLimit].data', message: 'This value should be greater than or equal to min limit.'),
+                'required' => false,
+                'priority' => -50,
             ])
         ;
 

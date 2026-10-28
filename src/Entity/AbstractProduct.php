@@ -47,6 +47,12 @@ abstract class AbstractProduct implements TimestampableInterface
     #[ORM\Column(nullable: true)]
     protected ?int $highestPrice = null;
 
+    #[ORM\Column(nullable: true)]
+    protected ?int $minLimit = null;
+
+    #[ORM\Column(nullable: true)]
+    protected ?int $maxLimit = null;
+
     /**
      * @var Collection<int, TOption>
      */
@@ -135,6 +141,30 @@ abstract class AbstractProduct implements TimestampableInterface
     public function setHighestPrice(?int $highestPrice): static
     {
         $this->highestPrice = $highestPrice;
+
+        return $this;
+    }
+
+    public function getMinLimit(): ?int
+    {
+        return $this->minLimit;
+    }
+
+    public function setMinLimit(?int $minLimit): static
+    {
+        $this->minLimit = $minLimit;
+
+        return $this;
+    }
+
+    public function getMaxLimit(): ?int
+    {
+        return $this->maxLimit;
+    }
+
+    public function setMaxLimit(?int $maxLimit): static
+    {
+        $this->maxLimit = $maxLimit;
 
         return $this;
     }
