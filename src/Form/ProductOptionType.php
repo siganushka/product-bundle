@@ -39,7 +39,7 @@ class ProductOptionType extends AbstractType
                 'label' => 'product_option.values',
                 'constraints' => [
                     new Count(min: 1),
-                    new Unique(normalizer: static fn (AbstractProductOptionValue $value) => $value->getName() ?? spl_object_hash($value)),
+                    new Unique(normalizer: static fn (AbstractProductOptionValue $value) => $value->getName() ?? spl_object_id($value)),
                 ],
                 'priority' => -10,
             ])
