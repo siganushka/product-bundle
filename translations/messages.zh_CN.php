@@ -7,7 +7,7 @@ return [
     'product.name' => '商品名称',
     'product.summary' => '商品简介',
     'product.options' => '商品选项',
-    'product.variants' => '库存',
+    'product.variants' => '库存规格',
     'product.min_limit' => '最小购买数量',
     'product.max_limit' => '最大购买数量',
 
