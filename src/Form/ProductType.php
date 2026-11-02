@@ -67,10 +67,8 @@ class ProductType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $form = $event->getForm();
-            // $form->remove('variant0');
-            // $form->remove('options');
-
             $data = $event->getData();
+
             $combinable = $data instanceof AbstractProduct && $data->getId()
                 ? \count($data->getOptions())
                 : $options['combinable'];
@@ -91,7 +89,7 @@ class ProductType extends AbstractType
 
     public function addVariantField(FormInterface $form): void
     {
-        $form->add('variant0', ProductVariantType::class, [
+        $form->add('variants', ProductVariantType::class, [
             'property_path' => 'variants[0]',
             'setter' => static fn (AbstractProduct &$product, AbstractProductVariant $variant) => $product->addVariant($variant),
             'error_bubbling' => false,
