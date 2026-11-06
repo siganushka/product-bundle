@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Entity;
 
-use BenTools\CartesianProduct\CartesianProduct;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,6 +11,7 @@ use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Model\MediaInterface;
 use Siganushka\ProductBundle\Model\ProductVariantChoice;
+use Siganushka\ProductBundle\Model\ProductVariantChoiceGenerator;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
 /**
@@ -244,21 +244,6 @@ abstract class AbstractProduct implements TimestampableInterface
      */
     public function generateChoices(): array
     {
-        if ($this->options->isEmpty()) {
-            return [new ProductVariantChoice()];
-        }
-
-        $set = [];
-        foreach ($this->options as $option) {
-            $values = $option->getValues();
-            if ($values->count()) {
-                $set[] = $values;
-            }
-        }
-
-        $cartesianProduct = new CartesianProduct($set);
-        $asArray = $cartesianProduct->asArray();
-
-        return array_map(static fn (array $combinedOptionValues) => new ProductVariantChoice($combinedOptionValues), $asArray);
+        return ProductVariantChoiceGenerator::generate($this->options);
     }
 }

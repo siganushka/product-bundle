@@ -66,12 +66,5 @@ class SiganushkaProductExtension extends Extension implements PrependExtensionIn
                 ],
             ],
         ]);
-
-        $bundles = $container->getParameter('kernel.bundles');
-        if (isset($bundles['TwigBundle'])) {
-            $container->prependExtensionConfig('twig', [
-                'form_themes' => ['@SiganushkaProduct/form_theme.html.twig'],
-            ]);
-        }
     }
 }

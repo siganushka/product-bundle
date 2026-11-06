@@ -9,12 +9,11 @@ use Knp\Component\Pager\PaginatorInterface;
 use Siganushka\ProductBundle\Dto\ProductQueryDto;
 use Siganushka\ProductBundle\Entity\AbstractProduct;
 use Siganushka\ProductBundle\Form\ProductType;
-use Siganushka\ProductBundle\Form\ProductVariantCollectionType;
+use Siganushka\ProductBundle\Form\Type\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 
 class ProductController extends AbstractController
@@ -33,11 +32,11 @@ class ProductController extends AbstractController
         ]);
     }
 
-    public function postCollection(Request $request, EntityManagerInterface $entityManager, #[MapQueryParameter] bool $combinable = false): Response
+    public function postCollection(Request $request, EntityManagerInterface $entityManager): Response
     {
         $entity = $this->productRepository->createNew();
 
-        $form = $this->createForm(ProductType::class, $entity, compact('combinable'));
+        $form = $this->createForm(ProductType::class, $entity);
         $form->submit($request->getPayload()->all());
 
         if (!$form->isValid()) {
@@ -92,7 +91,11 @@ class ProductController extends AbstractController
 
     public function putVariants(Request $request, EntityManagerInterface $entityManager, AbstractProduct $entity): Response
     {
-        $form = $this->createForm(ProductVariantCollectionType::class, $entity);
+        $builder = $this->createFormBuilder($entity)
+            ->add('variants', ProductVariantCollectionType::class)
+        ;
+
+        $form = $builder->getForm();
         $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
 
         if (!$form->isValid()) {
