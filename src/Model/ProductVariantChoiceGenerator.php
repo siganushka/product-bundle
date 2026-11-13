@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Model;
 
 use BenTools\CartesianProduct\CartesianProduct;
+use Siganushka\ProductBundle\Entity\AbstractProduct;
 use Siganushka\ProductBundle\Entity\AbstractProductOption;
 
 class ProductVariantChoiceGenerator
@@ -29,8 +30,16 @@ class ProductVariantChoiceGenerator
         }
 
         $cartesianProduct = new CartesianProduct($set);
-        $asArray = $cartesianProduct->asArray();
+        $result = $cartesianProduct->asArray();
 
-        return array_map(static fn (array $combinedOptionValues) => new ProductVariantChoice($combinedOptionValues), $asArray);
+        return array_map(static fn (array $combinedOptionValues) => new ProductVariantChoice($combinedOptionValues), $result);
+    }
+
+    /**
+     * @return array<int, ProductVariantChoice>
+     */
+    public static function generateFromProduct(AbstractProduct $product): array
+    {
+        return self::generate($product->getOptions());
     }
 }

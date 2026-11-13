@@ -89,7 +89,7 @@ class ProductType extends AbstractType
                 $event->setData($data = $this->repository->createNew());
             }
 
-            foreach ($data->generateChoices() as $choice) {
+            foreach (ProductVariantChoiceGenerator::generateFromProduct($data) as $choice) {
                 $data->addVariant($this->productVariantRepository->createNew($choice)->setEnabled(true));
             }
         });

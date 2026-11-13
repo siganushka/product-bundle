@@ -10,8 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Siganushka\Contracts\Doctrine\TimestampableInterface;
 use Siganushka\Contracts\Doctrine\TimestampableTrait;
 use Siganushka\MediaBundle\Model\MediaInterface;
-use Siganushka\ProductBundle\Model\ProductVariantChoice;
-use Siganushka\ProductBundle\Model\ProductVariantChoiceGenerator;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 
 /**
@@ -237,13 +235,5 @@ abstract class AbstractProduct implements TimestampableInterface
         }
 
         return $this;
-    }
-
-    /**
-     * @return array<int, ProductVariantChoice>
-     */
-    public function generateChoices(): array
-    {
-        return ProductVariantChoiceGenerator::generate($this->options);
     }
 }
