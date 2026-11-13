@@ -16,16 +16,16 @@ class ProductVariantChoiceGenerator
      */
     public static function generate(iterable $options): array
     {
-        if (0 === iterator_count($options)) {
-            return [new ProductVariantChoice()];
-        }
-
         $set = [];
         foreach ($options as $option) {
             $values = $option->getValues();
             if ($values->count()) {
                 $set[] = $values;
             }
+        }
+
+        if (0 === \count($set)) {
+            return [new ProductVariantChoice()];
         }
 
         $cartesianProduct = new CartesianProduct($set);

@@ -43,13 +43,6 @@ class ProductVariantType extends AbstractType
                 'required' => false,
                 'priority' => -20,
             ])
-            ->add('enabled', CheckboxType::class, [
-                'label' => false === $options['label'] ? false : 'generic.enable',
-                'label_attr' => ['class' => 'checkbox-switch'],
-                'row_attr' => false === $options['label'] ? ['class' => 'w-0 align-middle'] : [],
-                'required' => false,
-                'priority' => false === $options['label'] ? 100 : -100,
-            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
@@ -76,12 +69,21 @@ class ProductVariantType extends AbstractType
 
     public function addCombinedFields(FormInterface $form, mixed $label): void
     {
-        $form->add('name', TextType::class, [
-            'label' => 'product_variant.name',
-            'row_attr' => false === $label ? ['class' => 'w-50'] : [],
-            'required' => false,
-            'disabled' => true,
-            'priority' => 0,
-        ]);
+        $form
+            ->add('name', TextType::class, [
+                'label' => 'product_variant.name',
+                'row_attr' => false === $label ? ['class' => 'w-50'] : [],
+                'required' => false,
+                'disabled' => true,
+                'priority' => 0,
+            ])
+            ->add('enabled', CheckboxType::class, [
+                'label' => false === $label ? false : 'generic.enable',
+                'label_attr' => ['class' => 'checkbox-switch'],
+                'row_attr' => false === $label ? ['class' => 'w-0 align-middle'] : [],
+                'required' => false,
+                'priority' => false === $label ? 100 : -100,
+            ])
+        ;
     }
 }

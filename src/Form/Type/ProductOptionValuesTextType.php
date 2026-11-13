@@ -35,7 +35,6 @@ class ProductOptionValuesTextType extends AbstractType
             'autocomplete' => true,
             'tom_select_options' => [
                 'create' => true,
-                'createOnBlur' => true,
                 'duplicates' => true,
                 'delimiter' => self::VALUES_DELIMITER,
             ],

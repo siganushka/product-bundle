@@ -34,14 +34,10 @@ class ProductVariantCollectionType extends AbstractType
     }
 
     /**
-     * @param Collection<int, AbstractProductVariant>|null $value
+     * @param Collection<int, AbstractProductVariant> $value
      */
-    private function validateVariants(?Collection $value, ExecutionContextInterface $context): void
+    private function validateVariants(Collection $value, ExecutionContextInterface $context): void
     {
-        if (!$value instanceof Collection) {
-            return;
-        }
-
         $enabled = $value->filter(static fn (AbstractProductVariant $item) => $item->isEnabled());
         if (0 === $enabled->count()) {
             $context

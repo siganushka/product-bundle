@@ -64,7 +64,7 @@ abstract class AbstractProduct implements TimestampableInterface
      * @var Collection<int, TVariant>
      */
     #[ORM\OneToMany(targetEntity: AbstractProductVariant::class, mappedBy: 'product', cascade: ['all'], orphanRemoval: true)]
-    #[ORM\OrderBy(['id' => 'ASC'])]
+    #[ORM\OrderBy(['code' => 'ASC'])]
     protected Collection $variants;
 
     public function __construct(?string $name = null)
