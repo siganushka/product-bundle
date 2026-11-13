@@ -94,6 +94,24 @@ class ProductType extends AbstractType
             }
         });
 
+        $builder->get('variants')->addEventListener(FormEvents::PRE_SUBMIT, static function (FormEvent $event): void {
+            if (!\is_array($data = $event->getData())) {
+                return;
+            }
+
+            $options = $event->getForm()->getParent()?->get('options')->getData();
+            if (is_iterable($options)) {
+                $choices = ProductVariantChoiceGenerator::generate($options);
+                foreach (array_keys($data) as $index) {
+                    if (!\array_key_exists($index, $choices)) {
+                        unset($data[$index]);
+                    }
+                }
+            }
+
+            $event->setData($data);
+        });
+
         $builder->get('options')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event): void {
             $form = $event->getForm()->getParent();
             $data = $event->getData();
