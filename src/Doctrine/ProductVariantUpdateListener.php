@@ -12,9 +12,6 @@ class ProductVariantUpdateListener
 {
     public function onFlush(OnFlushEventArgs $event): void
     {
-        /** @var \SplObjectStorage<AbstractProduct, null> */
-        $pendingProducts = new \SplObjectStorage();
-
         $em = $event->getObjectManager();
         $uow = $em->getUnitOfWork();
 
@@ -22,10 +19,10 @@ class ProductVariantUpdateListener
             $uow->getScheduledEntityInsertions(),
             $uow->getScheduledEntityUpdates(),
             $uow->getScheduledEntityDeletions(),
-            $uow->getScheduledCollectionUpdates(),
-            $uow->getScheduledCollectionDeletions(),
         );
 
+        /** @var \SplObjectStorage<AbstractProduct, null> */
+        $pendingProducts = new \SplObjectStorage();
         foreach ($pendingEntities as $entity) {
             if ($entity instanceof AbstractProductVariant && $entity->getProduct()) {
                 $pendingProducts->attach($entity->getProduct());
