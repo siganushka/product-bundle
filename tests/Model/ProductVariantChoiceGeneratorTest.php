@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests\Model;
 
 use PHPUnit\Framework\TestCase;
+use Siganushka\ProductBundle\Model\ProductVariantChoice;
 use Siganushka\ProductBundle\Model\ProductVariantChoiceGenerator;
 use Siganushka\ProductBundle\Tests\Fixtures\TestProductOption;
 use Siganushka\ProductBundle\Tests\Fixtures\TestProductOptionValue;
@@ -26,11 +27,11 @@ class ProductVariantChoiceGeneratorTest extends TestCase
         $po3->addValue(new TestProductOptionValue(code: 'z3', name: 'z'));
 
         static::assertCount(1, $choices = ProductVariantChoiceGenerator::generate([]));
-        static::assertNull($choices[0]->code);
+        static::assertSame(ProductVariantChoice::DEFAULT_CODE, $choices[0]->code);
         static::assertNull($choices[0]->name);
 
         static::assertCount(1, $choices = ProductVariantChoiceGenerator::generate([$po1]));
-        static::assertNull($choices[0]->code);
+        static::assertSame(ProductVariantChoice::DEFAULT_CODE, $choices[0]->code);
         static::assertNull($choices[0]->name);
 
         static::assertCount(3, $choices = ProductVariantChoiceGenerator::generate([$po2]));

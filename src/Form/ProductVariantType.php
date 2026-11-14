@@ -47,7 +47,7 @@ class ProductVariantType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
             $data = $event->getData();
-            if ($data instanceof AbstractProductVariant && $data->getCode()) {
+            if ($data instanceof AbstractProductVariant && \count($data->getOptionValues())) {
                 $this->addCombinedFields($event->getForm(), $options['label']);
             }
         });

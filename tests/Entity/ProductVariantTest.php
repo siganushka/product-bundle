@@ -14,7 +14,7 @@ class ProductVariantTest extends TestCase
     public function testAll(): void
     {
         $variant = new TestProductVariant();
-        static::assertNull($variant->getCode());
+        static::assertSame(ProductVariantChoice::DEFAULT_CODE, $variant->getCode());
         static::assertNull($variant->getName());
 
         $choice = ProductVariantChoice::create(

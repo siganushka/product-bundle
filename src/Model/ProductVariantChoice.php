@@ -12,9 +12,14 @@ use Siganushka\ProductBundle\Entity\AbstractProductOptionValue;
 final class ProductVariantChoice
 {
     /**
+     * The code of the only variant of a product without options.
+     */
+    public const DEFAULT_CODE = 'default';
+
+    /**
      * Generated unique code for combined option values.
      */
-    public readonly ?string $code;
+    public readonly string $code;
 
     /**
      * Generated name for combined option values.
@@ -35,7 +40,7 @@ final class ProductVariantChoice
         // [important] Generate sorted unique codes.
         sort($codes);
 
-        $this->code = \count($codes) ? implode('-', $codes) : null;
+        $this->code = \count($codes) ? implode('-', $codes) : self::DEFAULT_CODE;
         $this->name = \count($names) ? implode('/', $names) : null;
     }
 

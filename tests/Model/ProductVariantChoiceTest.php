@@ -14,7 +14,7 @@ class ProductVariantChoiceTest extends TestCase
     {
         $choice = new ProductVariantChoice();
         static::assertCount(0, $choice->combinedOptionValues);
-        static::assertNull($choice->code);
+        static::assertSame(ProductVariantChoice::DEFAULT_CODE, $choice->code);
         static::assertNull($choice->name);
 
         $foo = new TestProductOptionValue('a', 'foo');
