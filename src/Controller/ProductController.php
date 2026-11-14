@@ -4,108 +4,38 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Knp\Component\Pager\PaginatorInterface;
+use Doctrine\ORM\QueryBuilder;
+use Siganushka\GenericBundle\Controller\Crud\DeleteItemTrait;
+use Siganushka\GenericBundle\Controller\Crud\GetCollectionTrait;
+use Siganushka\GenericBundle\Controller\Crud\GetItemTrait;
+use Siganushka\GenericBundle\Controller\Crud\PostCollectionTrait;
+use Siganushka\GenericBundle\Controller\Crud\PutItemTrait;
 use Siganushka\ProductBundle\Dto\ProductQueryDto;
-use Siganushka\ProductBundle\Entity\AbstractProduct;
 use Siganushka\ProductBundle\Form\ProductType;
-use Siganushka\ProductBundle\Form\Type\ProductVariantCollectionType;
 use Siganushka\ProductBundle\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapQueryString;
+use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/products')]
 class ProductController extends AbstractController
 {
+    use GetCollectionTrait;
+    use PostCollectionTrait;
+    use GetItemTrait;
+    use PutItemTrait;
+    use DeleteItemTrait;
+
     public function __construct(private readonly ProductRepository $productRepository)
     {
+        $this->configureCrud(
+            entityName: $productRepository->getClassName(),
+            entityForm: ProductType::class,
+            queryDtoClass: ProductQueryDto::class,
+        );
     }
 
-    public function getCollection(PaginatorInterface $paginator, #[MapQueryString] ProductQueryDto $dto): Response
+    protected function createEntityQueryBuilder(ProductQueryDto $dto): QueryBuilder
     {
-        $qb = $this->productRepository->createQueryBuilderFromDto('p', $dto);
-        $pagination = $paginator->paginate($qb);
-
-        return $this->json($pagination, context: [
-            'groups' => ['product.collection'],
-        ]);
-    }
-
-    public function postCollection(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $entity = $this->productRepository->createNew();
-
-        $form = $this->createForm(ProductType::class, $entity);
-        $form->submit($request->getPayload()->all());
-
-        if (!$form->isValid()) {
-            return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $entityManager->persist($entity);
-        $entityManager->flush();
-
-        return $this->json($entity, Response::HTTP_CREATED, context: [
-            'groups' => ['product.item'],
-        ]);
-    }
-
-    public function getItem(AbstractProduct $entity): Response
-    {
-        return $this->json($entity, context: [
-            'groups' => ['product.item'],
-        ]);
-    }
-
-    public function putItem(Request $request, EntityManagerInterface $entityManager, AbstractProduct $entity): Response
-    {
-        $form = $this->createForm(ProductType::class, $entity);
-        $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
-
-        if (!$form->isValid()) {
-            return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $entityManager->flush();
-
-        return $this->json($entity, context: [
-            'groups' => ['product.item'],
-        ]);
-    }
-
-    public function deleteItem(EntityManagerInterface $entityManager, AbstractProduct $entity): Response
-    {
-        $entityManager->remove($entity);
-        $entityManager->flush();
-
-        return new Response(status: Response::HTTP_NO_CONTENT);
-    }
-
-    public function getVariants(AbstractProduct $entity): Response
-    {
-        return $this->json($entity->getVariants(), context: [
-            'groups' => ['product_variant.collection'],
-        ]);
-    }
-
-    public function putVariants(Request $request, EntityManagerInterface $entityManager, AbstractProduct $entity): Response
-    {
-        $builder = $this->createFormBuilder($entity)
-            ->add('variants', ProductVariantCollectionType::class)
-        ;
-
-        $form = $builder->getForm();
-        $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
-
-        if (!$form->isValid()) {
-            return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $entityManager->flush();
-
-        return $this->json($entity->getVariants(), context: [
-            'groups' => ['product_variant.collection'],
-        ]);
+        return $this->productRepository->createQueryBuilderFromDto('p', $dto);
     }
 }

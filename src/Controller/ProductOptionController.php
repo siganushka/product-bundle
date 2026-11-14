@@ -4,35 +4,24 @@ declare(strict_types=1);
 
 namespace Siganushka\ProductBundle\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Siganushka\ProductBundle\Entity\AbstractProductOption;
+use Siganushka\GenericBundle\Controller\Crud\GetItemTrait;
+use Siganushka\GenericBundle\Controller\Crud\PutItemTrait;
 use Siganushka\ProductBundle\Form\ProductOptionType;
+use Siganushka\ProductBundle\Repository\ProductOptionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/product-options')]
 class ProductOptionController extends AbstractController
 {
-    public function getItem(AbstractProductOption $entity): Response
+    use GetItemTrait;
+    use PutItemTrait;
+
+    public function __construct(ProductOptionRepository $repository)
     {
-        return $this->json($entity, context: [
-            'groups' => ['product_option.item'],
-        ]);
-    }
-
-    public function putItem(Request $request, EntityManagerInterface $entityManager, AbstractProductOption $entity): Response
-    {
-        $form = $this->createForm(ProductOptionType::class, $entity);
-        $form->submit($request->getPayload()->all(), !$request->isMethod('PATCH'));
-
-        if (!$form->isValid()) {
-            return $this->json($form, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $entityManager->flush();
-
-        return $this->json($entity, context: [
-            'groups' => ['product_option.item'],
-        ]);
+        $this->configureCrud(
+            entityName: $repository->getClassName(),
+            entityForm: ProductOptionType::class,
+        );
     }
 }
