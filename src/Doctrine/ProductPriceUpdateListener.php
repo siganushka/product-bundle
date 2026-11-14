@@ -8,7 +8,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Siganushka\ProductBundle\Entity\AbstractProduct;
 use Siganushka\ProductBundle\Entity\AbstractProductVariant;
 
-class ProductVariantUpdateListener
+class ProductPriceUpdateListener
 {
     public function onFlush(OnFlushEventArgs $event): void
     {
@@ -29,9 +29,34 @@ class ProductVariantUpdateListener
             }
         }
 
+        // The owning side of a pending variant may already be cleared (e.g. AbstractProduct::removeVariant()),
+        // in this case the affected products can only be resolved from the changed variant collections.
+        $pendingCollections = array_merge(
+            $uow->getScheduledCollectionUpdates(),
+            $uow->getScheduledCollectionDeletions(),
+        );
+
+        foreach ($pendingCollections as $collection) {
+            $owner = $collection->getOwner();
+            if ($owner instanceof AbstractProduct) {
+                $pendingProducts->attach($owner);
+            }
+        }
+
         foreach ($pendingProducts as $product) {
+            // Skip recalculation if the product is detached, unmanaged, or scheduled for deletion
+            // to prevent "Entity is not managed" exceptions during the flush phase.
+            if (!$em->contains($product)) {
+                continue;
+            }
+
             $prices = [];
             foreach ($product->getVariants() as $variant) {
+                // Variants scheduled for deletion no longer contribute to the price range.
+                if ($uow->isScheduledForDelete($variant)) {
+                    continue;
+                }
+
                 if ($variant->isEnabled() && null !== $variant->getPrice()) {
                     $prices[] = $variant->getPrice();
                 }
