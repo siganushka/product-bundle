@@ -100,9 +100,13 @@ class ProductType extends AbstractType
             $options = $event->getForm()->getParent()?->get('options')->getData();
             if (is_iterable($options)) {
                 $choices = ProductVariantChoiceGenerator::generate($options);
-                foreach (array_keys($data) as $index) {
-                    if (!\array_key_exists($index, $choices)) {
-                        unset($data[$index]);
+                foreach ($data as $key => &$value) {
+                    if (\is_array($value) && 0 === \count($choices[$key]->combinedOptionValues ?? [])) {
+                        unset($value['enabled']);
+                    }
+
+                    if (!\array_key_exists($key, $choices)) {
+                        unset($data[$key]);
                     }
                 }
             }
