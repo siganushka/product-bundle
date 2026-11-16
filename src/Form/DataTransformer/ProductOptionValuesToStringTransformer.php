@@ -16,12 +16,14 @@ use function Symfony\Component\String\u;
  */
 class ProductOptionValuesToStringTransformer implements DataTransformerInterface
 {
+    public const DEFAULT_SEPARATOR = ',';
+
     /**
      * @param non-empty-string $separator
      */
     public function __construct(
         private readonly ProductOptionValueRepository $repository,
-        private readonly string $separator)
+        private readonly string $separator = self::DEFAULT_SEPARATOR)
     {
     }
 

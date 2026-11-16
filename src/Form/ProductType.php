@@ -38,17 +38,15 @@ class ProductType extends AbstractType
             ->add('img', MediaType::class, [
                 'label' => 'product.img',
                 'rule' => 'product_img',
-                // 'constraints' => new NotBlank(),
-                'required' => false,
+                'constraints' => new NotBlank(),
                 'priority' => 0,
             ])
             ->add('name', TextType::class, [
                 'label' => 'product.name',
                 'constraints' => [
-                    // new NotBlank(),
+                    new NotBlank(),
                     new Length(max: 255),
                 ],
-                'required' => false,
                 'priority' => -10,
             ])
             ->add('summary', TextType::class, [

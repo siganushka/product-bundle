@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Form;
 
 use Siganushka\MediaBundle\Form\Type\MediaType;
-use Siganushka\ProductBundle\Form\Type\ProductOptionValuesTextType;
+use Siganushka\ProductBundle\Form\DataTransformer\ProductOptionValuesToStringTransformer;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -35,7 +35,11 @@ class ProductOptionValueType extends AbstractType
                 'label' => 'product_option_value.name',
                 'constraints' => [
                     new NotBlank(),
-                    new Regex('/'.preg_quote(ProductOptionValuesTextType::VALUES_DELIMITER).'/', match: false),
+                    new Regex(
+                        pattern: '/'.preg_quote(ProductOptionValuesToStringTransformer::DEFAULT_SEPARATOR).'/',
+                        message: 'This value cannot contain special characters.',
+                        match: false,
+                    ),
                 ],
                 'priority' => -10,
             ])

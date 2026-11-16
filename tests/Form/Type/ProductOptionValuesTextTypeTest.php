@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Siganushka\ProductBundle\Tests\Form\Type;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Siganushka\ProductBundle\Form\DataTransformer\ProductOptionValuesToStringTransformer;
 use Siganushka\ProductBundle\Form\Type\ProductOptionValuesTextType;
 use Siganushka\ProductBundle\Repository\ProductOptionValueRepository;
 use Siganushka\ProductBundle\Tests\Fixtures\TestProductOptionValue;
@@ -58,8 +59,10 @@ class ProductOptionValuesTextTypeTest extends TypeTestCase
             ->willReturnCallback(static fn (...$args) => new TestProductOptionValue(...$args))
         ;
 
+        $transformer = new ProductOptionValuesToStringTransformer($repository);
+
         return [
-            new ProductOptionValuesTextType($repository),
+            new ProductOptionValuesTextType($transformer),
         ];
     }
 }
