@@ -37,8 +37,8 @@ abstract class AbstractProductVariant implements EnableInterface, TimestampableI
     #[ORM\ManyToOne(inversedBy: 'variants')]
     protected ?AbstractProduct $product = null;
 
-    #[ORM\Column(nullable: true)]
-    protected ?string $code = null;
+    #[ORM\Column]
+    protected string $code;
 
     #[ORM\Column(nullable: true)]
     protected ?string $name = null;
@@ -92,7 +92,7 @@ abstract class AbstractProductVariant implements EnableInterface, TimestampableI
         return $this;
     }
 
-    public function getCode(): ?string
+    public function getCode(): string
     {
         return $this->code;
     }
