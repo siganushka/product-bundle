@@ -31,7 +31,6 @@ class ProductOptionValuesTextType extends AbstractType
             'autocomplete' => true,
             'tom_select_options' => [
                 'create' => true,
-                'duplicates' => true,
                 'delimiter' => ProductOptionValuesToStringTransformer::DEFAULT_SEPARATOR,
             ],
         ]);
