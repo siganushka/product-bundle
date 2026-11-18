@@ -57,17 +57,8 @@ class ProductVariantUpdateListener
         }
 
         foreach ($productForVariants as $product) {
-            $codes = [];
             foreach ($product->generateChoices() as $choice) {
-                $codes[] = $choice->code;
-                $product->addVariant($variant = $this->repository->createNew($choice)->setEnabled(false));
-            }
-
-            foreach ($product->getVariants() as $variant) {
-                if (!\in_array($variant->getCode(), $codes)) {
-                    $product->removeVariant($variant);
-                    $em->remove($variant);
-                }
+                $product->addVariant($this->repository->createNew($choice)->setEnabled(false));
             }
 
             $uow->computeChangeSet($em->getClassMetadata($product::class), $product);
