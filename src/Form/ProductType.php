@@ -88,7 +88,7 @@ class ProductType extends AbstractType
             }
 
             foreach (ProductVariantChoiceGenerator::generateFromProduct($data) as $choice) {
-                $data->addVariant($this->productVariantRepository->createNew($choice)->setEnabled(true));
+                $data->addVariant($this->productVariantRepository->createNew($choice));
             }
         });
 
@@ -132,7 +132,7 @@ class ProductType extends AbstractType
                 $newData = new ArrayCollection();
                 foreach (ProductVariantChoiceGenerator::generate($data) as $choice) {
                     $newData[] = array_find($previousData, static fn (AbstractProductVariant $item) => $item->getCode() === $choice->code)
-                        ?? $this->productVariantRepository->createNew($choice)->setEnabled(true);
+                        ?? $this->productVariantRepository->createNew($choice);
                 }
 
                 $form->get('variants')->setData($newData);
