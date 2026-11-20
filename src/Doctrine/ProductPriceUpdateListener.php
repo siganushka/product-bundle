@@ -25,7 +25,7 @@ class ProductPriceUpdateListener
         $pendingProducts = new \SplObjectStorage();
         foreach ($pendingEntities as $entity) {
             if ($entity instanceof AbstractProductVariant && $entity->getProduct()) {
-                $pendingProducts->attach($entity->getProduct());
+                $pendingProducts->offsetSet($entity->getProduct());
             }
         }
 
@@ -39,7 +39,7 @@ class ProductPriceUpdateListener
         foreach ($pendingCollections as $collection) {
             $owner = $collection->getOwner();
             if ($owner instanceof AbstractProduct) {
-                $pendingProducts->attach($owner);
+                $pendingProducts->offsetSet($owner);
             }
         }
 
