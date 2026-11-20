@@ -46,6 +46,21 @@ class ProductOptionValuesTextTypeTest extends TypeTestCase
         static::assertSame('2', $data[1]->getCode());
     }
 
+    public function testSubmitWithoutPreviousData(): void
+    {
+        $form = $this->factory->create(ProductOptionValuesTextType::class, null, ['data_class' => null]);
+        $form->submit('AAA,BBB');
+
+        /** @var array<int, TestProductOptionValue> $data */
+        $data = $form->getData();
+
+        static::assertCount(2, $data);
+        static::assertSame(['AAA', 'BBB'], array_map(
+            static fn (TestProductOptionValue $value) => $value->getName(),
+            $data
+        ));
+    }
+
     public function testNullDefaultData(): void
     {
         $form = $this->factory->create(ProductOptionValuesTextType::class);
