@@ -131,7 +131,7 @@ class ProductType extends AbstractType
                 /** @var ArrayCollection<int, AbstractProductVariant> */
                 $newData = new ArrayCollection();
                 foreach (ProductVariantChoiceGenerator::generate($data) as $choice) {
-                    $newData[] = array_find($previousData, static fn (AbstractProductVariant $item) => $item->getCode() === $choice->code)
+                    $newData[] = $this->findVariantByCode($previousData, $choice->code)
                         ?? $this->productVariantRepository->createNew($choice);
                 }
 
@@ -145,5 +145,19 @@ class ProductType extends AbstractType
         $resolver->setDefaults([
             'data_class' => $this->repository->getClassName(),
         ]);
+    }
+
+    /**
+     * @param array<int, AbstractProductVariant> $variants
+     */
+    private function findVariantByCode(array $variants, string $code): ?AbstractProductVariant
+    {
+        foreach ($variants as $variant) {
+            if ($variant->getCode() === $code) {
+                return $variant;
+            }
+        }
+
+        return null;
     }
 }

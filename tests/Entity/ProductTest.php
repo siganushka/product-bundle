@@ -30,7 +30,7 @@ class ProductTest extends TestCase
         $product = new TestProduct('foo');
         static::assertSame('foo', $product->getName());
 
-        $media = new TestMedia()->setHash('hash');
+        $media = (new TestMedia())->setHash('hash');
         $product
             ->setName('bar')
             ->setSummary('baz')
