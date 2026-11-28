@@ -57,7 +57,7 @@ abstract class AbstractProductOptionValue implements TimestampableInterface
      */
     public function __construct(?string $code = null, ?string $name = null, ?MediaInterface $img = null)
     {
-        $this->code = $code ?? substr(uniqid(), -8);
+        $this->code = $code ?? base_convert((string) random_int(0, 36 ** 8 - 1), 10, 36);
         $this->name = $name;
         $this->img = $img;
         $this->variants = new ArrayCollection();
